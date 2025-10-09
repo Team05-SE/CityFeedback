@@ -13,7 +13,7 @@ ssh-keygen -t ed25519 -C "deineemail@adresse.com"
 
 # So ermittelst du den Inhalt deines Public Keys
 # MACOS
-cat /User/username/.ssh/id_ed25519_github.pub
+cat /Users/username/.ssh/id_ed25519_github.pub
 
 # LINUX
 cat /home/username/.ssh/id_ed25519_github.pub
