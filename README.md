@@ -21,5 +21,19 @@ vorgelegt am: 13.10.2025
 3. Nützliche Git-Tools und Plattformen (z.B. GitHub)
 
 4. Branches und ihre Nutzung, Umgang mit Merge-Konflikten
+   - Definition:
+     Ein Branch ist ein separater Entwicklungszweig, dieser ermöglicht paralleles Arbeiten ohne den main-Branch zu verändern
+   - Vorteil:
+     Dadurch können mehrere Personen gleichzeitig an verschiedenen Features oder Bugfixes arbeiten, ohne sich gegenseitig zu stören, bevor diese dann in den Hauptzweig integriert werden
+   - Wichtige Befehle:
+     -   git branch 
+         (Zeigt an, in welchem Branch man sich derzeit befindet)
+     -   git branch name-des-branches 
+         (Erstellt einen neuen Branch)
+     -   git checkout name-des-branches 
+         (Wechseln in einen anderen Branch)
+     -   git branch -d name-des-branches
+         (Einen Branch löschen)
 
-5. Git mit IntelliJ/PyCharm benutzen: Local Repository und Remote Repository
+
+6. Git mit IntelliJ/PyCharm benutzen: Local Repository und Remote Repository
