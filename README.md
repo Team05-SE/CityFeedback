@@ -54,5 +54,8 @@ vorgelegt am: 13.10.2025
       - git status
         (Zeigt, welche Dateien Konflikte enthalten oder gelöst wurden)
 
+   ![Branches in GitHub](https://axolo.s3.eu-west-3.amazonaws.com/communication/blog/ultimate-pull-request/Branches+in+GitHub.png)
+
+
 
 6. Git mit IntelliJ/PyCharm benutzen: Local Repository und Remote Repository
