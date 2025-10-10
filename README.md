@@ -21,7 +21,7 @@ vorgelegt am: 13.10.2025
 5. [Git mit IntelliJ/PyCharm benutzen: Local Repository und Remote Repository](#5-git-mit-intellijpycharm-benutzen-local-repository-und-remote-repository)
 
 
-1. Was ist ein Git und warum sollte es verwendet werden?
+## 1. Was ist ein Git und warum sollte es verwendet werden?
 
 ## 2. Grundlegende Git-Befehle
 
