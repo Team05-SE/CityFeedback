@@ -54,6 +54,7 @@ vorgelegt am: 13.10.2025
 
 #### Neues Repository erstellen
 ```bash
+cd /VERZEICHNIS/IN/DEM/GIT/INITILSIERT/WERDEN/SOLL
 git init
 # Alle Files im Ordner
 git add . 
@@ -98,7 +99,7 @@ git push -u origin feature/neue-funktion
 1. Öffne dein Repository auf **GitHub**.  
 2. GitHub erkennt automatisch, dass ein neuer Branch (`feature/neue-funktion`) gepusht wurde, und zeigt oben den Hinweis  
    **"Compare & pull request"** an.  
-3. Klicke darauf.  
+3. Klicke darauf oder unter Pull requests -> New Pull request 
 4. Überprüfe:
    - **Base branch**: `main`  
    - **Compare branch**: `feature/neue-funktion`  
