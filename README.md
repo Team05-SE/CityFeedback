@@ -131,6 +131,10 @@ git rebase origin/main
 
 3. Nützliche Git-Tools und Plattformen (z.B. GitHub)
 
+   - Git Bash
+   - Github
+   - TortoiseGit
+
 4. Branches und ihre Nutzung, Umgang mit Merge-Konflikten
    
    - Zweck eines Branches:
