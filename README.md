@@ -129,19 +129,26 @@ git rebase origin/main
   Inhaltlich endest du in beiden Fällen bei denselben Dateien; nur der Verlauf unterscheidet sich.
 
 
-## 3. Nützliche Git-Tools und Plattformen (z.B. GitHub)
+## 3. Nützliche Plattformen und Tools
 
 ### PaaS-Dienste (Platform as a Service)
 
-Diese Dienste bieten oft kostenlosn Speicherplatz und sind sofort nach der Registrierung nutzbar. Dort werden Inhalte gehostet, gemeinsam bearbeitet und versioniert. Einige Beispiele:
+Diese Plattformen bieten oft kostenlosen Speicherplatz und sind sofort nach der Registrierung nutzbar. Dort werden die Inhalte gehostet, gemeinsam bearbeitet und versioniert. Einige Beispiele:
 - **Github** (2012 -> erhielt 100 Millionen Dollar Risikokapital; unzählige Projekte, viele Unternehmen setzen auf GitHub, z.B. PostgreSQ, Android, Mozilla, LinkedIn); Facebook für Programmierer, zusammenarbeiten, verfolgen, bewertn und Beiträge leisten; Selbsthosting-Möglichkeit nur gegen Aufpreis
-- **GitLab** (kostenlose Selbsthosting-Möglichkeit, kleinere Community,  )
-- **bitbucket** (bietet beide Protokolle, Git und Mercurial)
+- **GitLab** (kostenlose Selbsthosting-Möglichkeit, kleinere Community)
+- **bitbucket** (bietet Git und Mercurial als Protokoll)
 
 ### Tools
 Erläuterungen
    - Git Bash
    - TortoiseGit
+### Erweiterungen für IDEs
+   - VS Code
+      Git Graph: Visualisiert Branches und Commits
+   - IntelliJ
+      Vollständige Git-Integration in JetBrainsIDEs 
+
+
 
 ## 4. Branches und ihre Nutzung, Umgang mit Merge-Konflikten
    
