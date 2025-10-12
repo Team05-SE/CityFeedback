@@ -24,7 +24,7 @@ vorgelegt am: 13.10.2025
 ## 1. Was ist ein Git und warum sollte es verwendet werden?
 
 
-Git ist ein Versionskontrollsystem, das Änderungen an Dateien verfolgt und speichert. Es erstellt regelmäßig "Snapshots" 
+Git ist ein Versionskontrollsystem, das Änderungen an Dateien verfolgt und speichert. Es erstellt regelmäßig Snapshots 
 von Dateien, sodass man jederzeit den Zustand des Projekts wiederherstellen kann.
 
 Git kann komplette Verzeichnisbäume verwalten und ermöglicht es lokal zu arbeiten, auch ohne Internet. Git ist ein verteiltes System, 
