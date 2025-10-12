@@ -219,11 +219,11 @@ Hilfreich bei jeglichen Fragen sind Nachschlagewerke, Dokumentationen zu git an 
 
 6. Git mit IntelliJ/PyCharm benutzen: Local Repository und Remote Repository
 
--REMOTE repository liegt in GitHub (cloud computing)
--LOCAL repository liegt lokal auf dem eigenen Computer
--für den Zugriff auf ein REMOTE (GitHub) repository kann man eine lokale client software, z.B. GitHub Desktop verwenden (muss man nicht). Diese verbindet sich dann mit dem REMOTE repository (über das Internet).
--für den Zugriff auf LOCAL repositories kann man eine lokale client software, z.B. GitHub Desktop verwenden (muss man nicht)
--IDE's bzw. Editoren, die mit Git / GitHub kompatibel sind, sind z.B. IntelliJ IDEA Community Edition (von JetBrains s.r.o.), PyCharm (von JetBrains s.r.o.)
--benötigte Plugins sind: Git und GitHub
--JetBrains IntelliJ IDEA Community Edition: https://www.jetbrains.com/help/idea/github.html 
--JetBrains PyCharm: https://www.jetbrains.com/help/pycharm/github.html
+   - REMOTE repository liegt in GitHub (cloud computing)
+   - LOCAL repository liegt lokal auf dem eigenen Computer
+   - für den Zugriff auf ein REMOTE (GitHub) repository kann man eine lokale client software, z.B. GitHub Desktop verwenden (muss man nicht). Diese verbindet sich dann mit dem REMOTE repository (über das Internet).
+   - für den Zugriff auf LOCAL repositories kann man eine lokale client software, z.B. GitHub Desktop verwenden (muss man nicht)
+   - IDE's bzw. Editoren, die mit Git / GitHub kompatibel sind, sind z.B. IntelliJ IDEA Community Edition (von JetBrains s.r.o.), PyCharm (von JetBrains s.r.o.)
+   - benötigte Plugins sind: Git und GitHub
+   - JetBrains IntelliJ IDEA Community Edition: https://www.jetbrains.com/help/idea/github.html 
+   - JetBrains PyCharm: https://www.jetbrains.com/help/pycharm/github.html
