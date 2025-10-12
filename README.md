@@ -1,4 +1,4 @@
-Moderne Softwareentwicklung
+# Moderne Softwareentwicklung
 
 
 
@@ -22,6 +22,26 @@ vorgelegt am: 13.10.2025
 
 
 ## 1. Was ist ein Git und warum sollte es verwendet werden?
+
+
+Git ist ein Versionskontrollsystem, das Änderungen an Dateien verfolgt und speichert. Es erstellt regelmäßig "Snapshots" 
+von Dateien, sodass man jederzeit den Zustand des Projekts wiederherstellen kann.
+
+Git kann komplette Verzeichnisbäume verwalten und ermöglicht es lokal zu arbeiten, auch ohne Internet. Git ist ein verteiltes System, 
+das mutiges Programmieren fördert. Durch die Arbeit in Branches können neue Funktionen getestet und Änderungen später 
+problemlos übernommen oder verworfen werden.
+ 
+Durch einen Commit werden Änderungen im lokalen Arbeitsverzeichnis gespeichert, mit einer 
+Nachricht versehen und optional auf den Server übertragen. So bleiben alle Änderungen und Anmerkungen nachvollziehbar.
+Zur Sicherheit und Integrität berechnet Git für jeden Commit einen SHA-1-Hash. Dadurch kann Git erkennen, 
+wenn ein Commit verändert wurde und jeder Commit lässt sich eindeutig identifizieren.
+
+GitHub ist ein Webdienst, der Git-Repositories (=Versionsverwaltungsspeicher) hostet und die Zusammenarbeit erleichtert. Viele Plattformen wie GitHub 
+oder GitLab bieten kostenlosen Speicherplatz und ermöglichen es, Projekte direkt zu teilen. Viele Unternehmen, u.a. Facebook, LinkedIn und Microsoft, nutzen GitHub 
+und Entwickler:innen können dort Reputation durch Commits aufbauen.
+
+Git und GitHub dienen somit der effizienten Versionskontrolle, Zusammenarbeit, Nachverfolgbarkeit von Änderungen und fördern 
+gleichzeitig eine sichere, mutige und strukturierte Entwicklungsweise.
 
 ## 2. Grundlegende Git-Befehle
 
