@@ -217,7 +217,7 @@ Hilfreich bei jeglichen Fragen sind Nachschlagewerke, Dokumentationen zu git an 
 
 
 
-6. Git mit IntelliJ/PyCharm benutzen: Local Repository und Remote Repository
+## 5. Git mit IntelliJ/PyCharm benutzen: Local Repository und Remote Repository
 
    - REMOTE repository liegt in GitHub (cloud computing)
    - LOCAL repository liegt lokal auf dem eigenen Computer
