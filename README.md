@@ -129,9 +129,37 @@ git rebase origin/main
   Inhaltlich endest du in beiden Fällen bei denselben Dateien; nur der Verlauf unterscheidet sich.
 
 
-3. Nützliche Git-Tools und Plattformen (z.B. GitHub)
+## 3. Nützliche Plattformen und Tools
 
-4. Branches und ihre Nutzung, Umgang mit Merge-Konflikten
+Es existieren hilfreiche Plattformen und Tools, um die Arbeit mit git angenehmer zu gestalten und individueller zu gestalten. Dazu zählen u.a. Graphical Tools, PlugIns für IDEs, Unix-Shells für die Kommandozeile
+
+### PaaS-Dienste (Platform as a Service)
+
+Diese Plattformen bieten oft kostenlosen Speicherplatz und sind sofort nach der Registrierung nutzbar. Dort werden die Inhalte gehostet, gemeinsam bearbeitet und versioniert. Einige Beispiele:
+- **Github** (viele Unternehmen setzen auf GitHub, z.B. PostgreSQ, Android, Mozilla, LinkedIn); Facebook für Programmierer, zusammenarbeiten, verfolgen, bewertn und Beiträge leisten; Selbsthosting-Möglichkeit nur gegen Aufpreis
+- **GitLab** (kostenlose Selbsthosting-Möglichkeit, kleinere Community)
+- **bitbucket** (bietet Git und Mercurial als Protokoll)
+
+### Tools
+Es existieren zahlreiche Tools für die Arbeiten mit dem Git-System. Einige Beispiele:
+   - **Git Bash** (UnixShell zum Arbeiten mit der Kommandozeile)
+   - **TortoiseGit** (kostenloser Git-Client für Windows, Integration in den Datei-Explorer, Git-Befehle per Rechtsklick auf einen Ordner ausführbar, ohne Terminal bzw. Kommandozeile nutzbar; ideal für Einsteiger)
+   - **GitDesktop** (kostenloses Programm für Windows und macOS, mit dem Git und GitHub über eine *grafische* Oberfläche genutzt werden kann, ohne Terminal bzw. Kommandozeile nutzbar, ideal für Einsteiger)
+### Erweiterungen für IDEs
+   - VS Code
+      Git Graph: Visualisiert Branches und Commits
+   - IntelliJ
+      Vollständige Git-Integration in JetBrainsIDEs 
+
+### Nachschlagewerke
+Hilfreich bei jeglichen Fragen sind Nachschlagewerke, Dokumentationen zu git an sich oder den jeweiligen PaaS oder Tools. Einige Beispiele:
+   - **git** Kommandozeile: $ git help <'Befehl'>
+   - **gitHub**: Dokumentation https://docs.github.com/
+   - **gitLab**: Dokumentation https://docs.gitlab.com/
+   
+
+
+## 4. Branches und ihre Nutzung, Umgang mit Merge-Konflikten
    
    - Zweck eines Branches:
       - Ein Branch ist ein separater Entwicklungszweig, der paralleles Arbeiten ermöglicht, ohne den main-Branch zu verändern
