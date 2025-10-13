@@ -1,27 +1,48 @@
-Moderne Softwareentwicklung
+# Moderne Softwareentwicklung
 
 
 
 vorgelegt von: 
 
 1. Matthias Lindner (matthias.lindner@th-brandenburg.de)
-2. Fenna Haan  (fenna.haan@stud.hs-emden-leer.de)
-3. Janne Surborg (ja.surborg@ostfalia.de)
-4. Constantin Moye (wgtz1919@bht-berlin.de)
-5. Cornelia Demes (cornelia.demes@stud.hs-emden-leer.de)
+3. Fenna Haan  (fenna.haan@stud.hs-emden-leer.de)
+5. Janne Surborg (ja.surborg@ostfalia.de)
+6. Constantin Moye (wgtz1919@bht-berlin.de)
+7. Cornelia Demes (cornelia.demes@stud.hs-emden-leer.de)
 
 
 vorgelegt am: 13.10.2025
 
+
 ## Inhaltsverzeichnis
-1. [Was ist ein Git und warum sollte es verwendet werden?](#1-was-ist-ein-git-und-warum-sollte-es-verwendet-werden)
-2. [Grundlegende Git-Befehle](#2-grundlegende-git-befehle)
-3. [Nützliche Git-Tools und Plattformen (z.B. GitHub)](#3-nützliche-git-tools-und-plattformen-zb-github)
-4. [Branches und ihre Nutzung, Umgang mit Merge-Konflikten](#4-branches-und-ihre-nutzung-umgang-mit-merge-konflikten)
-5. [Git mit IntelliJ/PyCharm benutzen: Local Repository und Remote Repository](#5-git-mit-intellijpycharm-benutzen-local-repository-und-remote-repository)
+1. [Was ist ein Git und warum sollte es verwendet werden?](#1-was-ist-ein-git-und-warum-sollte-es-verwendet-werden) Fenna Haan
+2. [Grundlegende Git-Befehle](#2-grundlegende-git-befehle) Constantin Moye
+3. [Nützliche Plattformen und Tools](#3-nützliche-plattformen-und-tools) Cornelia Demes
+4. [Branches und ihre Nutzung, Umgang mit Merge-Konflikten](#4-branches-und-ihre-nutzung-umgang-mit-merge-konflikten) Janne Surborg
+5. [Git mit IntelliJ/PyCharm benutzen: Local Repository und Remote Repository](#5-git-mit-intellijpycharm-benutzen-local-repository-und-remote-repository) Matthias Lindner
 
 
 ## 1. Was ist ein Git und warum sollte es verwendet werden?
+
+
+Git ist ein Versionskontrollsystem, das Änderungen an Dateien verfolgt und speichert. Es erstellt regelmäßig Snapshots 
+von Dateien, sodass man jederzeit den Zustand des Projekts wiederherstellen kann.
+
+Git kann komplette Verzeichnisbäume verwalten und ermöglicht es lokal zu arbeiten, auch ohne Internet. Git ist ein verteiltes System, 
+das mutiges Programmieren fördert. Durch die Arbeit in Branches können neue Funktionen getestet und Änderungen später 
+problemlos übernommen oder verworfen werden.
+ 
+Durch einen Commit werden Änderungen im lokalen Arbeitsverzeichnis gespeichert, mit einer 
+Nachricht versehen und optional auf den Server übertragen. So bleiben alle Änderungen und Anmerkungen nachvollziehbar.
+Zur Sicherheit und Integrität berechnet Git für jeden Commit einen SHA-1-Hash. Dadurch kann Git erkennen, 
+wenn ein Commit verändert wurde und jeder Commit lässt sich eindeutig identifizieren.
+
+GitHub ist ein Webdienst, der Git-Repositories (=Versionsverwaltungsspeicher) hostet und die Zusammenarbeit erleichtert. Viele Plattformen wie GitHub 
+oder GitLab bieten kostenlosen Speicherplatz und ermöglichen es, Projekte direkt zu teilen. Viele Unternehmen, u.a. Facebook, LinkedIn und Microsoft, nutzen GitHub 
+und Entwickler:innen können dort Reputation durch Commits aufbauen.
+
+Git und GitHub dienen somit der effizienten Versionskontrolle, Zusammenarbeit, Nachverfolgbarkeit von Änderungen und fördern 
+gleichzeitig eine sichere, mutige und strukturierte Entwicklungsweise.
 
 ## 2. Grundlegende Git-Befehle
 
@@ -54,7 +75,7 @@ vorgelegt am: 13.10.2025
 
 #### Neues Repository erstellen
 ```bash
-cd /VERZEICHNIS/IN/DEM/GIT/INITILSIERT/WERDEN/SOLL
+cd /VERZEICHNIS/IN/DEM/GIT/INITIALSIERT/WERDEN/SOLL
 git init
 # Alle Files im Ordner
 git add . 
@@ -129,9 +150,37 @@ git rebase origin/main
   Inhaltlich endest du in beiden Fällen bei denselben Dateien; nur der Verlauf unterscheidet sich.
 
 
-3. Nützliche Git-Tools und Plattformen (z.B. GitHub)
+## 3. Nützliche Plattformen und Tools
 
-4. Branches und ihre Nutzung, Umgang mit Merge-Konflikten
+Es existieren hilfreiche Plattformen und Tools, um die Arbeit mit git angenehmer zu gestalten und individueller zu gestalten. Dazu zählen u.a. Graphical Tools, PlugIns für IDEs, Unix-Shells für die Kommandozeile
+
+### PaaS-Dienste (Platform as a Service)
+
+Diese Plattformen bieten oft kostenlosen Speicherplatz und sind sofort nach der Registrierung nutzbar. Dort werden die Inhalte gehostet, gemeinsam bearbeitet und versioniert. Einige Beispiele:
+- **Github** (viele Unternehmen setzen auf GitHub, z.B. PostgreSQ, Android, Mozilla, LinkedIn); Facebook für Programmierer, zusammenarbeiten, verfolgen, bewertn und Beiträge leisten; Selbsthosting-Möglichkeit nur gegen Aufpreis
+- **GitLab** (kostenlose Selbsthosting-Möglichkeit, kleinere Community)
+- **bitbucket** (bietet Git und Mercurial als Protokoll)
+
+### Tools
+Es existieren zahlreiche Tools für die Arbeiten mit dem Git-System. Einige Beispiele:
+   - **Git Bash** (UnixShell zum Arbeiten mit der Kommandozeile)
+   - **TortoiseGit** (kostenloser Git-Client für Windows, Integration in den Datei-Explorer, Git-Befehle per Rechtsklick auf einen Ordner ausführbar, ohne Terminal bzw. Kommandozeile nutzbar; ideal für Einsteiger)
+   - **GitDesktop** (kostenloses Programm für Windows und macOS, mit dem Git und GitHub über eine *grafische* Oberfläche genutzt werden kann, ohne Terminal bzw. Kommandozeile nutzbar, ideal für Einsteiger)
+### Erweiterungen für IDEs
+   - VS Code
+      Git Graph: Visualisiert Branches und Commits
+   - IntelliJ
+      Vollständige Git-Integration in JetBrainsIDEs 
+
+### Nachschlagewerke
+Hilfreich bei jeglichen Fragen sind Nachschlagewerke, Dokumentationen zu git an sich oder den jeweiligen PaaS oder Tools. Einige Beispiele:
+   - **git** Kommandozeile: $ git help <'Befehl'>
+   - **gitHub**: Dokumentation https://docs.github.com/
+   - **gitLab**: Dokumentation https://docs.gitlab.com/
+   
+
+
+## 4. Branches und ihre Nutzung, Umgang mit Merge-Konflikten
    
    - Zweck eines Branches:
       - Ein Branch ist ein separater Entwicklungszweig, der paralleles Arbeiten ermöglicht, ohne den main-Branch zu verändern
@@ -169,4 +218,13 @@ git rebase origin/main
 
 
 
-6. Git mit IntelliJ/PyCharm benutzen: Local Repository und Remote Repository
+## 5. Git mit IntelliJ/PyCharm benutzen: Local Repository und Remote Repository
+
+   - REMOTE repository liegt in GitHub (cloud computing)
+   - LOCAL repository liegt lokal auf dem eigenen Computer
+   - für den Zugriff auf ein REMOTE (GitHub) repository kann man eine lokale client software, z.B. GitHub Desktop verwenden (muss man nicht). Diese verbindet sich dann mit dem REMOTE repository (über das Internet).
+   - für den Zugriff auf LOCAL repositories kann man eine lokale client software, z.B. GitHub Desktop verwenden (muss man nicht)
+   - IDE's bzw. Editoren, die mit Git / GitHub kompatibel sind, sind z.B. IntelliJ IDEA Community Edition (von JetBrains s.r.o.), PyCharm (von JetBrains s.r.o.)
+   - benötigte Plugins sind: Git und GitHub
+   - JetBrains IntelliJ IDEA Community Edition: https://www.jetbrains.com/help/idea/github.html 
+   - JetBrains PyCharm: https://www.jetbrains.com/help/pycharm/github.html
