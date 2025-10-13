@@ -74,7 +74,7 @@ gleichzeitig eine sichere, mutige und strukturierte Entwicklungsweise.
 
 #### Neues Repository erstellen
 ```bash
-cd /VERZEICHNIS/IN/DEM/GIT/INITILSIERT/WERDEN/SOLL
+cd /VERZEICHNIS/IN/DEM/GIT/INITIALSIERT/WERDEN/SOLL
 git init
 # Alle Files im Ordner
 git add . 
