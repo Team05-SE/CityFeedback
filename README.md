@@ -5,20 +5,21 @@
 vorgelegt von: 
 
 1. Matthias Lindner (matthias.lindner@th-brandenburg.de)
-2. Fenna Haan  (fenna.haan@stud.hs-emden-leer.de)
-3. Janne Surborg (ja.surborg@ostfalia.de)
-4. Constantin Moye (wgtz1919@bht-berlin.de)
-5. Cornelia Demes (cornelia.demes@stud.hs-emden-leer.de)
+3. Fenna Haan  (fenna.haan@stud.hs-emden-leer.de)
+5. Janne Surborg (ja.surborg@ostfalia.de)
+6. Constantin Moye (wgtz1919@bht-berlin.de)
+7. Cornelia Demes (cornelia.demes@stud.hs-emden-leer.de)
 
 
 vorgelegt am: 13.10.2025
 
+
 ## Inhaltsverzeichnis
-1. [Was ist ein Git und warum sollte es verwendet werden?](#1-was-ist-ein-git-und-warum-sollte-es-verwendet-werden)
-2. [Grundlegende Git-Befehle](#2-grundlegende-git-befehle)
-3. [Nützliche Plattformen und Tools](#3-nützliche-plattformen-und-tools)
-4. [Branches und ihre Nutzung, Umgang mit Merge-Konflikten](#4-branches-und-ihre-nutzung-umgang-mit-merge-konflikten)
-5. [Git mit IntelliJ/PyCharm benutzen: Local Repository und Remote Repository](#5-git-mit-intellijpycharm-benutzen-local-repository-und-remote-repository)
+1. [Was ist ein Git und warum sollte es verwendet werden?](#1-was-ist-ein-git-und-warum-sollte-es-verwendet-werden) Fenna Haan
+2. [Grundlegende Git-Befehle](#2-grundlegende-git-befehle) Constantin Moye
+3. [Nützliche Plattformen und Tools](#3-nützliche-plattformen-und-tools) Cornelia Demes
+4. [Branches und ihre Nutzung, Umgang mit Merge-Konflikten](#4-branches-und-ihre-nutzung-umgang-mit-merge-konflikten) Janne Surborg
+5. [Git mit IntelliJ/PyCharm benutzen: Local Repository und Remote Repository](#5-git-mit-intellijpycharm-benutzen-local-repository-und-remote-repository) Matthias Lindner
 
 
 ## 1. Was ist ein Git und warum sollte es verwendet werden?
