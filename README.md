@@ -228,3 +228,19 @@ Hilfreich bei jeglichen Fragen sind Nachschlagewerke, Dokumentationen zu git an 
    - benötigte Plugins sind: Git und GitHub
    - JetBrains IntelliJ IDEA Community Edition: https://www.jetbrains.com/help/idea/github.html 
    - JetBrains PyCharm: https://www.jetbrains.com/help/pycharm/github.html
+
+
+
+_______________________________________________
+
+# 2. Überung Zwei- CI/CD Pipine
+
+## 2.1. Definition
+
+## 2.2. Vor- und Nachteile
+
+## 2.3. Protokoll/Dokumentation der Tests
+
+Wir haben und für GitHub Actions entschieden, da wir auf Github arbeiten
+
+
