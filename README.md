@@ -233,14 +233,14 @@ Hilfreich bei jeglichen Fragen sind Nachschlagewerke, Dokumentationen zu git an 
 
 _______________________________________________
 
-# 2. Überung Zwei- CI/CD Pipine
+# 2. Übung Zwei - CI/CD-Pipine
 
 ## 2.1. Definition
 
 ## 2.2. Vor- und Nachteile
 
-## 2.3. Protokoll/Dokumentation der Tests
+## 2.3. Protokoll und Dokumentation der Tests
 
-Wir haben und für GitHub Actions entschieden, da wir auf Github arbeiten
+Wir haben uns für GitHub Actions entschieden, da wir auf Github arbeiten.
 
 
