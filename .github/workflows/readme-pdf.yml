@@ -4,13 +4,9 @@ on:
   push:
     branches:
       - feature/constantin
-    paths:
-      - 'README.md'
   pull_request:
     branches:
       - feature/constantin
-    paths:
-      - 'README.md'
 
 jobs:
   generate-pdf:
@@ -29,20 +25,20 @@ jobs:
       - name: Install md-to-pdf
         run: npm install -g md-to-pdf
 
-      - name: Generate README.pdf (no sandbox)
+      - name: Generate README.pdf (force regenerate)
         run: |
           mkdir -p documentation
+          echo "🧾 Regenerating PDF from latest README.md"
           md-to-pdf README.md documentation/README.pdf --launch-options '{"args":["--no-sandbox"]}'
+          ls -lh documentation/
 
-      - name: Commit and push README.pdf
-        # verhindert Endlosschleifen durch Bot-eigene Commits
-        if: ${{ github.event_name == 'push' && github.actor != 'github-actions[bot]' }}
+      - name: Commit and push README.pdf (always commit)
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add documentation/README.pdf
-          git diff --quiet && echo "No changes to commit." || git commit -m "Auto-generate README.pdf"
-          git push
+          git commit -am "Auto-generate README.pdf from latest README.md" || echo "No changes detected, forcing update"
+          git push origin feature/constantin
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
