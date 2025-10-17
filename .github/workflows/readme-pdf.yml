@@ -1,4 +1,4 @@
-name: Generate README.pdf with Easypdf
+name: Generate README.pdf with md-to-pdf
 
 on:
   push:
@@ -10,30 +10,30 @@ on:
 
 jobs:
   generate-pdf:
-    name: Convert README.md to PDF using Easypdf
+    name: Convert README.md to PDF using md-to-pdf
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Install dependencies (Go & wkhtmltopdf)
+      - name: Clean workspace and re-clone repository
         run: |
-          sudo apt-get update
-          sudo apt-get install -y wkhtmltopdf golang-go
+          rm -rf ./*
+          git clone https://github.com/${{ github.repository }} repo
+          cp repo/README.md .
+          echo "✅ README.md copied from repository."
 
-      - name: Clone Easypdf and build binary manually
-        run: |
-          git clone https://github.com/blackfly19/Easypdf
-          cd Easypdf/cmd
-          go build -o easypdf
-          sudo mv easypdf /usr/local/bin/easypdf
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install md-to-pdf globally
+        run: npm install -g md-to-pdf
 
       - name: Generate README.pdf
         run: |
           mkdir -p documentation
-          easypdf convert -f README.md -o documentation/README.pdf --toc
-          echo "✅ PDF generated at documentation/README.pdf"
+          md-to-pdf README.md documentation/README.pdf --launch-options '{"args":["--no-sandbox"]}'
+          echo "✅ PDF generated successfully at documentation/README.pdf"
 
       - name: Commit and push generated PDF
         if: ${{ github.event_name == 'push' && github.actor != 'github-actions[bot]' }}
@@ -41,7 +41,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add --force documentation/README.pdf
-          git commit -am "Auto-generate README.pdf via Easypdf" || echo "No changes to commit."
+          git commit -am "Auto-generate README.pdf via md-to-pdf" || echo "No changes to commit."
           git push origin feature/constantin
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
