@@ -80,10 +80,10 @@ jobs:
           java-version: '21'
 
       - name: Run main program
-        run: java -cp out Main
+        run: java -cp out src.Main
 
       - name: Run ExampleTest
-        run: java -cp out ExampleTest
+        run: java -cp out src.ExampleTest
 
   # ------------------------------
   # 4️⃣ DOC JOB
