@@ -1,6 +1,7 @@
 name: Deploy JavaDoc (after CI)
 
 on:
+  workflow_dispatch:
   workflow_run:
     workflows: ["Multi-Stage Java CI"]
     types:
