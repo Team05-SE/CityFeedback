@@ -242,6 +242,16 @@ _______________________________________________
 # 2. Übung Zwei - CI/CD-Pipine
 
 ## 2.1. Definition
+- Eine CI/CD-Pipeline ist ein automatisierter Prozess, der die Erstellung, das Testen und die Bereitstellung von Software optimiert. Ziel ist es, Änderungen schnell, zuverlässig und reproduzierbar in produktionsreife Versionen zu überführen
+
+- CI (Continuous Integration) bedeutet, dass Entwickler ihre Codeänderungen regelmäßig in gemeinsame Branches einpflegen.
+Jede Änderung wird dabei automatisch gebaut und getestet, um Integrationsprobleme früh zu erkennen und sicherzustellen, dass der Code stets in einem stabilen und lauffähigen Zustand bleibt
+
+- CD (Continuous Delivery) baut auf CI auf und stellt sicher, dass die getesteten und integrierten Änderungen automatisch für den Rollout vorbereitet werden.
+Dadurch ist die Software jederzeit auslieferbar, da alle notwendigen Konfigurationen für eine Bereitstellung in beliebige Umgebungen vorhanden sind
+
+
+
 
 ## 2.2. Vor- und Nachteile
 
