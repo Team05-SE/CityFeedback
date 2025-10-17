@@ -20,15 +20,14 @@ jobs:
       - name: Install dependencies (Go & wkhtmltopdf)
         run: |
           sudo apt-get update
-          sudo apt-get install -y wkhtmltopdf
-          sudo apt-get install -y golang-go
+          sudo apt-get install -y wkhtmltopdf golang-go
 
-      - name: Clone Easypdf and build binary
+      - name: Clone Easypdf and build binary manually
         run: |
           git clone https://github.com/blackfly19/Easypdf
-          cd Easypdf
-          make cmd-first-build
-          sudo mv bin/easypdf /usr/local/bin/easypdf
+          cd Easypdf/cmd
+          go build -o easypdf
+          sudo mv easypdf /usr/local/bin/easypdf
 
       - name: Generate README.pdf
         run: |
