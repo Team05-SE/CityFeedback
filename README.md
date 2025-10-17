@@ -254,6 +254,15 @@ Dadurch ist die Software jederzeit auslieferbar, da alle notwendigen Konfigurati
 
 
 ## 2.2. Vor- und Nachteile
+- Vorteile:
+  - Höhere Benutzer-Zufriedenheit durch weniger Bugs
+  - Produkte können schneller auf den Markt gebracht werden
+  - Entlastung der Entwickler
+- Nachteile:
+  - Technische Insfrastruktur muss erst geschaffen werden  
+
+    
+
 
 ## 2.3. Protokoll und Dokumentation der Tests
 
