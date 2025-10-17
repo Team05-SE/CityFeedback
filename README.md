@@ -1,10 +1,9 @@
 # Moderne Softwareentwicklung
 
 ![CI](https://github.com/Team05-SE/CityFeedback/actions/workflows/java-ci.yml/badge.svg)
-
 ![AutoPDF](https://github.com/Team05-SE/CityFeedback/actions/workflows/readme-pdf.yml/badge.svg)
 
-📘 [JavaDoc ansehen](https://team05-se.github.io/CityFeedback/)
+📘 [Java-Documentation ansehen](https://team05-se.github.io/CityFeedback/)
 
 📄 [Aktuelle README als PDF herunterladen](https://github.com/Team05-SE/CityFeedback/blob/main/documentation/README.pdf)
 
