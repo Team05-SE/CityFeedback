@@ -4,9 +4,13 @@ on:
   push:
     branches:
       - feature/constantin
+    paths:
+      - 'README.md'
   pull_request:
     branches:
       - feature/constantin
+    paths:
+      - 'README.md'
 
 jobs:
   generate-pdf:
@@ -25,13 +29,13 @@ jobs:
       - name: Install md-to-pdf
         run: npm install -g md-to-pdf
 
-      - name: Generate README.pdf
+      - name: Generate README.pdf (no sandbox)
         run: |
           mkdir -p documentation
-          md-to-pdf README.md documentation/README.pdf
+          md-to-pdf README.md documentation/README.pdf --launch-options '{"args":["--no-sandbox"]}'
 
-      # Nur committen, wenn sich die PDF wirklich geändert hat
       - name: Commit and push README.pdf
+        # verhindert Endlosschleifen durch Bot-eigene Commits
         if: ${{ github.event_name == 'push' && github.actor != 'github-actions[bot]' }}
         run: |
           git config user.name "github-actions[bot]"
