@@ -1,9 +1,6 @@
 name: Deploy JavaDoc (after CI)
 
 on:
-  push:
-    branches:
-      - feature/constantin
   workflow_run:
     workflows: ["Multi-Stage Java CI"]
     types:
