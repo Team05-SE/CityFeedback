@@ -25,7 +25,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # Aktiviere explizit Java-Linting
           VALIDATE_JAVA: true
-	  FILTER_REGEX_EXCLUDE: ".*(package-info\\.java|ExampleTest\\.java)"
+          FILTER_REGEX_EXCLUDE: ".*(package-info\\.java|ExampleTest\\.java)"
+
 
   # ------------------------------
   # 2️⃣ BUILD JOB
