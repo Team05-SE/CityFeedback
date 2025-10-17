@@ -3,8 +3,12 @@ name: Multi-Stage Java CI
 on:
   push:
     branches: [ feature/constantin ]
+    paths-ignore:
+      - 'documentation/**'
   pull_request:
     branches: [ feature/constantin ]
+    paths-ignore:
+      - 'documentation/**'
 
 jobs:
   # ------------------------------

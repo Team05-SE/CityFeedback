@@ -1,0 +1,44 @@
+name: Generate README.pdf
+
+on:
+  push:
+    branches:
+      - feature/constantin
+  pull_request:
+    branches:
+      - feature/constantin
+
+jobs:
+  generate-pdf:
+    name: Convert README.md to PDF
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install md-to-pdf
+        run: npm install -g md-to-pdf
+
+      - name: Generate README.pdf
+        run: |
+          mkdir -p documentation
+          md-to-pdf README.md documentation/README.pdf
+
+      # Nur committen, wenn sich die PDF wirklich geändert hat
+      - name: Commit and push README.pdf
+        if: ${{ github.event_name == 'push' && github.actor != 'github-actions[bot]' }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add documentation/README.pdf
+          git diff --quiet && echo "No changes to commit." || git commit -m "Auto-generate README.pdf"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
