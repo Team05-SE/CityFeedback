@@ -6,8 +6,6 @@
 
 📄 [Aktuelle README als PDF herunterladen](documentation/README.pdf)
 
-Test
-
 vorgelegt von: 
 
 1. Matthias Lindner (matthias.lindner@th-brandenburg.de)
