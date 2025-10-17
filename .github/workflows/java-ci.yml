@@ -3,13 +3,14 @@ name: Multi-Stage Java CI
 on:
   push:
     branches:
-      - feature/constantin
       - main
+      - 'feature/**'        # alle Feature-Branches
     paths-ignore:
       - 'documentation/**'
   pull_request:
-    branches: 
+    branches:
       - main
+      - 'feature/**'        # prüft auch PRs zwischen Feature-Branches
     paths-ignore:
       - 'documentation/**'
 
@@ -23,6 +24,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Run Super Linter
         uses: super-linter/super-linter@v6
