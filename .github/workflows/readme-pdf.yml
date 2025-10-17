@@ -1,4 +1,4 @@
-name: Generate README.pdf
+name: Generate README.pdf with Pandoc
 
 on:
   push:
@@ -10,39 +10,31 @@ on:
 
 jobs:
   generate-pdf:
-    name: Convert README.md to PDF
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
+      - name: Install Pandoc
+        run: sudo apt-get update && sudo apt-get install -y pandoc texlive-xetex
 
-      - name: Install md-to-pdf
-        run: npm install -g md-to-pdf
-
-      - name: Generate README.pdf (force regenerate)
+      - name: Generate README.pdf
         run: |
           mkdir -p documentation
-          echo "Regenerating PDF from latest README.md"
-          md-to-pdf README.md documentation/README.pdf --launch-options '{"args":["--no-sandbox"]}'
-          ls -lh documentation/
+          pandoc README.md -o documentation/README.pdf --pdf-engine=xelatex
 
       - name: Configure Git for binary PDF handling
         run: |
           git config core.autocrlf false
           git config core.safecrlf false
 
-      - name: Commit and push README.pdf (always commit)
+      - name: Commit and push README.pdf
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add --force documentation/README.pdf
-          git commit -am "Auto-generate README.pdf from latest README.md" || echo "No changes to commit."
+          git commit -am "Auto-generate README.pdf with Pandoc" || echo "No changes to commit."
           git push origin feature/constantin
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
