@@ -5,14 +5,14 @@ on:
     branches:
       - main
       - 'feature/**'        # alle Feature-Branches
-    paths-ignore:
-      - 'documentation/**'
+    paths:
+      - 'src/**'
   pull_request:
     branches:
       - main
       - 'feature/**'        # prüft auch PRs zwischen Feature-Branches
-    paths-ignore:
-      - 'documentation/**'
+    paths:
+      - 'src/**'
 
 jobs:
   # ------------------------------
