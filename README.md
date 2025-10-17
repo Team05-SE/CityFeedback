@@ -4,7 +4,7 @@
 
 📘 [JavaDoc ansehen](https://team05-se.github.io/CityFeedback/)
 
-📄 [Aktuelle README als PDF herunterladen](documentation/README.pdf)
+📄 [Aktuelle README als PDF herunterladen](https://github.com/Team05-SE/CityFeedback/README.pdf)
 
 vorgelegt von: 
 
