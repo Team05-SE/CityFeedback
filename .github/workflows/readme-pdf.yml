@@ -3,10 +3,11 @@ name: Generate README.pdf with md-to-pdf
 on:
   push:
     branches:
+      - main
       - feature/constantin
   pull_request:
     branches:
-      - feature/constantin
+      - main
 
 jobs:
   generate-pdf:
