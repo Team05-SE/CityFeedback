@@ -101,7 +101,7 @@ jobs:
       - name: Generate documentation
         run: |
           mkdir -p docs
-          javadoc -d docs -sourcepath src -subpackages .
+          javadoc -d docs -sourcepath src -subpackages src
 
       - name: Upload JavaDoc artifact
         uses: actions/upload-artifact@v4
