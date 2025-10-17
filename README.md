@@ -2,7 +2,7 @@
 
 ![CI](https://github.com/Team05-SE/CityFeedback/actions/workflows/java-ci.yml/badge.svg)
 
-![Deploy JavaDoc](https://github.com/Team05-SE/CityFeedback/actions/workflows/deploy-docs.yml/badge.svg)
+![JavaDoc](https://github.com/Team05-SE/CityFeedback/actions/workflows/deploy-docs.yml/badge.svg)
 
 
 vorgelegt von: 
