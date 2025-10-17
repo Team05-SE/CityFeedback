@@ -14,12 +14,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Clean workspace and re-clone repository
-        run: |
-          rm -rf ./*
-          git clone https://github.com/${{ github.repository }} repo
-          cp repo/README.md .
-          echo "✅ README.md copied from repository."
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Install Node.js
         uses: actions/setup-node@v4
@@ -31,9 +27,10 @@ jobs:
 
       - name: Generate README.pdf
         run: |
+          md-to-pdf README.md --launch-options '{"args":["--no-sandbox"]}'
           mkdir -p documentation
-          md-to-pdf README.md documentation/README.pdf --launch-options '{"args":["--no-sandbox"]}'
-          echo "✅ PDF generated successfully at documentation/README.pdf"
+          mv README.pdf documentation/README.pdf
+          echo "✅ PDF generated successfully and moved to documentation/README.pdf"
 
       - name: Commit and push generated PDF
         if: ${{ github.event_name == 'push' && github.actor != 'github-actions[bot]' }}
