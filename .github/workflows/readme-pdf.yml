@@ -28,16 +28,21 @@ jobs:
       - name: Generate README.pdf (force regenerate)
         run: |
           mkdir -p documentation
-          echo "🧾 Regenerating PDF from latest README.md"
+          echo "Regenerating PDF from latest README.md"
           md-to-pdf README.md documentation/README.pdf --launch-options '{"args":["--no-sandbox"]}'
           ls -lh documentation/
+
+      - name: Configure Git for binary PDF handling
+        run: |
+          git config core.autocrlf false
+          git config core.safecrlf false
 
       - name: Commit and push README.pdf (always commit)
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add documentation/README.pdf
-          git commit -am "Auto-generate README.pdf from latest README.md" || echo "No changes detected, forcing update"
+          git add --force documentation/README.pdf
+          git commit -am "Auto-generate README.pdf from latest README.md" || echo "No changes to commit."
           git push origin feature/constantin
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
