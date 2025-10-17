@@ -10,8 +10,7 @@ on:
   pull_request:
     branches:
       - main
-    paths:
-      - README.md
+      - 'feature/**'
 
 jobs:
   generate-pdf:
