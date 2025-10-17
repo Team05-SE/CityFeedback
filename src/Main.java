@@ -1,8 +1,11 @@
+package src;
+
 /**
  * Einstiegspunkt des Programms.
  */
-public class Main {
-    private Main() {} // verhindert Instanziierung, löst HideUtilityClassConstructor
+public final class Main {
+
+    private Main() { } // verhindert Instanziierung
 
     /**
      * Startet das Programm.
@@ -12,4 +15,3 @@ public class Main {
         System.out.println("Hallo GitHub CI!");
     }
 }
-
