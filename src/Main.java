@@ -1,7 +1,7 @@
 package src;
 
 /**
- * Einstiegspunkt des Programms. + Ein Kommentar um die Pipeline Testweise zu triggern
+ * Einstiegspunkt des Programms.
  */
 public final class Main {
 
