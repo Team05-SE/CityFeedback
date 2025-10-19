@@ -252,11 +252,11 @@ Jede Änderung wird dabei automatisch gebaut und getestet, um Integrationsproble
 Dadurch ist die Software jederzeit auslieferbar, da alle notwendigen Konfigurationen für eine Bereitstellung in beliebige Umgebungen vorhanden sind
 
 - die 5 zentralen Komponenten in GitHub Actions:
-  1. **Events** lösen einen Workflow aus.
-  2. **Jobs** sind eine Gruppe von Arbeitsschritten und können parallel oder sequenziel ablaufen.
-  3. **Steps** werden innerhalb eines Jobs einzeln durchlaufen, llaufen im seben Runner und können Daten teilen.
-  4. **Actions** sind vordefinierte Befehle oder Skripte, welche in den Steps verwendet werden, um einen Job auszuführen.
-  5. **Runners** sind die Ausführungsumgebungen, auf denn die Jobs laufen. Diese können von GitHub oder selbst gehostet werden.
+1. **Events** lösen einen Workflow aus.
+2. **Jobs** sind eine Gruppe von Arbeitsschritten und können parallel oder sequenziel ablaufen.
+3. **Steps** werden innerhalb eines Jobs einzeln durchlaufen, llaufen im seben Runner und können Daten teilen.
+4. **Actions** sind vordefinierte Befehle oder Skripte, welche in den Steps verwendet werden, um einen Job auszuführen.
+5. **Runners** sind die Ausführungsumgebungen, auf denn die Jobs laufen. Diese können von GitHub oder selbst gehostet werden.
 
 ### 2.2. Vor- und Nachteile
 - Vorteile:
