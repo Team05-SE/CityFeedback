@@ -271,7 +271,14 @@ Dadurch ist die Software jederzeit auslieferbar, da alle notwendigen Konfigurati
 
 ### 2.3. Protokoll
 
-Wir haben uns für GitHub Actions entschieden, da wir auf Github arbeiten.
+Die verschiedenen Tools wurden ausgiebig betrachtet. Sie unterscheiden sich in der Art der Bereitstellung (Selfhosting vs. Cloud), dem Integrationsgrad mit bestimmten Plattformen (z.B. GitHub, GitLab, Azure), der Benutzerfreundlichkeit, der Erweiterbarkeit und anderen Features.
+So gibt es für unterschiedliche Teamgrößen und Anforderungen passende Lösungen.
+
+Wir haben uns für GitHub Actions entschieden, da wir mit unserem Repository bereits auf Github arbeiten.
+GitHub Actions ist native in GitHub integriert, es ist keine externe Konfiguration notwendig.
+
+Das Setup und die Bedienung sind einfach. GitHub Actions ist schnell direkt im Repository mit YAML-Dateien konfigurierbar. Es ist optimal für Teams, die keine eigene CI-CD Infrastruktur betreiben wollen oder können.
+
 Wir haben zunächst folgende Piplines gebaut
    
 1. **java-ci.yml**
