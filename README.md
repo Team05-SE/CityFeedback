@@ -10,24 +10,30 @@
 vorgelegt von: 
 
 1. Matthias Lindner (matthias.lindner@th-brandenburg.de)
-3. Fenna Haan  (fenna.haan@stud.hs-emden-leer.de)
-5. Janne Surborg (ja.surborg@ostfalia.de)
-6. Constantin Moye (wgtz1919@bht-berlin.de)
-7. Cornelia Demes (cornelia.demes@stud.hs-emden-leer.de)
+2. Fenna Haan  (fenna.haan@stud.hs-emden-leer.de)
+3. Janne Surborg (ja.surborg@ostfalia.de)
+4. Constantin Moye (wgtz1919@bht-berlin.de)
+5. Cornelia Demes (cornelia.demes@stud.hs-emden-leer.de)
 
 
 vorgelegt am: 13.10.2025
 
 
 ## Inhaltsverzeichnis
-1. [Was ist ein Git und warum sollte es verwendet werden?](#1.1-was-ist-ein-git-und-warum-sollte-es-verwendet-werden) Fenna Haan
-2. [Grundlegende Git-Befehle](#1.2-grundlegende-git-befehle) Constantin Moye
-3. [Nützliche Plattformen und Tools](#1.3-nützliche-plattformen-und-tools) Cornelia Demes
-4. [Branches und ihre Nutzung, Umgang mit Merge-Konflikten](#1.4-branches-und-ihre-nutzung-umgang-mit-merge-konflikten) Janne Surborg
-5. [Git mit IntelliJ/PyCharm benutzen: Local Repository und Remote Repository](#1.5-git-mit-intellijpycharm-benutzen-local-repository-und-remote-repository) Matthias Lindner
 
+1. [Aufgabe 1 - Git](#aufgabe-1---git)  
+   1.1 [Was ist ein Git und warum sollte es verwendet werden?](#11-was-ist-ein-git-und-warum-sollte-es-verwendet-werden) Fenna Haan  
+   1.2 [Grundlegende Git-Befehle](#12-grundlegende-git-befehle) Constantin Moye  
+   1.3 [Nützliche Plattformen und Tools](#13-nützliche-plattformen-und-tools) Cornelia Demes  
+   1.4 [Branches und ihre Nutzung, Umgang mit Merge-Konflikten](#14-branches-und-ihre-nutzung-umgang-mit-merge-konflikten) Janne Surborg  
+   1.5 [Git mit IntelliJ/PyCharm benutzen: Local Repository und Remote Repository](#15-git-mit-intellijpycharm-benutzen-local-repository-und-remote-repository) Matthias Lindner  
+2. [Aufgabe 2 - CI/CD-Pipeline](#2-aufgabe-2---cicd-pipeline)  
+   2.1 [Definition](#21-definition)  
+   2.2 [Vor- und Nachteile](#22-vor--und-nachteile)  
+   2.3 [Protokoll](#23-protokoll)  
+   2.4 [Dokumentation der Tests](#24-dokumentation-der-tests)  
 
-## 1. Aufgabe 1
+## Aufgabe 1 - Git
 
 ### 1.1 Was ist ein Git und warum sollte es verwendet werden?
 
@@ -55,26 +61,26 @@ gleichzeitig eine sichere, mutige und strukturierte Entwicklungsweise.
 
 #### Übersicht der grundlegenden Git-Befehle
 
-| Befehl | Beschreibung |
-|--------|---------------|
-| `git init` | Erstellt ein neues lokales Git-Repository im aktuellen Ordner. |
-| `git clone <repository-url>` | Klont ein bestehendes Remote-Repository (z. B. von GitHub) auf den lokalen Rechner. |
-| `git status` | Zeigt den aktuellen Status der Arbeitskopie (z. B. geänderte, neue oder unversionierte Dateien). |
-| `git add <datei>` | Fügt eine bestimmte Datei zur Staging-Area hinzu. |
-| `git add .` | Fügt alle Änderungen im aktuellen Verzeichnis zur Staging-Area hinzu. |
-| `git commit -m "Nachricht"` | Speichert alle Änderungen aus der Staging-Area dauerhaft im lokalen Repository. |
-| `git log` | Zeigt die Commit-Historie (Zeit, Autor, Nachricht, Hash). |
-| `git diff` | Zeigt Unterschiede zwischen Arbeitsverzeichnis, Staging-Area und Repository. |
-| `git branch` | Listet alle lokalen Branches auf. |
-| `git branch <name>` | Erstellt einen neuen Branch mit dem angegebenen Namen. |
-| `git switch <name>` | Wechselt zu einem bestehenden Branch (neuerer, benutzerfreundlicher Befehl). |
-| `git switch -c <name>` | Erstellt und wechselt gleichzeitig zu einem neuen Branch. |
-| `git checkout <name>` | Wechselt zu einem Branch oder Commit (älterer, aber weit verbreiteter Befehl). |
-| `git checkout -b <name>` | Erstellt und wechselt gleichzeitig zu einem neuen Branch (ältere Variante von `git switch -c`). |
-| `git merge <branch>` | Führt die Änderungen eines Branches in den aktuellen Branch zusammen. |
-| `git remote add origin <url>` | Verknüpft das lokale Repository mit einem Remote-Repository (z. B. GitHub). |
-| `git push -u origin <branch>` | Lädt lokale Commits auf das Remote-Repository hoch. |
-| `git pull` | Holt Änderungen vom Remote-Repository und integriert sie lokal. |
+| Befehl                        | Beschreibung                                                                                     |
+|-------------------------------|--------------------------------------------------------------------------------------------------|
+| `git init`                    | Erstellt ein neues lokales Git-Repository im aktuellen Ordner.                                   |
+| `git clone <repository-url>`  | Klont ein bestehendes Remote-Repository (z. B. von GitHub) auf den lokalen Rechner.              |
+| `git status`                  | Zeigt den aktuellen Status der Arbeitskopie (z. B. geänderte, neue oder unversionierte Dateien). |
+| `git add <datei>`             | Fügt eine bestimmte Datei zur Staging-Area hinzu.                                                |
+| `git add .`                   | Fügt alle Änderungen im aktuellen Verzeichnis zur Staging-Area hinzu.                            |
+| `git commit -m "Nachricht"`   | Speichert alle Änderungen aus der Staging-Area dauerhaft im lokalen Repository.                  |
+| `git log`                     | Zeigt die Commit-Historie (Zeit, Autor, Nachricht, Hash).                                        |
+| `git diff`                    | Zeigt Unterschiede zwischen Arbeitsverzeichnis, Staging-Area und Repository.                     |
+| `git branch`                  | Listet alle lokalen Branches auf.                                                                |
+| `git branch <name>`           | Erstellt einen neuen Branch mit dem angegebenen Namen.                                           |
+| `git switch <name>`           | Wechselt zu einem bestehenden Branch (neuerer, benutzerfreundlicher Befehl).                     |
+| `git switch -c <name>`        | Erstellt und wechselt gleichzeitig zu einem neuen Branch.                                        |
+| `git checkout <name>`         | Wechselt zu einem Branch oder Commit (älterer, aber weit verbreiteter Befehl).                   |
+| `git checkout -b <name>`      | Erstellt und wechselt gleichzeitig zu einem neuen Branch (ältere Variante von `git switch -c`).  |
+| `git merge <branch>`          | Führt die Änderungen eines Branches in den aktuellen Branch zusammen.                            |
+| `git remote add origin <url>` | Verknüpft das lokale Repository mit einem Remote-Repository (z. B. GitHub).                      |
+| `git push -u origin <branch>` | Lädt lokale Commits auf das Remote-Repository hoch.                                              |
+| `git pull`                    | Holt Änderungen vom Remote-Repository und integriert sie lokal.                                  |
 
 ---
 
@@ -164,7 +170,7 @@ Es existieren hilfreiche Plattformen und Tools, um die Arbeit mit git angenehmer
 #### PaaS-Dienste (Platform as a Service)
 
 Diese Plattformen bieten oft kostenlosen Speicherplatz und sind sofort nach der Registrierung nutzbar. Dort werden die Inhalte gehostet, gemeinsam bearbeitet und versioniert. Einige Beispiele:
-- **Github** (viele Unternehmen setzen auf GitHub, z.B. PostgreSQ, Android, Mozilla, LinkedIn); Facebook für Programmierer, zusammenarbeiten, verfolgen, bewertn und Beiträge leisten; Selbsthosting-Möglichkeit nur gegen Aufpreis
+- **Github** (viele Unternehmen setzen auf GitHub, z.B. PostgreSQ, Android, Mozilla, LinkedIn); Facebook für Programmierer, zusammenarbeiten, verfolgen, bewerten und Beiträge leisten; Selbsthosting-Möglichkeit nur gegen Aufpreis
 - **GitLab** (kostenlose Selbsthosting-Möglichkeit, kleinere Community)
 - **bitbucket** (bietet Git und Mercurial als Protokoll)
 
@@ -213,7 +219,7 @@ Hilfreich bei jeglichen Fragen sind Nachschlagewerke, Dokumentationen zu git an 
         
    - Mit Merge-Konflikten umgehen:
       - Ein Merge-Konflikt entsteht, wenn Git Änderungen aus verschiedenen Branches nicht automatisch zusammenführen kann, z.B. wenn dieselbe Datei in den Branches unterschiedlich geändert wurde
-      - Git zeigt die betroffenen Dateien und markiert Konfliktstellen, diese können manuell z.B direkt in der IDE gelöst werden
+      - Git zeigt die betroffenen Dateien und markiert Konfliktstellen, diese können manuell z. B. direkt in der IDE gelöst werden
       - Nach der Anpassung wird die Datei mit git add markiert und der Merge mit git commit abgeschlossen
    - Wichtige Befehle:
       - git merge name-des-branches
@@ -240,7 +246,7 @@ Hilfreich bei jeglichen Fragen sind Nachschlagewerke, Dokumentationen zu git an 
 
 ____________________________________________________
 
-## 2. Aufgabe 2 - CI/CD-Pipine
+## 2. Aufgabe 2 - CI/CD-Pipeline
 
 ### 2.1. Definition
 - Eine CI/CD-Pipeline ist ein automatisierter Prozess, der die Erstellung, das Testen und die Bereitstellung von Software optimiert. Ziel ist es, Änderungen schnell, zuverlässig und reproduzierbar in produktionsreife Versionen zu überführen
@@ -253,10 +259,10 @@ Dadurch ist die Software jederzeit auslieferbar, da alle notwendigen Konfigurati
 
 - die 5 zentralen Komponenten in GitHub Actions:
 1. **Events** lösen einen Workflow aus.
-2. **Jobs** sind eine Gruppe von Arbeitsschritten und können parallel oder sequenziel ablaufen.
-3. **Steps** werden innerhalb eines Jobs einzeln durchlaufen, llaufen im seben Runner und können Daten teilen.
+2. **Jobs** sind eine Gruppe von Arbeitsschritten und können parallel oder sequenziell ablaufen.
+3. **Steps** werden innerhalb eines Jobs einzeln durchlaufen, laufen im selben Runner und können Daten teilen.
 4. **Actions** sind vordefinierte Befehle oder Skripte, welche in den Steps verwendet werden, um einen Job auszuführen.
-5. **Runners** sind die Ausführungsumgebungen, auf denn die Jobs laufen. Diese können von GitHub oder selbst gehostet werden.
+5. **Runners** sind die Ausführungsumgebungen, auf den die Jobs laufen. Diese können von GitHub oder selbst gehostet werden.
 
 ### 2.2. Vor- und Nachteile
 - Vorteile:
@@ -264,7 +270,7 @@ Dadurch ist die Software jederzeit auslieferbar, da alle notwendigen Konfigurati
   - Produkte können schneller auf den Markt gebracht werden
   - Entlastung der Entwickler
 - Nachteile:
-  - Technische Insfrastruktur muss erst geschaffen werden  
+  - Technische Infrastruktur muss erst geschaffen werden  
 
     
 
@@ -279,24 +285,22 @@ GitHub Actions ist native in GitHub integriert, es ist keine externe Konfigurati
 
 Das Setup und die Bedienung sind einfach. GitHub Actions ist schnell direkt im Repository mit YAML-Dateien konfigurierbar. Es ist optimal für Teams, die keine eigene CI-CD Infrastruktur betreiben wollen oder können.
 
-Wir haben zunächst folgende Piplines gebaut
+Wir haben zunächst folgende Pipelines gebaut
    
 1. **java-ci.yml**
-    Java-ci wird ausgeführt wenn Änderungen im Source-Ordner vorgenommen werden. 
-    Diese Pipline sorgt für eine automatisierte Codeprüfung, Tests und die Dokumentation bei jedem Commit und Pull Request.
-    
-
+    Java-ci wird ausgeführt, wenn Änderungen im Source-Ordner vorgenommen werden. 
+    Diese Pipeline sorgt für eine automatisierte Codeprüfung, Tests und die Dokumentation bei jedem Commit und Pull Request.
+  
 2. **readme-pdf.yml**
 Diese Pipeline wird ausgeführt wenn:
     - Änderungen an der Readme in den feature Branches gemacht werden
     - Änderungen an der Readme in der Main gemacht werden
-    - Ein Pullrequest gemacht werden
-Dies sorgt für eine README.md automatisch in eine PDF umwandelt, 
+    - Ein Pullrequest gemacht werden.
+Dies sorgt dafür, dass eine README.md automatisch in eine PDF-Datei umgewandelt wird, 
 sodass immer eine aktuelle PDF-Version im Repository zu finden ist.
 
-
 3. **superlinter.yml** 
-Superlinter wird ausgeführt bei jedem Push und Pull Request. Diese Pipeine sorgt für eine einheitliche Codequaität 
+Superlinter wird ausgeführt bei jedem Push und Pull Request. Diese Pipeline sorgt für eine einheitliche Codequalität 
 und erkennt Fehler frühzeitig vor dem Merge.
 
 
