@@ -39,10 +39,10 @@ jobs:
           echo "✅ PDF generated successfully and moved to documentation/README.pdf"
 
       # ------------------------------------------------------------
-      #  Nur deployen, wenn:
-      #  - Event ist ein "push" (kein PR)
-      #  - Der Branch ist entweder main ODER feature/*
-      #  - Der Commit nicht von GitHub Actions selbst kommt
+      # Nur deployen, wenn:
+      #   - Event ist ein "push" (kein PR)
+      #   - Branch ist main ODER feature/*
+      #   - Commit NICHT vom Bot selbst
       # ------------------------------------------------------------
       - name: Commit and push generated PDF
         if: >
@@ -57,7 +57,7 @@ jobs:
           # Nur committen, wenn sich die Datei wirklich geändert hat
           if ! git diff --quiet HEAD -- documentation/README.pdf; then
             git add --force documentation/README.pdf
-            git commit -m "Auto-generate README.pdf via md-to-pdf"
+            git commit -m "Auto-generate README.pdf via md-to-pdf [skip ci]"
             git push origin HEAD:${{ github.ref_name }}
             echo "✅ PDF committed & pushed successfully."
           else
