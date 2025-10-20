@@ -1,7 +1,7 @@
 package src;
 
 /**
- * Einstiegspunkt des Programms.
+ * Einstiegspunkt des Programms
  */
 public final class Main {
 
