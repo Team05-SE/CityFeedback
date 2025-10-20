@@ -1,0 +1,49 @@
+name: Generate README.pdf with md-to-pdf
+
+on:
+  push:
+    branches:
+      - main
+      - 'feature/**'
+    paths:
+      - README.md
+  pull_request:
+    branches:
+      - main
+      - 'feature/**'
+
+jobs:
+  generate-pdf:
+    name: Convert README.md to PDF using md-to-pdf
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install md-to-pdf globally
+        run: npm install -g md-to-pdf
+
+      - name: Generate README.pdf
+        run: |
+          md-to-pdf README.md --launch-options '{"args":["--no-sandbox"]}'
+          mkdir -p documentation
+          mv README.pdf documentation/README.pdf
+          echo "✅ PDF generated successfully and moved to documentation/README.pdf"
+
+      - name: Commit and push generated PDF
+        if: ${{ github.event_name == 'push' && github.actor != 'github-actions[bot]' }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add --force documentation/README.pdf
+          git commit -am "Auto-generate README.pdf via md-to-pdf" || echo "No changes to commit."
+          git push origin HEAD:${{ github.ref_name }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
