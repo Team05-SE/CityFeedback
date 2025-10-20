@@ -289,7 +289,7 @@ Wir haben zunächst folgende Pipelines gebaut:
    
 1. **java-ci.yml**
     Java-ci wird ausgeführt, wenn Änderungen im Source-Ordner vorgenommen werden. 
-    Diese Pipeline sorgt für eine automatisierte Codeprüfung, Tests und die Dokumentation bei jedem Commit und jedem Pull Request.
+    Diese Pipeline sorgt für Linting (Superlinter), eine automatisierte Codeprüfung, Tests und die Dokumentation bei jedem Commit und jedem Pull Request.
   
 2. **readme-pdf.yml**
 Diese Pipeline wird ausgeführt, wenn:
@@ -301,4 +301,11 @@ so dass immer eine aktuelle PDF-Version der Readme-Datei im Repository zu finden
 
 
 ### 2.4. Dokumentation der Tests
+
+Dauer der Workflows teilweise zu lang.
+Konflikte beim erzwingen von Checks, wenn vom Feature Branch in den Main gemerged werden soll.
+SuperLinter teilweise zu aggressiv beim linten.
+Zunächst haben wir eine einzelne Pipeline für den Superlinter eingerichtet. Dann haben wir uns jedoch dafür entschieden diesen mit in die java-ci Pipeline zu integrieren, da diese spezifisch auf Java zugeschnitten ist und der Linter dort benötigt wird.
+Außerdem wollten wir testen, ob in einer Pipeline mehrere Jobs laufen und dadurch Abhängigkeiten geschaffen werden können. (Ein Job abhängig von einem anderen)
+
 
