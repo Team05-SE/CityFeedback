@@ -259,10 +259,10 @@ Dadurch ist die Software jederzeit auslieferbar, da alle notwendigen Konfigurati
 
 - die 5 zentralen Komponenten in GitHub Actions:
 1. **Events** lösen einen Workflow aus.
-2. **Jobs** sind eine Gruppe von Arbeitsschritten und können parallel oder sequenziell ablaufen.
+2. **Jobs** sind eine Gruppe von Arbeitsschritten (Steps) und können parallel oder sequenziell ablaufen.
 3. **Steps** werden innerhalb eines Jobs einzeln durchlaufen, laufen im selben Runner und können Daten teilen.
 4. **Actions** sind vordefinierte Befehle oder Skripte, welche in den Steps verwendet werden, um einen Job auszuführen.
-5. **Runners** sind die Ausführungsumgebungen, auf den die Jobs laufen. Diese können von GitHub oder selbst gehostet werden.
+5. **Runners** sind die Ausführungsumgebungen, auf denen die Jobs laufen. Diese Runner können von GitHub oder selbst gehostet werden.
 
 ### 2.2. Vor- und Nachteile
 - Vorteile:
@@ -277,30 +277,30 @@ Dadurch ist die Software jederzeit auslieferbar, da alle notwendigen Konfigurati
 
 ### 2.3. Protokoll
 
-Die verschiedenen Tools wurden ausgiebig betrachtet. Sie unterscheiden sich in der Art der Bereitstellung (Selfhosting vs. Cloud), dem Integrationsgrad mit bestimmten Plattformen (z.B. GitHub, GitLab, Azure), der Benutzerfreundlichkeit, der Erweiterbarkeit und anderen Features.
+Die verschiedenen Tools wurden ausgiebig betrachtet. Sie unterscheiden sich in der Art der Bereitstellung (Selfhosting vs. Hosting in der Cloud), dem Integrationsgrad mit bestimmten Plattformen (z.B. GitHub, GitLab, Azure, AWS), der Benutzerfreundlichkeit, der Erweiterbarkeit und anderen Features.
 So gibt es für unterschiedliche Teamgrößen und Anforderungen passende Lösungen.
 
 Wir haben uns für GitHub Actions entschieden, da wir mit unserem Repository bereits auf Github arbeiten.
-GitHub Actions ist native in GitHub integriert, es ist keine externe Konfiguration notwendig.
+GitHub Actions ist bereits in GitHub integriert, es ist keine externe Konfiguration notwendig.
 
-Das Setup und die Bedienung sind einfach. GitHub Actions ist schnell direkt im Repository mit YAML-Dateien konfigurierbar. Es ist optimal für Teams, die keine eigene CI-CD Infrastruktur betreiben wollen oder können.
+Das Setup und die Bedienung sind einfach. GitHub Actions ist schnell und direkt im Repository per YAML-Dateien konfigurierbar. Es ist optimal für Teams, die keine eigene CI-CD-Infrastruktur selbst betreiben wollen oder können.
 
-Wir haben zunächst folgende Pipelines gebaut
+Wir haben zunächst folgende Pipelines gebaut:
    
 1. **java-ci.yml**
     Java-ci wird ausgeführt, wenn Änderungen im Source-Ordner vorgenommen werden. 
-    Diese Pipeline sorgt für eine automatisierte Codeprüfung, Tests und die Dokumentation bei jedem Commit und Pull Request.
+    Diese Pipeline sorgt für eine automatisierte Codeprüfung, Tests und die Dokumentation bei jedem Commit und jedem Pull Request.
   
 2. **readme-pdf.yml**
-Diese Pipeline wird ausgeführt wenn:
-    - Änderungen an der Readme in den feature Branches gemacht werden
-    - Änderungen an der Readme in der Main gemacht werden
-    - Ein Pullrequest gemacht werden.
-Dies sorgt dafür, dass eine README.md automatisch in eine PDF-Datei umgewandelt wird, 
-sodass immer eine aktuelle PDF-Version im Repository zu finden ist.
+Diese Pipeline wird ausgeführt, wenn:
+    - Änderungen an der Readme-Datei in den feature-Branches gemacht werden
+    - Änderungen an der Readme-Datei in der Main-Branch gemacht werden
+    - Ein Pull Request gemacht wird.
+Dies sorgt dafür, dass eine README.md-Datei automatisch in eine PDF-Datei umgewandelt wird, 
+so dass immer eine aktuelle PDF-Version der Readme-Datei im Repository zu finden ist.
 
 3. **superlinter.yml** 
-Superlinter wird ausgeführt bei jedem Push und Pull Request. Diese Pipeline sorgt für eine einheitliche Codequalität 
+Superlinter wird ausgeführt bei jedem Push und jedem Pull Request. Diese Pipeline sorgt für eine einheitliche Codequalität 
 und erkennt Fehler frühzeitig vor dem Merge.
 
 
