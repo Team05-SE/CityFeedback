@@ -7,10 +7,6 @@ on:
       - 'feature/**'        # alle Feature-Branches
     paths:
       - 'src/**'
-  pull_request:
-    branches:
-      - main
-      - 'feature/**'        # prüft auch PRs zwischen Feature-Branches
 
 jobs:
   # ------------------------------
