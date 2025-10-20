@@ -4,13 +4,13 @@ on:
   push:
     branches:
       - main
-      - 'feature/**'        # alle Feature-Branches
+      - 'feature/**'
     paths:
-      - 'src/**'
+      - 'src/**'           # Nur auslösen bei Änderungen im src-Verzeichnis
   pull_request:
     branches:
       - main
-      - 'feature/**'        # prüft auch PRs zwischen Feature-Branches
+      - 'feature/**'
 
 jobs:
   # ------------------------------
