@@ -1,12 +1,15 @@
 name: Generate README.pdf with md-to-pdf
 
 on:
+  # 👉 Nur bei README.md Änderungen in main oder feature/* triggern
   push:
     branches:
       - main
       - 'feature/**'
     paths:
       - README.md
+
+  # 👉 Bei PRs IMMER triggern (egal, ob README.md geändert wurde)
   pull_request:
     branches:
       - main
@@ -31,19 +34,41 @@ jobs:
 
       - name: Generate README.pdf
         run: |
-          md-to-pdf README.md --launch-options '{"args":["--no-sandbox"]}'
-          mkdir -p documentation
-          mv README.pdf documentation/README.pdf
-          echo "✅ PDF generated successfully and moved to documentation/README.pdf"
+          if [ -f "README.md" ]; then
+            md-to-pdf README.md --launch-options '{"args":["--no-sandbox"]}'
+            mkdir -p documentation
+            mv README.pdf documentation/README.pdf
+            echo "✅ PDF generated successfully and moved to documentation/README.pdf"
+          else
+            echo "⚠️ No README.md file found. Skipping PDF generation."
+          fi
 
+      # ------------------------------------------------------------
+      # Nur deployen, wenn:
+      #   - Event ist ein "push" (kein PR)
+      #   - Branch ist main ODER feature/*
+      #   - Commit NICHT vom Bot selbst
+      #   - README.md hat sich wirklich geändert
+      # ------------------------------------------------------------
       - name: Commit and push generated PDF
-        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && github.actor != 'github-actions[bot]' }}
+        if: >
+          github.event_name == 'push' &&
+          (startsWith(github.ref, 'refs/heads/main') || startsWith(github.ref, 'refs/heads/feature/')) &&
+          github.actor != 'github-actions[bot]'
         run: |
+          echo "📦 Deploying PDF to branch: ${{ github.ref_name }}"
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add --force documentation/README.pdf
-          git commit -am "Auto-generate README.pdf via md-to-pdf" || echo "No changes to commit."
-          git push origin HEAD:${{ github.ref_name }}
+
+          # Nur committen, wenn sich die PDF wirklich geändert hat
+          if ! git diff --quiet HEAD -- documentation/README.pdf; then
+            git add --force documentation/README.pdf
+            git commit -m "Auto-generate README.pdf via md-to-pdf [skip ci]"
+            git push origin HEAD:${{ github.ref_name }}
+            echo "✅ PDF committed & pushed successfully."
+          else
+            echo "ℹ️ No changes in README.pdf — skipping commit."
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
