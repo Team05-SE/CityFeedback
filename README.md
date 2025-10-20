@@ -299,10 +299,6 @@ Diese Pipeline wird ausgeführt, wenn:
 Dies sorgt dafür, dass eine README.md-Datei automatisch in eine PDF-Datei umgewandelt wird, 
 so dass immer eine aktuelle PDF-Version der Readme-Datei im Repository zu finden ist.
 
-3. **superlinter.yml** 
-Superlinter wird ausgeführt bei jedem Push und jedem Pull Request. Diese Pipeline sorgt für eine einheitliche Codequalität 
-und erkennt Fehler frühzeitig vor dem Merge.
-
 
 ### 2.4. Dokumentation der Tests
 
