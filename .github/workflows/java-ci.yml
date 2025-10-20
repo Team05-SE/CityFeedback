@@ -4,9 +4,15 @@ on:
   push:
     branches:
       - main
-      - 'feature/**'        # alle Feature-Branches
+      - 'feature/**'
     paths:
-      - 'src/**'
+      - 'src/**'           # Nur auslösen bei Änderungen im src-Verzeichnis
+  pull_request:
+    branches:
+      - main
+      - 'feature/**'
+    paths:
+      - 'src/**'           # Nur PRs triggern, die Änderungen im src-Verzeichnis enthalten
 
 jobs:
   # ------------------------------

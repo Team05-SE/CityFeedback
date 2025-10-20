@@ -7,6 +7,12 @@ on:
       - 'feature/**'
     paths:
       - README.md
+  pull_request:
+    branches:
+      - main
+      - 'feature/**'
+    paths:
+      - README.md 
 
 jobs:
   generate-pdf:
