@@ -39,7 +39,7 @@ jobs:
           echo "✅ PDF generated successfully and moved to documentation/README.pdf"
 
       - name: Commit and push generated PDF
-        if: ${{ github.event_name == 'push' && github.actor != 'github-actions[bot]' }}
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && github.actor != 'github-actions[bot]' }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
