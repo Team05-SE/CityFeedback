@@ -301,7 +301,7 @@ so dass immer eine aktuelle PDF-Version der Readme-Datei im Repository zu finden
 
 
 ### 2.4. Dokumentation der Tests
-
+test
 Dauer der Workflows teilweise zu lang.
 Konflikte beim erzwingen von Checks, wenn vom Feature Branch in den Main gemerged werden soll.
 SuperLinter teilweise zu aggressiv beim linten.
