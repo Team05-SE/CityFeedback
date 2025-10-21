@@ -5,8 +5,6 @@
 
 📘 [Java-Documentation ansehen](https://team05-se.github.io/CityFeedback/)
 
-📄 [Aktuelle README als PDF herunterladen](https://github.com/Team05-SE/CityFeedback/blob/main/documentation/README.pdf)
-
 vorgelegt von: 
 
 1. Matthias Lindner (matthias.lindner@th-brandenburg.de)
