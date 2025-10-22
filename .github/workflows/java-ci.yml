@@ -42,8 +42,7 @@ jobs:
           VALIDATE_JAVA: true
           DEFAULT_BRANCH: ${{ github.ref_name }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          FILTER_REGEX_EXCLUDE: ".*(package-info\\.java|ExampleTest\\.java)"
-
+          FILTER_REGEX_INCLUDE: "src/(main|test)/java/.*\\.java$"
   # ------------------------------
   # 2️⃣ BUILD + TEST
   # ------------------------------
