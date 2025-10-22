@@ -45,6 +45,7 @@ jobs:
           FILTER_REGEX_INCLUDE: "src/(main|test)/java/.*\\.java$"
           # Relax strictness:
           LINTER_RULES_PATH: .github/linters/
+          USE_LOCAL_CONFIGS: true
   # ------------------------------
   # 2️⃣ BUILD + TEST
   # ------------------------------
