@@ -9,7 +9,12 @@ public final class Main {
         // verhindert Instanziierung
     }
 
-    public static void main(String[] args) {
+    /**
+     * Startet das Programm.
+     *
+     * @param args Kommandozeilenargumente
+     */
+    public static void main(final String[] args) {
         System.out.println("Hallo GitHub CI!");
     }
 }
