@@ -110,18 +110,6 @@ jobs:
             exit 1
           fi
 
-      - name: Copy uebungen into site
-        run: |
-          if [ -d uebungen ]; then
-            echo "Copying uebungen/ into target/site/uebungen/"
-            mkdir -p target/site/uebungen
-            cp -r uebungen/. target/site/uebungen/
-            echo "Copy complete. target/site/uebungen contains:"
-            ls -la target/site/uebungen || true
-          else
-            echo "No uebungen directory found; skipping copy."
-          fi
-
       - name: Ensure Pages serves static files (.nojekyll)
         run: |
           touch target/site/.nojekyll
