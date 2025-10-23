@@ -12,6 +12,9 @@ on:
     paths:
       - 'src/**'
       - 'pom.xml'
+  pull_request:
+    branches:
+      - main
 
 permissions:
   contents: write
