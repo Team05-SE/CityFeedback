@@ -12,6 +12,9 @@ on:
     paths:
       - 'src/**'
       - 'pom.xml'
+  pull_request:
+    branches:
+      - main
 
 permissions:
   contents: write
@@ -110,6 +113,7 @@ jobs:
             exit 1
           fi
 
+<<<<<<< HEAD
       - name: Copy uebungen into site
         run: |
           if [ -d uebungen ]; then
@@ -122,6 +126,8 @@ jobs:
             echo "No uebungen directory found; skipping copy."
           fi
 
+=======
+>>>>>>> origin/main
       - name: Ensure Pages serves static files (.nojekyll)
         run: |
           touch target/site/.nojekyll

@@ -7,7 +7,7 @@
   <groupId>com.example</groupId>
   <artifactId>myapp</artifactId>
   <version>1.0.0</version>
-  <name>My Java Appp</name>
+  <name>My Java App</name>
   <description>Example Maven project with CI pipeline</description>
 
   <properties>
