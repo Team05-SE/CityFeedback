@@ -30,6 +30,7 @@ vorgelegt am: 13.10.2025
    2.2 [Vor- und Nachteile](#22-vor--und-nachteile)  
    2.3 [Protokoll](#23-protokoll)  
    2.4 [Dokumentation der Tests](#24-dokumentation-der-tests)  
+   2.5 [Mögliche Weiterentwicklungen](#25-mögliche-weiterentwicklungen) 
 
 ## Aufgabe 1 - Git
 
@@ -306,4 +307,6 @@ SuperLinter teilweise zu aggressiv beim linten.
 Zunächst haben wir eine einzelne Pipeline für den Superlinter eingerichtet. Dann haben wir uns jedoch dafür entschieden diesen mit in die java-ci Pipeline zu integrieren, da diese spezifisch auf Java zugeschnitten ist und der Linter dort benötigt wird.
 Außerdem wollten wir testen, ob in einer Pipeline mehrere Jobs laufen und dadurch Abhängigkeiten geschaffen werden können. (Ein Job abhängig von einem anderen)
 
+### 2.5. Mögliche Weiterentwicklungen
+Um die CD-Pipeline zu vervollständigen, können wir uns vorstellen, später ein automatisiertes Deployment unserer Java-Applikation via Docker in einer Linux-VM in Microsoft Azure zu verwenden. Hier kann für unser Projekt ein kostenloser Studenten-Account problemlos verwendet werden. (siehe https://azure.microsoft.com/en-us/free/students) 
 
