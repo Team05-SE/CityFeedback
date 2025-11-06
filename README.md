@@ -310,3 +310,98 @@ Außerdem wollten wir testen, ob in einer Pipeline mehrere Jobs laufen und dadur
 ### 2.5. Mögliche Weiterentwicklungen
 Um die CD-Pipeline zu vervollständigen, können wir uns vorstellen, später ein automatisiertes Deployment unserer Java-Applikation via Docker in einer Linux-VM in Microsoft Azure zu verwenden. Hier kann für unser Projekt ein kostenloser Studenten-Account problemlos verwendet werden. (siehe https://azure.microsoft.com/en-us/free/students) 
 
+
+
+
+____________________________________________________
+
+## Übung 4: Advanced Java, Test-Driven Design (TDD) und LLM-gestütztes Entwickeln
+
+### Übung 4, Aufgabe 2.1: Prompt für die KI:
+Ausgangspunkt ist eine Bürgerbeteiligungsplattform (City Feedback), die die Möglichkeit bietet, der Stadtverwaltung Feedback wie z.B. Mängel zu melden mit den Boundede Contexts User Management Context und Feedback Management Context. 
+Bitte generiere dafür JUnit Tests, die die folgenden Regeln berücksichtigen: 
+- Name: Darf nicht null sein
+- Kategorie: Erlaubt sind die Katgorien Verkehr, Umwelt, Beleuchtung, Vandalismus, Verwaltung
+Bitte erstelle dafür JUnit-Tests:
+- Happy-Path-Tests
+- Edge-Cases (Grenzfälle)
+- Negative Tests (ungültige Eingaben)
+
+
+### Übung 4, Aufgabe 2.2: Test Cases generieren lassen:
+
+''' public class FeedbackTest {
+
+    // ----------------------------------------------------------
+    // ✅ HAPPY-PATH-TESTTS
+    // ----------------------------------------------------------
+
+    @Test
+    void shouldCreateFeedbackWithValidData() {
+        Feedback fb = new Feedback("Defekter Ampelknopf", Feedback.Category.VERKEHR);
+
+        assertEquals("Defekter Ampelknopf", fb.getName());
+        assertEquals(Feedback.Category.VERKEHR, fb.getCategory());
+    }
+
+    @Test
+    void shouldAllowAllValidCategories() {
+        for (Feedback.Category category : Feedback.Category.values()) {
+            Feedback fb = new Feedback("Testname", category);
+            assertEquals(category, fb.getCategory());
+        }
+    }
+
+    // ----------------------------------------------------------
+    // ✅ EDGE-CASE TESTS
+    // ----------------------------------------------------------
+
+    @Test
+    void shouldAllowMinimalNameLength() {
+        Feedback fb = new Feedback("A", Feedback.Category.UMWELT);
+        assertEquals("A", fb.getName());
+    }
+
+    @Test
+    void shouldHandleLongName() {
+        String longName = "A".repeat(500);
+        Feedback fb = new Feedback(longName, Feedback.Category.VANDALISMUS);
+        assertEquals(longName, fb.getName());
+    }
+
+    @Test
+    void shouldRejectCategoryWhenNull() {
+        assertThrows(IllegalArgumentException.class,
+                () -> new Feedback("Test", null));
+    }
+
+    // ----------------------------------------------------------
+    // ❌ NEGATIVE TESTS (UNGÜLTIGE EINGABEN)
+    // ----------------------------------------------------------
+
+    @Test
+    void shouldRejectNullName() {
+        assertThrows(IllegalArgumentException.class,
+                () -> new Feedback(null, Feedback.Category.VERWALTUNG));
+    }
+
+    @Test
+    void shouldRejectEmptyNameIfBusinessRuleRequiresIt() {
+        assertThrows(IllegalArgumentException.class,
+                () -> new Feedback("", Feedback.Category.UMWELT));
+    }
+
+    @Test
+    void shouldRejectBlankNameIfBusinessRuleRequiresIt() {
+        assertThrows(IllegalArgumentException.class,
+                () -> new Feedback("   ", Feedback.Category.UMWELT));
+    }
+
+    @Test
+    void shouldRejectInvalidCategoryByBypassingEnum() {
+        // Simulierung: ein ungültiger Enum-String führt zu IllegalArgumentException
+        assertThrows(IllegalArgumentException.class,
+                () -> Feedback.Category.valueOf("ILLEGAL_CATEGORY"));
+    }
+}'''
+
