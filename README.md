@@ -462,11 +462,109 @@ Die LLM (Chat GPT 5, Plus-Version) hat folgende Tests generiert:
 
 
 ### Übung 4, Aufgabe 2.3: Kritische Bewertung:
-- Der Prmopt wurde mehrere Male bei Chat GPT eingegeben und jedes Mal wurden unterschiedliche Tests zur Verfügung gestellt.
-- im Prompt wurde nur beschrieben, dass der Name nicht null sein darf. Chat GPT hat aber zusätzlich Testfälle generiert, die prüfen, dass der Name nicht nur ein Whitespace enthält oder leer ist. Dies ist zwar inhaltlich sinnvoll, war aber nicht gefordert.
+- Der Prompt wurde mehrere Male bei Chat GPT eingegeben und jedes Mal wurden unterschiedliche Tests zur Verfügung gestellt.
+- Im Prompt wurde nur beschrieben, dass der Name nicht null sein darf. Chat GPT hat aber zusätzlich Testfälle generiert, die prüfen, dass der Name nicht nur ein Whitespace enthält oder leer ist. Dies ist zwar inhaltlich sinnvoll, war aber nicht gefordert. Zudem hat Chat GPT den Namen so gedeutet, dass dieser sich auf die Kategorie bezieht. Gemeint waren aber die Namen der Bürger - dies hätte im Prompt aber auch besser beschrieben werden können.
 - Bei den Kategorien wird der Test für jede Kategorie einzeln wiederholt. Dies könnte man in einem Test zusammenfassen, wodurch weniger Code nötig wäre und dieser besser wartbar wäre.
+- 
 
 ### Übung 4, Aufgabe 2.4: Regex-Validierung:
 
 ### Übung 4, Aufgabe 2.5: Finale Implementierung:
+
+    class FeedbackValidatorTest {
+
+    private final FeedbackValidator validator = new FeedbackValidator();
+
+    // -------------------------------------------------------------
+    // NAME TESTS
+    // -------------------------------------------------------------
+    @Nested
+    @DisplayName("Name-Tests")
+    class NameTests {
+
+        // --------------------- Happy Path -------------------------
+        @Nested
+        @DisplayName("Happy Path")
+        class HappyPath {
+
+            @Test
+            @DisplayName("Name ist gültig (nicht null)")
+            void validName() {
+                assertDoesNotThrow(() -> validator.validateName("Peter"));
+            }
+        }
+
+        // --------------------- Edge Cases -------------------------
+        @Nested
+        @DisplayName("Edge Cases")
+        class EdgeCases {
+
+            @Test
+            @DisplayName("Name mit 1 Zeichen ist gültig")
+            void nameOneCharacter() {
+                assertDoesNotThrow(() -> validator.validateName("A"));
+            }
+        }
+
+        // --------------------- Negative Tests ----------------------
+        @Nested
+        @DisplayName("Negative Tests")
+        class NegativeTests {
+
+            @Test
+            @DisplayName("Name ist null → Exception erwartet")
+            void nameIsNull() {
+                assertThrows(IllegalArgumentException.class,
+                        () -> validator.validateName(null));
+            }
+        }
+    }
+
+
+    // -------------------------------------------------------------
+    // CATEGORY TESTS
+    // -------------------------------------------------------------
+    @Nested
+    @DisplayName("Kategorie-Tests")
+    class CategoryTests {
+
+        // --------------------- Happy Path -------------------------
+        @Nested
+        @DisplayName("Happy Path")
+        class HappyPath {
+
+            @Test
+            @DisplayName("Gültige Kategorie (Beispiel: Verkehr)")
+            void validCategory() {
+                assertDoesNotThrow(() -> validator.validateCategory("Verkehr"));
+            }
+        }
+
+        // --------------------- Edge Cases -------------------------
+        @Nested
+        @DisplayName("Edge Cases")
+        class EdgeCases {
+
+            @Test
+            @DisplayName("Andere erlaubte Kategorie (Beispiel: Umwelt)")
+            void allowedCategory() {
+                assertDoesNotThrow(() -> validator.validateCategory("Umwelt"));
+            }
+        }
+
+        // --------------------- Negative Tests ----------------------
+        @Nested
+        @DisplayName("Negative Tests")
+        class NegativeTests {
+
+            @Test
+            @DisplayName("Kategorie nicht in erlaubter Liste → Exception erwartet")
+            void categoryInvalid() {
+                assertThrows(IllegalArgumentException.class,
+                        () -> validator.validateCategory("Sonstiges"));
+            }
+        }
+    }
+    }
+
 
