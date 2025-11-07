@@ -317,7 +317,7 @@ ____________________________________________________
 
 ## Übung 4: Advanced Java, Test-Driven Design (TDD) und LLM-gestütztes Entwickeln
 
-### Übung 4, Aufgabe 2.1: Prompt für die KI:
+### Übung 4, Aufgabe 2.1: Prompt für die LLM:
 Ausgangspunkt ist eine Bürgerbeteiligungsplattform (City Feedback), die die Möglichkeit bietet, der Stadtverwaltung Feedback wie z.B. Mängel zu melden mit den Boundede Contexts User Management Context und Feedback Management Context. 
 Bitte generiere dafür JUnit Tests, die die folgenden Regeln berücksichtigen: 
 - Name: Darf nicht null sein
@@ -329,79 +329,144 @@ Bitte erstelle dafür JUnit-Tests:
 
 
 ### Übung 4, Aufgabe 2.2: Test Cases generieren lassen:
+Die LLM (Chat GPT 5, Plus-Version) hat folgende Tests generiert: 
 
-''' public class FeedbackTest {
+    class FeedbackValidatorTest {
 
-    // ----------------------------------------------------------
-    // ✅ HAPPY-PATH-TESTTS
-    // ----------------------------------------------------------
+    private final FeedbackValidator validator = new FeedbackValidator();
 
-    @Test
-    void shouldCreateFeedbackWithValidData() {
-        Feedback fb = new Feedback("Defekter Ampelknopf", Feedback.Category.VERKEHR);
+    // -------------------------------------------------------------
+    // Happy Path Tests
+    // -------------------------------------------------------------
+    @Nested
+    @DisplayName("Happy Path Tests")
+    class HappyPathTests {
 
-        assertEquals("Defekter Ampelknopf", fb.getName());
-        assertEquals(Feedback.Category.VERKEHR, fb.getCategory());
-    }
+        @Test
+        @DisplayName("Valid feedback with category Verkehr")
+        void testValidFeedbackVerkehr() {
+            Feedback f = new Feedback("Schlagloch in Straße", "Verkehr");
+            assertDoesNotThrow(() -> validator.validate(f));
+        }
 
-    @Test
-    void shouldAllowAllValidCategories() {
-        for (Feedback.Category category : Feedback.Category.values()) {
-            Feedback fb = new Feedback("Testname", category);
-            assertEquals(category, fb.getCategory());
+        @Test
+        @DisplayName("Valid feedback with category Umwelt")
+        void testValidFeedbackUmwelt() {
+            Feedback f = new Feedback("Illegale Müllablage", "Umwelt");
+            assertDoesNotThrow(() -> validator.validate(f));
+        }
+
+        @Test
+        @DisplayName("Valid feedback with category Beleuchtung")
+        void testValidFeedbackBeleuchtung() {
+            Feedback f = new Feedback("Straßenlaterne defekt", "Beleuchtung");
+            assertDoesNotThrow(() -> validator.validate(f));
+        }
+
+        @Test
+        @DisplayName("Valid feedback with category Vandalismus")
+        void testValidFeedbackVandalismus() {
+            Feedback f = new Feedback("Beschmierte Bushaltestelle", "Vandalismus");
+            assertDoesNotThrow(() -> validator.validate(f));
+        }
+
+        @Test
+        @DisplayName("Valid feedback with category Verwaltung")
+        void testValidFeedbackVerwaltung() {
+            Feedback f = new Feedback("Lange Bearbeitungszeit", "Verwaltung");
+            assertDoesNotThrow(() -> validator.validate(f));
         }
     }
 
-    // ----------------------------------------------------------
-    // ✅ EDGE-CASE TESTS
-    // ----------------------------------------------------------
+    // -------------------------------------------------------------
+    // Edge Cases / Grenzfälle
+    // -------------------------------------------------------------
+    @Nested
+    @DisplayName("Edge-Case Tests")
+    class EdgeCaseTests {
 
-    @Test
-    void shouldAllowMinimalNameLength() {
-        Feedback fb = new Feedback("A", Feedback.Category.UMWELT);
-        assertEquals("A", fb.getName());
+        @Test
+        @DisplayName("Name ist minimal gültig (1 Zeichen)")
+        void testNameMinLength() {
+            Feedback f = new Feedback("A", "Verkehr");
+            assertDoesNotThrow(() -> validator.validate(f));
+        }
+
+        @Test
+        @DisplayName("Kategorie mit führenden/trailenden Leerzeichen")
+        void testCategoryWithWhitespace() {
+            Feedback f = new Feedback("Lampe kaputt", "  Beleuchtung  ");
+            assertDoesNotThrow(() -> validator.validate(f));
+        }
+
+        @Test
+        @DisplayName("Name enthält Sonderzeichen")
+        void testNameWithSpecialCharacters() {
+            Feedback f = new Feedback("Lampe #12 defekt!", "Beleuchtung");
+            assertDoesNotThrow(() -> validator.validate(f));
+        }
     }
 
-    @Test
-    void shouldHandleLongName() {
-        String longName = "A".repeat(500);
-        Feedback fb = new Feedback(longName, Feedback.Category.VANDALISMUS);
-        assertEquals(longName, fb.getName());
+    // -------------------------------------------------------------
+    // Negative Tests (Ungültige Eingaben)
+    // -------------------------------------------------------------
+    @Nested
+    @DisplayName("Negative Tests")
+    class NegativeTests {
+
+        @Test
+        @DisplayName("Name ist null")
+        void testNameNull() {
+            Feedback f = new Feedback(null, "Verkehr");
+            assertThrows(IllegalArgumentException.class, () -> validator.validate(f));
+        }
+
+        @Test
+        @DisplayName("Name ist leer")
+        void testNameEmpty() {
+            Feedback f = new Feedback("", "Umwelt");
+            assertThrows(IllegalArgumentException.class, () -> validator.validate(f));
+        }
+
+        @Test
+        @DisplayName("Name enthält nur Whitespaces")
+        void testNameWhitespace() {
+            Feedback f = new Feedback("   ", "Vandalismus");
+            assertThrows(IllegalArgumentException.class, () -> validator.validate(f));
+        }
+
+        @Test
+        @DisplayName("Kategorie ist null")
+        void testCategoryNull() {
+            Feedback f = new Feedback("Müllproblem", null);
+            assertThrows(IllegalArgumentException.class, () -> validator.validate(f));
+        }
+
+        @Test
+        @DisplayName("Kategorie ist leer")
+        void testCategoryEmpty() {
+            Feedback f = new Feedback("Lampe kaputt", "");
+            assertThrows(IllegalArgumentException.class, () -> validator.validate(f));
+        }
+
+        @Test
+        @DisplayName("Kategorie nicht in erlaubter Liste")
+        void testCategoryInvalid() {
+            Feedback f = new Feedback("Lampe kaputt", "Energie");
+            assertThrows(IllegalArgumentException.class, () -> validator.validate(f));
+        }
+    }
     }
 
-    @Test
-    void shouldRejectCategoryWhenNull() {
-        assertThrows(IllegalArgumentException.class,
-                () -> new Feedback("Test", null));
-    }
 
-    // ----------------------------------------------------------
-    // ❌ NEGATIVE TESTS (UNGÜLTIGE EINGABEN)
-    // ----------------------------------------------------------
 
-    @Test
-    void shouldRejectNullName() {
-        assertThrows(IllegalArgumentException.class,
-                () -> new Feedback(null, Feedback.Category.VERWALTUNG));
-    }
 
-    @Test
-    void shouldRejectEmptyNameIfBusinessRuleRequiresIt() {
-        assertThrows(IllegalArgumentException.class,
-                () -> new Feedback("", Feedback.Category.UMWELT));
-    }
+### Übung 4, Aufgabe 2.3: Kritische Bewertung:
+- Der Prmopt wurde mehrere Male bei Chat GPT eingegeben und jedes Mal wurden unterschiedliche Tests zur Verfügung gestellt.
+- im Prompt wurde nur beschrieben, dass der Name nicht null sein darf. Chat GPT hat aber zusätzlich Testfälle generiert, die prüfen, dass der Name nicht nur ein Whitespace enthält oder leer ist. Dies ist zwar inhaltlich sinnvoll, war aber nicht gefordert.
+- Bei den Kategorien wird der Test für jede Kategorie einzeln wiederholt. Dies könnte man in einem Test zusammenfassen, wodurch weniger Code nötig wäre und dieser besser wartbar wäre.
 
-    @Test
-    void shouldRejectBlankNameIfBusinessRuleRequiresIt() {
-        assertThrows(IllegalArgumentException.class,
-                () -> new Feedback("   ", Feedback.Category.UMWELT));
-    }
+### Übung 4, Aufgabe 2.4: Regex-Validierung:
 
-    @Test
-    void shouldRejectInvalidCategoryByBypassingEnum() {
-        // Simulierung: ein ungültiger Enum-String führt zu IllegalArgumentException
-        assertThrows(IllegalArgumentException.class,
-                () -> Feedback.Category.valueOf("ILLEGAL_CATEGORY"));
-    }
-}'''
+### Übung 4, Aufgabe 2.5: Finale Implementierung:
 
