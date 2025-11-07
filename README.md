@@ -465,15 +465,38 @@ Die LLM (Chat GPT 5, Plus-Version) hat folgende Tests generiert:
 - Der Prompt wurde mehrere Male bei Chat GPT eingegeben und jedes Mal wurden unterschiedliche Tests zur Verfügung gestellt.
 - Im Prompt wurde nur beschrieben, dass der Name nicht null sein darf. Chat GPT hat aber zusätzlich Testfälle generiert, die prüfen, dass der Name nicht nur ein Whitespace enthält oder leer ist. Dies ist zwar inhaltlich sinnvoll, war aber nicht gefordert. Zudem hat Chat GPT den Namen so gedeutet, dass dieser sich auf die Kategorie bezieht. Gemeint waren aber die Namen der Bürger - dies hätte im Prompt aber auch besser beschrieben werden können.
 - Bei den Kategorien wird der Test für jede Kategorie einzeln wiederholt. Dies könnte man in einem Test zusammenfassen, wodurch weniger Code nötig wäre und dieser besser wartbar wäre.
-- 
+  
 
 ### Übung 4, Aufgabe 2.4: Regex-Validierung:
+- Chat GPT hat folgendes Regex für Namen vorgeschlagen:
+  ^[A-Za-zÄÖÜäöüßÀ-ÖØ-öø-ÿ' -]{1,80}$
+- Beschreibt einen Text aus 1 bis 80 Zeichen, der nur folgende Zeichen enthalten darf:
+   - Lateinische Buchstaben A–Z und a–z
+   - Umlaute und ß (Ä Ö Ü ä ö ü ß)
+   - Weitere lateinische Buchstaben mit Akzenten (Bereiche À–Ö, Ø–ö, ø–ÿ)
+   - Leerzeichen
+   - Bindestrich (-)
+   - Apostroph (')
+   - Keine Ziffern, keine Sonderzeichen (wie !, ?, @, etc.), keine Zeilenumbrüche.
+- Dieses Regex deckt bereits sehr viele Namen ab und kann daher gut verwenden. Man könnte 
+  das Regex nicht optimieren, indem man weitere Sonderzeichen erlabt, um alle Namen 
+  abzudecken. 
+
 
 ### Übung 4, Aufgabe 2.5: Finale Implementierung:
 
     class FeedbackValidatorTest {
 
     private final FeedbackValidator validator = new FeedbackValidator();
+
+    // ✅ Gemeinsame Variable für alle erlaubten Kategorien
+    private static final List<String> ALLOWED_CATEGORIES = List.of(
+            "Verkehr",
+            "Umwelt",
+            "Beleuchtung",
+            "Vandalismus",
+            "Verwaltung"
+    );
 
     // -------------------------------------------------------------
     // NAME TESTS
@@ -482,7 +505,6 @@ Die LLM (Chat GPT 5, Plus-Version) hat folgende Tests generiert:
     @DisplayName("Name-Tests")
     class NameTests {
 
-        // --------------------- Happy Path -------------------------
         @Nested
         @DisplayName("Happy Path")
         class HappyPath {
@@ -494,7 +516,6 @@ Die LLM (Chat GPT 5, Plus-Version) hat folgende Tests generiert:
             }
         }
 
-        // --------------------- Edge Cases -------------------------
         @Nested
         @DisplayName("Edge Cases")
         class EdgeCases {
@@ -506,7 +527,6 @@ Die LLM (Chat GPT 5, Plus-Version) hat folgende Tests generiert:
             }
         }
 
-        // --------------------- Negative Tests ----------------------
         @Nested
         @DisplayName("Negative Tests")
         class NegativeTests {
@@ -528,31 +548,32 @@ Die LLM (Chat GPT 5, Plus-Version) hat folgende Tests generiert:
     @DisplayName("Kategorie-Tests")
     class CategoryTests {
 
-        // --------------------- Happy Path -------------------------
         @Nested
         @DisplayName("Happy Path")
         class HappyPath {
 
             @Test
-            @DisplayName("Gültige Kategorie (Beispiel: Verkehr)")
+            @DisplayName("Gültige Kategorie (z. B. Verkehr)")
             void validCategory() {
-                assertDoesNotThrow(() -> validator.validateCategory("Verkehr"));
+                assertDoesNotThrow(() ->
+                        validator.validateCategory(ALLOWED_CATEGORIES.get(0)));
             }
         }
 
-        // --------------------- Edge Cases -------------------------
         @Nested
         @DisplayName("Edge Cases")
         class EdgeCases {
 
             @Test
-            @DisplayName("Andere erlaubte Kategorie (Beispiel: Umwelt)")
-            void allowedCategory() {
-                assertDoesNotThrow(() -> validator.validateCategory("Umwelt"));
+            @DisplayName("Alle erlaubten Kategorien sollten gültig sein")
+            void allAllowedCategories() {
+                for (String category : ALLOWED_CATEGORIES) {
+                    assertDoesNotThrow(() -> validator.validateCategory(category),
+                            "Kategorie sollte gültig sein: " + category);
+                }
             }
         }
 
-        // --------------------- Negative Tests ----------------------
         @Nested
         @DisplayName("Negative Tests")
         class NegativeTests {
@@ -566,5 +587,6 @@ Die LLM (Chat GPT 5, Plus-Version) hat folgende Tests generiert:
         }
     }
     }
+
 
 
