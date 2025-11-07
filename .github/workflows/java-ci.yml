@@ -77,31 +77,55 @@ jobs:
           path: target/
 
   # ------------------------------
-  # 3️⃣ PUBLISH SITE (nur auf main)
+  # 3️⃣ PUBLISH SITE (nur main)
   # ------------------------------
   publish:
-    name: Publish Maven Site (only main)
+    name: Publish site to GitHub Pages
     runs-on: ubuntu-latest
     needs: build
-    if: github.ref == 'refs/heads/main'
-
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.build.result == 'success'
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Set up JDK 25
+      - name: Set up JDK 25 (with Maven cache)
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '25'
           cache: maven
 
-      - name: Generate Site + Coverage
-        run: mvn -B site jacoco:report
+      - name: Build Maven site with coverage
+        run: mvn -B -DskipTests=false site jacoco:report
 
-      - name: Publish to GitHub Pages
+      - name: Verify site and index
+        run: |
+          if [ -d target/site ] && [ -n "$(ls -A target/site 2>/dev/null)" ]; then
+            echo "target/site contains:"
+            ls -la target/site || true
+          else
+            echo "ERROR: target/site is missing or empty. Aborting before publish." >&2
+            exit 1
+          fi
+          if [ ! -f target/site/index.html ]; then
+            echo "ERROR: target/site/index.html missing. Aborting before publish." >&2
+            exit 1
+          fi
+
+      - name: Ensure Pages serves static files (.nojekyll)
+        run: |
+          touch target/site/.nojekyll
+          echo ".nojekyll created at target/site/.nojekyll"
+
+      - name: Publish site to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: gh-pages
           publish_dir: ./target/site
+          allow_empty_commit: false
+          commit_message: "ci(site): update site from ${{ github.sha }}"
+          user_name: "github-actions[bot]"
+          user_email: "github-actions[bot]@users.noreply.github.com"
