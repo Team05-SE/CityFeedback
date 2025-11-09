@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class CategoryTest {
 
+    //Happy Path Test
     @Test
     @DisplayName("Enum enthält alle erwarteten Kategorien")
     void allCategoriesExist() {
@@ -19,6 +20,14 @@ class CategoryTest {
         assertNotNull(Category.valueOf("VERWALTUNG"));
     }
 
+    //Edge Case Test
+    @Test
+    @DisplayName("Enum enthält genau 5 Werte")
+    void countIsCorrect() {
+        assertEquals(5, Category.values().length);
+    }
+
+    //Negative Test
     @Test
     @DisplayName("valueOf wirft Exception bei ungültigem Wert")
     void invalidCategory() {
