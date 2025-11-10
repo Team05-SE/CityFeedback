@@ -170,7 +170,7 @@ Die LLM (Chat GPT 5, Plus-Version) hat folgende Tests generiert:
   das Regex nicht optimieren, indem man weitere Sonderzeichen erlabt, um alle Namen 
   abzudecken.
 
-### Übung 4, Aufgabe 2.5: Finale Implementierung:
+### Aufgabe 2.5: Finale Implementierung:
 Die finale Implementierung wurde im Code vorgenommen.
 
 ## Implementierung der Domänenlogik (TDD Schritt 2) mit LLM-Pair-Programming
