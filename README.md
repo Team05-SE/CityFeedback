@@ -17,4 +17,4 @@ vorgelegt von:
 vorgelegt am: 13.10.2025
 
 
-## Die Dokumentationen zu den einzelnen Übungen befinden sich im Verzeichnis /docs
+## Die Dokumentationen zu den einzelnen Übungen befinden sich im Verzeichnis [/docs](https://github.com/Team05-SE/CityFeedback/tree/main/docs)
