@@ -2,6 +2,8 @@ GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_
 My Java App,com.example.cityfeedback.domain.user,Password,26,37,3,7,5,10,6,4,4,1
 My Java App,com.example.cityfeedback.domain.user,Email,32,35,4,4,5,11,5,5,2,4
 My Java App,com.example.cityfeedback.domain.user,UserRegistrationService,28,0,2,0,8,0,3,0,2,0
+My Java App,com.example.cityfeedback.domain.user,Name,32,25,4,4,5,8,5,4,3,2
 My Java App,com.example.cityfeedback.domain.user,UserRole,0,21,0,0,0,4,0,1,0,1
 My Java App,com.example.cityfeedback.domain.user,User,0,40,0,0,0,10,0,5,0,5
+My Java App,com.example.cityfeedback.domain.feedback,Category,0,33,0,0,0,6,0,1,0,1
 My Java App,com.example.cityfeedback,Main,4,0,0,0,2,0,1,0,1,0
