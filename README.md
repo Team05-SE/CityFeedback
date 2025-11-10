@@ -1,4 +1,4 @@
-# Moderne Softwareentwicklung
+# City Feedback | Projektteam 5
 
 ![CI](https://github.com/Team05-SE/CityFeedback/actions/workflows/java-ci.yml/badge.svg)
 
