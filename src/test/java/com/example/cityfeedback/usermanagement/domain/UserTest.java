@@ -1,5 +1,6 @@
 package com.example.cityfeedback.usermanagement.domain;
 
+import com.example.cityfeedback.usermanagement.domain.model.User;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 

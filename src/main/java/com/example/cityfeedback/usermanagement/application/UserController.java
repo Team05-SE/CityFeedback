@@ -1,4 +1,4 @@
 package com.example.cityfeedback.usermanagement.application;
 
-public class UserService {
+public class UserController {
 }
