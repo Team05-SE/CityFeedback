@@ -1,5 +1,5 @@
-# Advanced Java, Test-Driven-Design (TDD) und LLM-gestütztes Entwickeln
-## 1 Review Ihrer Implementierungsstrategie:
+# 4. Advanced Java, Test-Driven-Design (TDD) und LLM-gestütztes Entwickeln
+## 4.1 Review Ihrer Implementierungsstrategie:
 
 Ausgangsstrategie: Spring-Boot-Projekt, Domain-Model mit Entitäten (Bürger/Mitarbeiter/Admin), Aggregat User, Services & Repositories; Validierung bei Registrierung.
 
@@ -14,9 +14,9 @@ Kurzfazit (5–6 Sätze): Wir haben die Implementierungsstrategie mithilfe ein
  
 
 
-## 2 Testfälle mit LLM generieren und validieren (TDD Schritt 1):
+## 4.2 Testfälle mit LLM generieren und validieren (TDD Schritt 1):
 
-### Aufgabe 2.1: Prompt für die LLM:
+### 4.2.1: Prompt für die LLM:
 Ausgangspunkt ist eine Bürgerbeteiligungsplattform (City Feedback), die die Möglichkeit bietet, der Stadtverwaltung Feedback wie z.B. Mängel zu melden mit den Boundede Contexts User Management Context und Feedback Management Context. 
 Bitte generiere dafür JUnit Tests, die die folgenden Regeln berücksichtigen: 
 - Name: Darf nicht null sein
@@ -27,7 +27,7 @@ Bitte erstelle dafür JUnit-Tests:
 - Negative Tests (ungültige Eingaben)
 
 
-### Aufgabe 2.2: Test Cases generieren lassen:
+### 4.2.2: Test Cases generieren lassen:
 Die LLM (Chat GPT 5, Plus-Version) hat folgende Tests generiert: 
 
     class FeedbackValidatorTest {
@@ -160,13 +160,13 @@ Die LLM (Chat GPT 5, Plus-Version) hat folgende Tests generiert:
 
 
 
-### Aufgabe 2.3: Kritische Bewertung:
+### 4.2.3: Kritische Bewertung:
 - Der Prompt wurde mehrere Male bei Chat GPT eingegeben und jedes Mal wurden unterschiedliche Tests zur Verfügung gestellt.
 - Im Prompt wurde nur beschrieben, dass der Name nicht null sein darf. Chat GPT hat aber zusätzlich Testfälle generiert, die prüfen, dass der Name nicht nur ein Whitespace enthält oder leer ist. Dies ist zwar inhaltlich sinnvoll, war aber nicht gefordert. Zudem hat Chat GPT den Namen so gedeutet, dass dieser sich auf die Kategorie bezieht. Gemeint waren aber die Namen der Bürger - dies hätte im Prompt aber auch besser beschrieben werden können.
 - Bei den Kategorien wird der Test für jede Kategorie einzeln wiederholt. Dies könnte man in einem Test zusammenfassen, wodurch weniger Code nötig wäre und dieser besser wartbar wäre.
   
 
-### Aufgabe 2.4: Regex-Validierung:
+### 4.2.4: Regex-Validierung:
 - Chat GPT hat folgendes Regex für Namen vorgeschlagen:
   ^[A-Za-zÄÖÜäöüßÀ-ÖØ-öø-ÿ' -]{1,80}$
 - Beschreibt einen Text aus 1 bis 80 Zeichen, der nur folgende Zeichen enthalten darf:
@@ -181,7 +181,7 @@ Die LLM (Chat GPT 5, Plus-Version) hat folgende Tests generiert:
   das Regex nicht optimieren, indem man weitere Sonderzeichen erlabt, um alle Namen 
   abzudecken.
 
-### Aufgabe 2.5: Finale Implementierung:
+### 4.2.5: Finale Implementierung:
 Die finale Implementierung wurde im Code vorgenommen.
 
 ## 4.3 Implementierung der Domänenlogik (TDD Schritt 2) mit LLM-Pair-Programming
@@ -202,11 +202,42 @@ Dokumentation (5–6 Sätze):  Im Zuge der Tests-Erweiterung identifizierten w
 
 ## 4.5 Modularität und Testbarkeit via CI/CD sicherstellen: 
 
-+++ Inhalt noch einfügen +++
+Eigenschaften:
+- Domain-Layer ist frameworkfrei (keine Spring-Annotationen)
+- Tests spiegeln die Domainstruktur 1:1 wider → einfache Navigation & Wartung.
+- Infrastruktur & Application Layer werden später angeschlossen (Spring Data JPA, REST-Controller), ohne den Domain-Code zu verändern.
+- Testbarkeit: In-Memory-Fake für UserRepository ermöglicht schnelle Unit-Tests ohne DB/Framework.
+
+
+In diesem Schritt wurde die zuvor entwickelte modular aufgebaute Architektur aktiv durch eine CI/CD-Pipeline abgesichert. 
+
+Die Trennung der Anwendung in klar definierte Bounded Contexts blieb dabei unverändert, insbesondere der User Management Context, der weiterhin framework-unabhängig im Domain-Layer implementiert ist. 
+
+Die CI/CD-Pipeline wurde so konfiguriert, dass bei jeder Änderung im Repository zunächst eine Linting-Phase stattfindet, anschließend der Build- und Testprozess durchgeführt wird und – bei erfolgreicher Ausführung – die Dokumentationsseite veröffentlicht wird (nur bei main, nicht in feature branches). Dabei wird bewusst die Java-Version 25 verwendet, um sowohl lokale Entwicklung als auch CI konsistent zu halten. 
+
+Der gesamte Prozess stellt sicher, dass alle Unit-Tests automatisch ausgeführt werden und nur fehlerfreier Code in den main-Branch gelangt. Somit unterstützt die Pipeline aktiv die TDD-Methodik, indem sie verhindert, dass Tests übersprungen werden oder fehlerhafter Code versehentlich integriert wird.
 
 ## 4.6 Kritische Reflektion zu TDD, DDD und LLM-gestützte Entwicklung:
 
-+++ Inhalt noch einfügen +++
+TDD half uns, die Anforderungen präzise zu formulieren und frühzeitig Randfälle aufzudecken (z. B. Whitespace, Aliase, Umlaute). 
+
+Die Tests fungierten als Sicherheitsnetz während der Refactorings und gaben uns die Freiheit, den Code zu verbessern. 
+
+DDD-Begriffe wie Value Objects und Aggregate führten zu einem klaren, sprechenden Modell, das unabhängig von Spring bleibt. 
+
+Der Einsatz des LLM war nützlich bei der Ideensammlung für Testfälle und beim Aufräumen redundanter Tests; zugleich wurde jeder Vorschlag kritisch überprüft. Problematisch wäre es gewesen, Code ungeprüft zu übernehmen – wir haben das vermieden, indem wir jeden Schritt mit Tests belegten und Entscheidungen begründeten. 
+
+Ein typischer Fallstrick war die Reihenfolge der E-Mail-Normalisierung; hier zeigte sich der Wert von TDD (roter Test → gezielter Fix). Risiken beim LLM-Einsatz sind Halluzinationen oder „überkomplexe“ Architekturmuster; deshalb haben wir die Policy-Idee bewusst verworfen. 
+
+Besonders gut geeignet ist LLM-Unterstützung für Testideen, Boilerplate-Generierung und Refactoring-Hinweise; weniger geeignet ist sie für sicherheitskritische Details (z. B. Passwort-Handling, Kryptografie), die wir später bewusst manuell und mit Best Practices implementieren. Insgesamt hat die Kombination aus DDD, TDD und selektivem LLM-Einsatz zu einer robusten, modularen Grundlage geführt.
+
+### Zwischenfälle, Rückfragen & Lösungen (Transparenzprotokoll)
+
+- **„In welches Verzeichnis gehören die Testklassen hin?“** → Spiegelstruktur unter src/test/java/.../domain/user.
+- **Package-Mismatch-Fehler (Dateipfad vs. package-Zeile)** → package com.example.cityfeedback.domain.user; in allen Domain- und Testdateien.
+- **Java-Version-Fehler: Releaseversion 23 nicht unterstützt** → Projekt auf JDK 25 gestellt und maven.compiler.source/target=25.
+- **Whitespace-Bug bei E-Mail: Regex wurde vor Normalisierung ausgeführt** → Reihenfolge geändert (strip() vor Match).
+- **Frage „Was mit Main & ExampleTest die ursprünglich als Klassen verwendet wurden?“** → Main bleibt (für späteren Spring-Boot-Start), ExampleTest gelöscht.
 
 
 
