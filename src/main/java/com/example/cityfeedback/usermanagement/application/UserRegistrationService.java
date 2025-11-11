@@ -1,7 +1,7 @@
 package com.example.cityfeedback.usermanagement.application;
 
-import com.example.cityfeedback.usermanagement.domain.Email;
-import com.example.cityfeedback.usermanagement.domain.Password;
+import com.example.cityfeedback.usermanagement.domain.valueobjects.Email;
+import com.example.cityfeedback.usermanagement.domain.valueobjects.Password;
 import com.example.cityfeedback.usermanagement.domain.model.User;
 import com.example.cityfeedback.usermanagement.infrastructure.UserRepository;
 

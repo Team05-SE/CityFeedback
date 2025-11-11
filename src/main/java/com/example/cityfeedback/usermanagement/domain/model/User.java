@@ -1,8 +1,8 @@
 package com.example.cityfeedback.usermanagement.domain.model;
 
-import com.example.cityfeedback.usermanagement.domain.Email;
-import com.example.cityfeedback.usermanagement.domain.Password;
-import com.example.cityfeedback.usermanagement.domain.UserRole;
+import com.example.cityfeedback.usermanagement.domain.valueobjects.Email;
+import com.example.cityfeedback.usermanagement.domain.valueobjects.Password;
+import com.example.cityfeedback.usermanagement.domain.valueobjects.UserRole;
 
 import java.util.Objects;
 import java.util.UUID;
