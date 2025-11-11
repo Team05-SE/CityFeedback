@@ -1,9 +1,19 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
-My Java App,com.example.cityfeedback.domain.user,Password,26,37,3,7,5,10,6,4,4,1
-My Java App,com.example.cityfeedback.domain.user,Email,32,35,4,4,5,11,5,5,2,4
-My Java App,com.example.cityfeedback.domain.user,UserRegistrationService,28,0,2,0,8,0,3,0,2,0
-My Java App,com.example.cityfeedback.domain.user,Name,32,25,4,4,5,8,5,4,3,2
-My Java App,com.example.cityfeedback.domain.user,UserRole,0,21,0,0,0,4,0,1,0,1
-My Java App,com.example.cityfeedback.domain.user,User,0,40,0,0,0,10,0,5,0,5
-My Java App,com.example.cityfeedback.domain.feedback,Category,0,33,0,0,0,6,0,1,0,1
-My Java App,com.example.cityfeedback,Main,4,0,0,0,2,0,1,0,1,0
+CityFeedback,com.example.cityfeedback.usermanagement.domain.model,User,0,40,0,0,0,10,0,5,0,5
+CityFeedback,com.example.cityfeedback.usermanagement.application,UserRegistrationService,28,0,2,0,8,0,3,0,2,0
+CityFeedback,com.example.cityfeedback.usermanagement.application,UserController,3,0,0,0,1,0,1,0,1,0
+CityFeedback,com.example.cityfeedback.feedbackmanagement.domain.model,Feedback,3,0,0,0,1,0,1,0,1,0
+CityFeedback,com.example.cityfeedback.usermanagement.domain,UserRole,21,0,0,0,4,0,1,0,1,0
+CityFeedback,com.example.cityfeedback.usermanagement.domain,Email,67,0,8,0,16,0,10,0,6,0
+CityFeedback,com.example.cityfeedback.usermanagement.domain,Name,57,0,8,0,13,0,9,0,5,0
+CityFeedback,com.example.cityfeedback.usermanagement.domain,Password,63,0,10,0,15,0,10,0,5,0
+CityFeedback,com.example.cityfeedback.feedbackmanagement,FeedbackRepository,3,0,0,0,1,0,1,0,1,0
+CityFeedback,com.example.cityfeedback.feedbackmanagement.domain.valueobjects,Category,0,33,0,0,0,6,0,1,0,1
+CityFeedback,com.example.cityfeedback.usermanagement.domain.valueobjects,Password,26,37,3,7,5,10,6,4,4,1
+CityFeedback,com.example.cityfeedback.usermanagement.domain.valueobjects,Email,32,35,4,4,5,11,5,5,2,4
+CityFeedback,com.example.cityfeedback.usermanagement.domain.valueobjects,Name,32,25,4,4,5,8,5,4,3,2
+CityFeedback,com.example.cityfeedback.usermanagement.domain.valueobjects,UserRole,0,21,0,0,0,4,0,1,0,1
+CityFeedback,com.example.cityfeedback,CityFeedbackApplication,11,0,0,0,4,0,2,0,2,0
+CityFeedback,com.example.cityfeedback.feedbackmanagement.application,FeedbackController,3,0,0,0,1,0,1,0,1,0
+CityFeedback,com.example.cityfeedback.feedbackmanagement.application,FeedbackService,3,0,0,0,1,0,1,0,1,0
+CityFeedback,com.example.cityfeedback.feedbackmanagement.infrastructure,FeedbackEntity,3,0,0,0,1,0,1,0,1,0
