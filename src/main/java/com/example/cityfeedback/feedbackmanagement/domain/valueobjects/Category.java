@@ -1,4 +1,4 @@
-package com.example.cityfeedback.feedbackmanagement.domain;
+package com.example.cityfeedback.feedbackmanagement.domain.valueobjects;
 
 public enum Category {
     VERKEHR,

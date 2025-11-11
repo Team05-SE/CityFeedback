@@ -1,6 +1,6 @@
 package com.example.cityfeedback.usermanagement.feedback;
 
-import com.example.cityfeedback.feedbackmanagement.domain.Category;
+import com.example.cityfeedback.feedbackmanagement.domain.valueobjects.Category;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
