@@ -3,6 +3,8 @@ package com.example.cityfeedback;
 /**
  * Einstiegspunkt des Programms.
  */
+
+/*
 public final class Main {
 
     private Main() {
@@ -14,8 +16,12 @@ public final class Main {
      *
      * @param args Kommandozeilenargumente
      */
+
+/*
     public static void main(final String[] args) {
         System.out.println("Hallo GitHub CI!");
     }
 }
+
+ */
 
