@@ -3,45 +3,36 @@ package com.example.cityfeedback.usermanagement.domain.model;
 import com.example.cityfeedback.usermanagement.domain.valueobjects.Email;
 import com.example.cityfeedback.usermanagement.domain.valueobjects.Password;
 import com.example.cityfeedback.usermanagement.domain.valueobjects.UserRole;
+import jakarta.persistence.*;
 
-import java.util.Objects;
-import java.util.UUID;
 
-/**
- * Aggregate Root: User
- * Repräsentiert einen registrierten Benutzer in unserem City-Feedback-System.
- */
-public class User {
+@Entity
+@Table(name = "users")
+public class User { 
 
-    private final UUID id;
-    private final Email email;
-    private final Password password;
-    private final UserRole role;
 
-    private User(UUID id, Email email, Password password, UserRole role) {
-        this.id = Objects.requireNonNull(id);
-        this.email = Objects.requireNonNull(email);
-        this.password = Objects.requireNonNull(password);
-        this.role = Objects.requireNonNull(role);
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Embedded
+    private Email email;
+    @Embedded
+    private Password password;
+    private UserRole role;
+
+    public User() {
+
     }
 
-    /**
-     * Factory Method für Registrierung eines neuen Bürgers.
-     * Rolle wird bewusst in der Domain gesetzt, nicht außerhalb.
-     */
+    public User(Long id, Email email, Password password, UserRole role) {
+        this.id = id;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+    }
+
     public static User register(Email email, Password password) {
-        return new User(UUID.randomUUID(), email, password, UserRole.CITIZEN);
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public Email getEmail() {
-        return email;
-    }
-
-    public UserRole getRole() {
-        return role;
+        return new User(null, email, password, UserRole.CITIZEN);
     }
 }
+
