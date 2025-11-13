@@ -1,7 +1,7 @@
 package com.example.cityfeedback.usermanagement.application;
 
-import com.example.cityfeedback.feedbackmanagement.application.FeedbackService;
-import com.example.cityfeedback.feedbackmanagement.domain.model.Feedback;
+import com.example.cityfeedback.usermanagement.domain.model.User;
+import com.example.cityfeedback.usermanagement.domain.model.UserClass;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,7 +23,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     public User getUserById(@PathVariable Long id) {
-        return this.UserService.getUserById(id);
+        return this.userService.getUserById(id);
     }
 
 

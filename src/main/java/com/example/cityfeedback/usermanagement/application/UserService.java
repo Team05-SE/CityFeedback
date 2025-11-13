@@ -1,10 +1,7 @@
 package com.example.cityfeedback.usermanagement.application;
 
-import com.example.cityfeedback.feedbackmanagement.domain.model.Feedback;
-import com.example.cityfeedback.feedbackmanagement.infrastructure.FeedbackRepository;
-import com.example.cityfeedback.usermanagement.domain.valueobjects.Email;
-import com.example.cityfeedback.usermanagement.domain.valueobjects.Password;
 import com.example.cityfeedback.usermanagement.domain.model.User;
+import com.example.cityfeedback.usermanagement.domain.model.UserClass;
 import com.example.cityfeedback.usermanagement.infrastructure.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;

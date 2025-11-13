@@ -1,10 +1,18 @@
 package com.example.cityfeedback.usermanagement.domain.valueobjects;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
+
 import java.util.Objects;
 
+@Embeddable
 public class Password {
 
-    private final String value;
+    @Column(name = "password", nullable = false)
+    private String value;
+
+    // Für JPA: benötigt!
+    protected Password() {}
 
     public Password(String value) {
         if (value == null) {
@@ -27,15 +35,17 @@ public class Password {
         return value;
     }
 
-    // Hashing kommt später → jetzt erstmal semantisch korrekt
     @Override
     public String toString() {
-        return "********"; // Sicherheit: nie Klartext zurückgeben
+        return "********"; // Niemals Klartext zurückgeben
     }
 
     @Override
     public boolean equals(Object o) {
-        return this == o; // Gleichheit von Passwörtern prüfen wir nicht in Domain
+        // Passwort-Vergleich sinnvoll nur anhand des Werts
+        if (this == o) return true;
+        if (!(o instanceof Password that)) return false;
+        return Objects.equals(value, that.value);
     }
 
     @Override
