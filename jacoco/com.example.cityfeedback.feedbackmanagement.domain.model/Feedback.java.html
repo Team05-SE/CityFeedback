@@ -1,5 +1,105 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Feedback.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">CityFeedback</a> &gt; <a href="index.source.html" class="el_package">com.example.cityfeedback.feedbackmanagement.domain.model</a> &gt; <span class="el_source">Feedback.java</span></div><h1>Feedback.java</h1><pre class="source lang-java linenums">package com.example.cityfeedback.feedbackmanagement.domain.model;
 
-<span class="nc" id="L3">public class Feedback {</span>
+import com.example.cityfeedback.feedbackmanagement.domain.valueobjects.Category;
+import com.example.cityfeedback.feedbackmanagement.domain.valueobjects.Status;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+import java.time.LocalDate;
+
+@Entity
+public class Feedback {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String title;
+    private Category category;
+    private LocalDate feedbackDate;
+    private String content;
+    private Status stats;
+    private boolean isPublished;
+
+<span class="nc" id="L25">    public Feedback() {</span>
+
+<span class="nc" id="L27">    }</span>
+
+<span class="nc" id="L29">    public Feedback(Long id, String title, Category category, LocalDate feedbackDate, String content, Status stats, boolean isPublished) {</span>
+<span class="nc" id="L30">        this.id = id;</span>
+<span class="nc" id="L31">        this.title = title;</span>
+<span class="nc" id="L32">        this.category = category;</span>
+<span class="nc" id="L33">        this.feedbackDate = feedbackDate;</span>
+<span class="nc" id="L34">        this.content = content;</span>
+<span class="nc" id="L35">        this.stats = stats;</span>
+<span class="nc" id="L36">        this.isPublished = isPublished;</span>
+<span class="nc" id="L37">    }</span>
+
+    public Long getId() {
+<span class="nc" id="L40">        return id;</span>
+    }
+
+    public String getTitle() {
+<span class="nc" id="L44">        return title;</span>
+    }
+
+    public void setTitle(String title) {
+<span class="nc" id="L48">        this.title = title;</span>
+<span class="nc" id="L49">    }</span>
+
+    public Category getCategory() {
+<span class="nc" id="L52">        return category;</span>
+    }
+
+    public void setCategory(Category category) {
+<span class="nc" id="L56">        this.category = category;</span>
+<span class="nc" id="L57">    }</span>
+
+    public LocalDate getFeedbackDate() {
+<span class="nc" id="L60">        return feedbackDate;</span>
+    }
+
+    public void setFeedbackDate(LocalDate feedbackDate) {
+<span class="nc" id="L64">        this.feedbackDate = feedbackDate;</span>
+<span class="nc" id="L65">    }</span>
+
+    public String getContent() {
+<span class="nc" id="L68">        return content;</span>
+    }
+
+    public void setContent(String content) {
+<span class="nc" id="L72">        this.content = content;</span>
+<span class="nc" id="L73">    }</span>
+
+    public Status getStats() {
+<span class="nc" id="L76">        return stats;</span>
+    }
+
+    public void setStats(Status stats) {
+<span class="nc" id="L80">        this.stats = stats;</span>
+<span class="nc" id="L81">    }</span>
+
+    public boolean isPublished() {
+<span class="nc" id="L84">        return isPublished;</span>
+    }
+
+    public void setPublished(boolean published) {
+<span class="nc" id="L88">        isPublished = published;</span>
+<span class="nc" id="L89">    }</span>
+
+
+    @Override
+    public String toString() {
+<span class="nc" id="L94">        return &quot;Feedback{&quot; +</span>
+                &quot;id=&quot; + id +
+                &quot;, title='&quot; + title + '\'' +
+                &quot;, category=&quot; + category +
+                &quot;, feedbackDate=&quot; + feedbackDate +
+                &quot;, content='&quot; + content + '\'' +
+                &quot;, stats=&quot; + stats +
+                &quot;, isPublished=&quot; + isPublished +
+                '}';
+    }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

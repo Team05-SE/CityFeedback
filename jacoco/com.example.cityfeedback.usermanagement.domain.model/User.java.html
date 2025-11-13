@@ -3,46 +3,37 @@
 import com.example.cityfeedback.usermanagement.domain.valueobjects.Email;
 import com.example.cityfeedback.usermanagement.domain.valueobjects.Password;
 import com.example.cityfeedback.usermanagement.domain.valueobjects.UserRole;
+import jakarta.persistence.*;
 
-import java.util.Objects;
-import java.util.UUID;
 
-/**
- * Aggregate Root: User
- * Repräsentiert einen registrierten Benutzer in unserem City-Feedback-System.
- */
-public class User {
+@Entity
+@Table(name = &quot;users&quot;)
+public class User { 
 
-    private final UUID id;
-    private final Email email;
-    private final Password password;
-    private final UserRole role;
 
-<span class="fc" id="L21">    private User(UUID id, Email email, Password password, UserRole role) {</span>
-<span class="fc" id="L22">        this.id = Objects.requireNonNull(id);</span>
-<span class="fc" id="L23">        this.email = Objects.requireNonNull(email);</span>
-<span class="fc" id="L24">        this.password = Objects.requireNonNull(password);</span>
-<span class="fc" id="L25">        this.role = Objects.requireNonNull(role);</span>
-<span class="fc" id="L26">    }</span>
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Embedded
+    private Email email;
+    @Embedded
+    private Password password;
+    private UserRole role;
 
-    /**
-     * Factory Method für Registrierung eines neuen Bürgers.
-     * Rolle wird bewusst in der Domain gesetzt, nicht außerhalb.
-     */
+<span class="nc" id="L23">    public User() {</span>
+
+<span class="nc" id="L25">    }</span>
+
+<span class="nc" id="L27">    public User(Long id, Email email, Password password, UserRole role) {</span>
+<span class="nc" id="L28">        this.id = id;</span>
+<span class="nc" id="L29">        this.email = email;</span>
+<span class="nc" id="L30">        this.password = password;</span>
+<span class="nc" id="L31">        this.role = role;</span>
+<span class="nc" id="L32">    }</span>
+
     public static User register(Email email, Password password) {
-<span class="fc" id="L33">        return new User(UUID.randomUUID(), email, password, UserRole.CITIZEN);</span>
-    }
-
-    public UUID getId() {
-<span class="fc" id="L37">        return id;</span>
-    }
-
-    public Email getEmail() {
-<span class="fc" id="L41">        return email;</span>
-    }
-
-    public UserRole getRole() {
-<span class="fc" id="L45">        return role;</span>
+<span class="nc" id="L35">        return new User(null, email, password, UserRole.CITIZEN);</span>
     }
 }
+
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>
