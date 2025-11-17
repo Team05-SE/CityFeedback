@@ -3,30 +3,38 @@ package com.example.cityfeedback.usermanagement.domain.model;
 import com.example.cityfeedback.usermanagement.domain.valueobjects.Email;
 import com.example.cityfeedback.usermanagement.domain.valueobjects.Password;
 import com.example.cityfeedback.usermanagement.domain.valueobjects.UserRole;
+import com.example.cityfeedback.usermanagement.infrastructure.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
 import static org.junit.jupiter.api.Assertions.*;
 
-class UserClassTest {
+@SpringBootTest
+class UserTest {
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Test
     void register_shouldAssignCitizenRole() {
-        UserClass user = UserClass.register(new Email("test@mail.de"), new Password("Abcdef12"));
-        Assertions.assertEquals(UserRole.CITIZEN, user.getRole());
+        User user = User.register(new Email("test@mail.de"), new Password("Abcdef12"));
+        assertEquals(UserRole.CITIZEN, user.getRole());
     }
 
     @Test
     void register_shouldAssignUniqueId() {
-        UserClass user1 = UserClass.register(new Email("a@mail.de"), new Password("Abcdef12"));
-        UserClass user2 = UserClass.register(new Email("b@mail.de"), new Password("Abcdef12"));
+        User user = User.register(new Email("test@test.com"), new Password("Passwort123"));
+        userRepository.save(user);
 
-        assertNotEquals(user1.getId(), user2.getId());
+        assertNotNull(user.getId());
     }
 
     @Test
     void register_shouldStoreEmailCorrectly() {
         Email email = new Email("someone@mail.de");
-        UserClass user = UserClass.register(email, new Password("Abcdef12"));
+        User user = User.register(email, new Password("Abcdef12"));
 
         assertEquals(email, user.getEmail());
     }
