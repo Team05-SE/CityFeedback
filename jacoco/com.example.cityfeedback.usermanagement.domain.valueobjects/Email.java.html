@@ -15,9 +15,9 @@ public class Email {
     @Column(name = &quot;email&quot;, nullable = false, unique = true)
     private String value;
 
-<span class="nc" id="L18">    protected Email() {</span>
+<span class="fc" id="L18">    protected Email() {</span>
         // JPA benötigt einen geschützten No-Args Konstruktor
-<span class="nc" id="L20">    }</span>
+<span class="fc" id="L20">    }</span>
 
 <span class="fc" id="L22">    public Email(String value) {</span>
 <span class="pc bpc" id="L23" title="1 of 2 branches missed.">        if (value == null) {</span>

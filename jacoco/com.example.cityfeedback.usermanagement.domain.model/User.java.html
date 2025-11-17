@@ -5,35 +5,54 @@ import com.example.cityfeedback.usermanagement.domain.valueobjects.Password;
 import com.example.cityfeedback.usermanagement.domain.valueobjects.UserRole;
 import jakarta.persistence.*;
 
+import java.util.Objects;
+import java.util.UUID;
 
+/**
+ * Aggregate Root: User
+ * Repräsentiert einen registrierten Benutzer in unserem City-Feedback-System.
+ */
 @Entity
 @Table(name = &quot;users&quot;)
-public class User { 
-
+public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue
+    private UUID id;
+
     @Embedded
     private Email email;
+
     @Embedded
     private Password password;
+
+    @Enumerated(EnumType.STRING)
     private UserRole role;
 
-<span class="nc" id="L23">    public User() {</span>
+<span class="fc" id="L32">    public User() {</span>
 
-<span class="nc" id="L25">    }</span>
+<span class="fc" id="L34">    }</span>
 
-<span class="nc" id="L27">    public User(Long id, Email email, Password password, UserRole role) {</span>
-<span class="nc" id="L28">        this.id = id;</span>
-<span class="nc" id="L29">        this.email = email;</span>
-<span class="nc" id="L30">        this.password = password;</span>
-<span class="nc" id="L31">        this.role = role;</span>
-<span class="nc" id="L32">    }</span>
+<span class="fc" id="L36">    public User(Email email, Password password, UserRole role) {</span>
+<span class="fc" id="L37">        this.email = Objects.requireNonNull(email);</span>
+<span class="fc" id="L38">        this.password = Objects.requireNonNull(password);</span>
+<span class="fc" id="L39">        this.role = Objects.requireNonNull(role);</span>
+<span class="fc" id="L40">    }</span>
 
     public static User register(Email email, Password password) {
-<span class="nc" id="L35">        return new User(null, email, password, UserRole.CITIZEN);</span>
+<span class="fc" id="L43">        return new User(email, password, UserRole.CITIZEN);</span>
+    }
+
+    public UUID getId() {
+<span class="fc" id="L47">        return id;</span>
+    }
+
+    public Email getEmail() {
+<span class="fc" id="L51">        return email;</span>
+    }
+
+    public UserRole getRole() {
+<span class="fc" id="L55">        return role;</span>
     }
 }
-
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

@@ -3,12 +3,50 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-<span class="nc" id="L6">public class CityFeedbackApplication {</span>
+<span class="fc" id="L6">public class CityFeedbackApplication {</span>
 
     public static void main(String[] args) {
 <span class="nc" id="L9">        SpringApplication.run(CityFeedbackApplication.class, args);</span>
 <span class="nc" id="L10">        System.out.println(&quot;Hallo GitHub CI!&quot;);</span>
 <span class="nc" id="L11">    }</span>
 }
+
+
+//Testen des Users:
+/*
+
+{
+  &quot;email&quot;: &quot;test@example.com&quot;,
+  &quot;password&quot;: &quot;Passwort123&quot;,
+  &quot;role&quot;: &quot;CITIZEN&quot;
+}
+
+{
+  &quot;email&quot;: &quot;test2@example.com&quot;,
+  &quot;password&quot;: &quot;Kennwort123&quot;,
+  &quot;role&quot;: &quot;STAFF&quot;
+}
+
+ */
+
+
+//Testen des Feedbacks:
+/*
+        {
+        &quot;userId&quot;: &quot;HIER USERID EINSETZEN, DIE IN DER DB ANGEZEIGT WIRD,
+        &quot;title&quot;: &quot;Müll nicht abgeholt&quot;,
+        &quot;category&quot;: &quot;UMWELT&quot;,
+        &quot;content&quot;: &quot;Seit 3 Tagen steht der Müll auf der Straße.&quot;
+        }
+
+        {
+        &quot;userId&quot;: &quot;896a32db-c327-45f2-9502-87e8f147583f&quot;,
+        &quot;title&quot;: &quot;Straßenschild umgefallen&quot;,
+        &quot;category&quot;: &quot;VERKEHR&quot;,
+        &quot;content&quot;: &quot;Straßenschild ist umgefallen und blockiert den Weg.&quot;
+        }
+
+ */
+
 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>
