@@ -11,3 +11,15 @@ public class CityFeedbackApplication {
     }
 }
 
+
+//Testen des Users:
+/*
+
+{
+  "email": "test@example.com",
+  "password": "Passwort123",
+  "role": "CITIZEN"
+}
+
+ */
+

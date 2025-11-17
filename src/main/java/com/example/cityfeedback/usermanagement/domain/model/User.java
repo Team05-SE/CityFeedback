@@ -12,7 +12,6 @@ import java.util.UUID;
  * Aggregate Root: User
  * Repräsentiert einen registrierten Benutzer in unserem City-Feedback-System.
  */
-
 @Entity
 @Table(name = "users")
 public class User {
@@ -20,10 +19,13 @@ public class User {
     @Id
     @GeneratedValue
     private UUID id;
+
     @Embedded
     private Email email;
+
     @Embedded
     private Password password;
+
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
@@ -31,19 +33,14 @@ public class User {
 
     }
 
-    public User(UUID id, Email email, Password password, UserRole role) {
-        this.id = Objects.requireNonNull(id);
+    public User(Email email, Password password, UserRole role) {
         this.email = Objects.requireNonNull(email);
         this.password = Objects.requireNonNull(password);
         this.role = Objects.requireNonNull(role);
     }
 
-    /**
-     * Factory Method für Registrierung eines neuen Bürgers.
-     * Rolle wird bewusst in der Domain gesetzt, nicht außerhalb.
-     */
     public static User register(Email email, Password password) {
-        return new User(UUID.randomUUID(), email, password, UserRole.CITIZEN);
+        return new User(email, password, UserRole.CITIZEN);
     }
 
     public UUID getId() {

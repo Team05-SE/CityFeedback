@@ -1,6 +1,8 @@
 package com.example.cityfeedback.usermanagement.application;
 
 import com.example.cityfeedback.usermanagement.domain.model.User;
+import com.example.cityfeedback.usermanagement.domain.valueobjects.Email;
+import com.example.cityfeedback.usermanagement.domain.valueobjects.Password;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,7 +30,9 @@ public class UserController {
 
 
     @PostMapping
-    public User createUser(@RequestBody User user) {
-        return this.userService.createUser(user);
+    public User create(@RequestBody UserDTO dto) {
+        Email email = new Email(dto.email);
+        Password password = new Password(dto.password);
+        return userService.createUser(email, password, dto.role);
     }
 }
