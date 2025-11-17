@@ -2,6 +2,9 @@ package com.example.cityfeedback.feedbackmanagement.application;
 
 import com.example.cityfeedback.feedbackmanagement.domain.model.Feedback;
 import org.springframework.web.bind.annotation.*;
+import com.example.cityfeedback.feedbackmanagement.application.FeedbackDTO;
+
+
 
 import java.util.List;
 
@@ -25,9 +28,11 @@ public class FeedbackController {
         return this.feedbackService.getFeedbackById(id);
     }
 
-
     @PostMapping
-    public Feedback createFeedback(@RequestBody Feedback feedback) {
-        return this.feedbackService.createFeedback(feedback);
+    public Feedback createFeedback(@RequestBody FeedbackDTO dto) {
+        return feedbackService.createFeedback(dto);
     }
+
+
+
 }

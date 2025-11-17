@@ -12,6 +12,7 @@ import java.util.UUID;
  * Repräsentiert einen registrierten Benutzer in unserem City-Feedback-System.
  */
 
+/*
 public class UserClass {
 
     private final UUID id;
@@ -30,6 +31,8 @@ public class UserClass {
      * Factory Method für Registrierung eines neuen Bürgers.
      * Rolle wird bewusst in der Domain gesetzt, nicht außerhalb.
      */
+
+/*
     public static UserClass register(Email email, Password password) {
         return new UserClass(UUID.randomUUID(), email, password, UserRole.CITIZEN);
     }
@@ -46,3 +49,5 @@ public class UserClass {
         return role;
     }
 }
+
+ */

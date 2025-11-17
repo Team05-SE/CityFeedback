@@ -5,34 +5,53 @@ import com.example.cityfeedback.usermanagement.domain.valueobjects.Password;
 import com.example.cityfeedback.usermanagement.domain.valueobjects.UserRole;
 import jakarta.persistence.*;
 
+import java.util.Objects;
+import java.util.UUID;
 
+/**
+ * Aggregate Root: User
+ * Repräsentiert einen registrierten Benutzer in unserem City-Feedback-System.
+ */
 @Entity
 @Table(name = "users")
-public class User { 
-
+public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue
+    private UUID id;
+
     @Embedded
     private Email email;
+
     @Embedded
     private Password password;
+
+    @Enumerated(EnumType.STRING)
     private UserRole role;
 
     public User() {
 
     }
 
-    public User(Long id, Email email, Password password, UserRole role) {
-        this.id = id;
-        this.email = email;
-        this.password = password;
-        this.role = role;
+    public User(Email email, Password password, UserRole role) {
+        this.email = Objects.requireNonNull(email);
+        this.password = Objects.requireNonNull(password);
+        this.role = Objects.requireNonNull(role);
     }
 
     public static User register(Email email, Password password) {
-        return new User(null, email, password, UserRole.CITIZEN);
+        return new User(email, password, UserRole.CITIZEN);
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public Email getEmail() {
+        return email;
+    }
+
+    public UserRole getRole() {
+        return role;
     }
 }
-
