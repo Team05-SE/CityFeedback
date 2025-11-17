@@ -1,12 +1,12 @@
 package com.example.cityfeedback.usermanagement.application;
 
 import com.example.cityfeedback.usermanagement.domain.model.User;
-import com.example.cityfeedback.usermanagement.domain.model.UserClass;
 import com.example.cityfeedback.usermanagement.infrastructure.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class UserService {
@@ -21,7 +21,7 @@ public class UserService {
         return this.userRepository.findAll();
     }
 
-    public User getUserById(Long id) {
+    public User getUserById(UUID id) {
         if(!this.userRepository.existsById(id)) {
             throw new EntityNotFoundException("no user with given id found");
         }

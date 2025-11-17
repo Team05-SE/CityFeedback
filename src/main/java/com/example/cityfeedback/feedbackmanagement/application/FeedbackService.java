@@ -1,33 +1,53 @@
 package com.example.cityfeedback.feedbackmanagement.application;
 
 import com.example.cityfeedback.feedbackmanagement.domain.model.Feedback;
+import com.example.cityfeedback.feedbackmanagement.domain.valueobjects.Status;
 import com.example.cityfeedback.feedbackmanagement.infrastructure.FeedbackRepository;
+import com.example.cityfeedback.usermanagement.infrastructure.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class FeedbackService {
 
     private final FeedbackRepository feedbackRepository;
+    private final UserRepository userRepository;
 
-    public FeedbackService(FeedbackRepository feedbackRepository) {
+    public FeedbackService(FeedbackRepository feedbackRepository, UserRepository userRepository) {
         this.feedbackRepository = feedbackRepository;
+        this.userRepository = userRepository;
     }
 
     public List<Feedback> getAllFeedbacks() {
-        return this.feedbackRepository.findAll();
+        return feedbackRepository.findAll();
     }
 
     public Feedback getFeedbackById(Long id) {
-        if(!this.feedbackRepository.existsById(id)) {
-            throw new EntityNotFoundException("no feedback with given id found");
-        }
-        return this.feedbackRepository.findById(id).get();
+        return feedbackRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("no feedback with given id found"));
     }
 
-    public Feedback createFeedback(Feedback feedback) {
-        return this.feedbackRepository.save(feedback);
+    public Feedback createFeedback(FeedbackDTO dto) {
+
+        var user = userRepository.findById(dto.userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        Feedback feedback = new Feedback(
+                null,
+                dto.title,
+                dto.category,
+                LocalDate.now(),
+                dto.content,
+                Status.OPEN,
+                false
+        );
+
+        feedback.setUser(user);
+
+        return feedbackRepository.save(feedback);
     }
 }

@@ -2,10 +2,8 @@ package com.example.cityfeedback.feedbackmanagement.domain.model;
 
 import com.example.cityfeedback.feedbackmanagement.domain.valueobjects.Category;
 import com.example.cityfeedback.feedbackmanagement.domain.valueobjects.Status;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import com.example.cityfeedback.usermanagement.domain.model.User;
 
 import java.time.LocalDate;
 
@@ -16,11 +14,15 @@ public class Feedback {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
+    @Enumerated(EnumType.STRING)
     private Category category;
     private LocalDate feedbackDate;
     private String content;
     private Status stats;
     private boolean isPublished;
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     public Feedback() {
 
@@ -38,6 +40,14 @@ public class Feedback {
 
     public Long getId() {
         return id;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public String getTitle() {

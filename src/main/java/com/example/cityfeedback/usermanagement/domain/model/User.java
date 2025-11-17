@@ -3,6 +3,7 @@ package com.example.cityfeedback.usermanagement.domain.model;
 import com.example.cityfeedback.usermanagement.domain.valueobjects.Email;
 import com.example.cityfeedback.usermanagement.domain.valueobjects.Password;
 import com.example.cityfeedback.usermanagement.domain.valueobjects.UserRole;
+import jakarta.persistence.*;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -11,14 +12,26 @@ import java.util.UUID;
  * Aggregate Root: User
  * Repräsentiert einen registrierten Benutzer in unserem City-Feedback-System.
  */
+
+@Entity
+@Table(name = "users")
 public class User {
 
-    private final UUID id;
-    private final Email email;
-    private final Password password;
-    private final UserRole role;
+    @Id
+    @GeneratedValue
+    private UUID id;
+    @Embedded
+    private Email email;
+    @Embedded
+    private Password password;
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
 
-    private User(UUID id, Email email, Password password, UserRole role) {
+    public User() {
+
+    }
+
+    public User(UUID id, Email email, Password password, UserRole role) {
         this.id = Objects.requireNonNull(id);
         this.email = Objects.requireNonNull(email);
         this.password = Objects.requireNonNull(password);
