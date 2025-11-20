@@ -10,6 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/feedback")
+@CrossOrigin("*")
 public class FeedbackController {
 
     private final FeedbackService feedbackService;
