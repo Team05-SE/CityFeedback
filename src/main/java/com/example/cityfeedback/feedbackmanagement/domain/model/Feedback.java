@@ -18,7 +18,7 @@ public class Feedback {
     private Category category;
     private LocalDate feedbackDate;
     private String content;
-    private Status stats;
+    private Status status;
     private boolean isPublished;
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -28,13 +28,13 @@ public class Feedback {
 
     }
 
-    public Feedback(Long id, String title, Category category, LocalDate feedbackDate, String content, Status stats, boolean isPublished) {
+    public Feedback(Long id, String title, Category category, LocalDate feedbackDate, String content, Status status, boolean isPublished) {
         this.id = id;
         this.title = title;
         this.category = category;
         this.feedbackDate = feedbackDate;
         this.content = content;
-        this.stats = stats;
+        this.status = status;
         this.isPublished = isPublished;
     }
 
@@ -82,12 +82,12 @@ public class Feedback {
         this.content = content;
     }
 
-    public Status getStats() {
-        return stats;
+    public Status getStatus() {
+        return status;
     }
 
-    public void setStats(Status stats) {
-        this.stats = stats;
+    public void setStatus(Status stats) {
+        this.status = stats;
     }
 
     public boolean isPublished() {
@@ -107,7 +107,7 @@ public class Feedback {
                 ", category=" + category +
                 ", feedbackDate=" + feedbackDate +
                 ", content='" + content + '\'' +
-                ", stats=" + stats +
+                ", stats=" + status +
                 ", isPublished=" + isPublished +
                 '}';
     }
