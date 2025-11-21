@@ -18,7 +18,7 @@ public class Feedback {
     private Category category;
     private LocalDate feedbackDate;
     private String content;
-    private Status stats;
+    private Status status;
     private boolean isPublished;
     @ManyToOne
     @JoinColumn(name = &quot;user_id&quot;, nullable = false)
@@ -28,75 +28,75 @@ public class Feedback {
 
 <span class="fc" id="L29">    }</span>
 
-<span class="nc" id="L31">    public Feedback(Long id, String title, Category category, LocalDate feedbackDate, String content, Status stats, boolean isPublished) {</span>
-<span class="nc" id="L32">        this.id = id;</span>
-<span class="nc" id="L33">        this.title = title;</span>
-<span class="nc" id="L34">        this.category = category;</span>
-<span class="nc" id="L35">        this.feedbackDate = feedbackDate;</span>
-<span class="nc" id="L36">        this.content = content;</span>
-<span class="nc" id="L37">        this.stats = stats;</span>
-<span class="nc" id="L38">        this.isPublished = isPublished;</span>
-<span class="nc" id="L39">    }</span>
+<span class="fc" id="L31">    public Feedback(Long id, String title, Category category, LocalDate feedbackDate, String content, Status status, boolean isPublished) {</span>
+<span class="fc" id="L32">        this.id = id;</span>
+<span class="fc" id="L33">        this.title = title;</span>
+<span class="fc" id="L34">        this.category = category;</span>
+<span class="fc" id="L35">        this.feedbackDate = feedbackDate;</span>
+<span class="fc" id="L36">        this.content = content;</span>
+<span class="fc" id="L37">        this.status = status;</span>
+<span class="fc" id="L38">        this.isPublished = isPublished;</span>
+<span class="fc" id="L39">    }</span>
 
     public Long getId() {
-<span class="nc" id="L42">        return id;</span>
+<span class="fc" id="L42">        return id;</span>
     }
 
     public User getUser() {
-<span class="nc" id="L46">        return user;</span>
+<span class="fc" id="L46">        return user;</span>
     }
 
     public void setUser(User user) {
-<span class="nc" id="L50">        this.user = user;</span>
-<span class="nc" id="L51">    }</span>
+<span class="fc" id="L50">        this.user = user;</span>
+<span class="fc" id="L51">    }</span>
 
     public String getTitle() {
-<span class="nc" id="L54">        return title;</span>
+<span class="fc" id="L54">        return title;</span>
     }
 
     public void setTitle(String title) {
-<span class="nc" id="L58">        this.title = title;</span>
-<span class="nc" id="L59">    }</span>
+<span class="fc" id="L58">        this.title = title;</span>
+<span class="fc" id="L59">    }</span>
 
     public Category getCategory() {
-<span class="nc" id="L62">        return category;</span>
+<span class="fc" id="L62">        return category;</span>
     }
 
     public void setCategory(Category category) {
-<span class="nc" id="L66">        this.category = category;</span>
-<span class="nc" id="L67">    }</span>
+<span class="fc" id="L66">        this.category = category;</span>
+<span class="fc" id="L67">    }</span>
 
     public LocalDate getFeedbackDate() {
-<span class="nc" id="L70">        return feedbackDate;</span>
+<span class="fc" id="L70">        return feedbackDate;</span>
     }
 
     public void setFeedbackDate(LocalDate feedbackDate) {
-<span class="nc" id="L74">        this.feedbackDate = feedbackDate;</span>
-<span class="nc" id="L75">    }</span>
+<span class="fc" id="L74">        this.feedbackDate = feedbackDate;</span>
+<span class="fc" id="L75">    }</span>
 
     public String getContent() {
-<span class="nc" id="L78">        return content;</span>
+<span class="fc" id="L78">        return content;</span>
     }
 
     public void setContent(String content) {
-<span class="nc" id="L82">        this.content = content;</span>
-<span class="nc" id="L83">    }</span>
+<span class="fc" id="L82">        this.content = content;</span>
+<span class="fc" id="L83">    }</span>
 
-    public Status getStats() {
-<span class="nc" id="L86">        return stats;</span>
+    public Status getStatus() {
+<span class="fc" id="L86">        return status;</span>
     }
 
-    public void setStats(Status stats) {
-<span class="nc" id="L90">        this.stats = stats;</span>
-<span class="nc" id="L91">    }</span>
+    public void setStatus(Status stats) {
+<span class="fc" id="L90">        this.status = stats;</span>
+<span class="fc" id="L91">    }</span>
 
     public boolean isPublished() {
-<span class="nc" id="L94">        return isPublished;</span>
+<span class="fc" id="L94">        return isPublished;</span>
     }
 
     public void setPublished(boolean published) {
-<span class="nc" id="L98">        isPublished = published;</span>
-<span class="nc" id="L99">    }</span>
+<span class="fc" id="L98">        isPublished = published;</span>
+<span class="fc" id="L99">    }</span>
 
 
     @Override
@@ -107,7 +107,7 @@ public class Feedback {
                 &quot;, category=&quot; + category +
                 &quot;, feedbackDate=&quot; + feedbackDate +
                 &quot;, content='&quot; + content + '\'' +
-                &quot;, stats=&quot; + stats +
+                &quot;, stats=&quot; + status +
                 &quot;, isPublished=&quot; + isPublished +
                 '}';
     }

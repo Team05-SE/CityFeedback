@@ -25,15 +25,15 @@ public class UserService {
     }
 
     public User getUserById(UUID id) {
-<span class="nc bnc" id="L28" title="All 2 branches missed.">        if(!this.userRepository.existsById(id)) {</span>
-<span class="nc" id="L29">            throw new EntityNotFoundException(&quot;no user with given id found&quot;);</span>
+<span class="fc bfc" id="L28" title="All 2 branches covered.">        if(!this.userRepository.existsById(id)) {</span>
+<span class="fc" id="L29">            throw new EntityNotFoundException(&quot;no user with given id found&quot;);</span>
         }
-<span class="nc" id="L31">        return this.userRepository.findById(id).get();</span>
+<span class="fc" id="L31">        return this.userRepository.findById(id).get();</span>
     }
 
     public User createUser(Email email, Password password, UserRole role) {
-<span class="nc" id="L35">        User user = new User(email, password, role);</span>
-<span class="nc" id="L36">        return userRepository.save(user);</span>
+<span class="fc" id="L35">        User user = new User(email, password, role);</span>
+<span class="fc" id="L36">        return userRepository.save(user);</span>
     }
 
 }

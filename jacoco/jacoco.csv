@@ -1,9 +1,9 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
 CityFeedback,com.example.cityfeedback.usermanagement.domain.model,User,0,37,0,0,0,11,0,6,0,6
-CityFeedback,com.example.cityfeedback.usermanagement.application,UserService,34,6,2,0,6,3,4,1,3,1
-CityFeedback,com.example.cityfeedback.usermanagement.application,UserController,29,6,0,0,5,3,3,1,3,1
-CityFeedback,com.example.cityfeedback.usermanagement.application,UserDTO,3,0,0,0,1,0,1,0,1,0
-CityFeedback,com.example.cityfeedback.feedbackmanagement.domain.model,Feedback,95,3,0,0,32,2,17,1,17,1
+CityFeedback,com.example.cityfeedback.usermanagement.application,UserService,4,36,0,2,1,8,1,4,1,3
+CityFeedback,com.example.cityfeedback.usermanagement.application,UserController,9,26,0,0,2,6,2,2,2,2
+CityFeedback,com.example.cityfeedback.usermanagement.application,UserDTO,0,3,0,0,0,1,0,1,0,1
+CityFeedback,com.example.cityfeedback.feedbackmanagement.domain.model,Feedback,19,79,0,0,1,33,1,17,1,17
 CityFeedback,com.example.cityfeedback.feedbackmanagement.domain.valueobjects,Category,0,33,0,0,0,6,0,1,0,1
 CityFeedback,com.example.cityfeedback.feedbackmanagement.domain.valueobjects,Status,0,27,0,0,0,5,0,1,0,1
 CityFeedback,com.example.cityfeedback.usermanagement.domain.valueobjects,Password,39,40,5,7,7,11,7,5,4,2
@@ -11,6 +11,6 @@ CityFeedback,com.example.cityfeedback.usermanagement.domain.valueobjects,Email,3
 CityFeedback,com.example.cityfeedback.usermanagement.domain.valueobjects,Name,32,25,4,4,5,8,5,4,3,2
 CityFeedback,com.example.cityfeedback.usermanagement.domain.valueobjects,UserRole,0,21,0,0,0,4,0,1,0,1
 CityFeedback,com.example.cityfeedback,CityFeedbackApplication,8,3,0,0,3,1,1,1,1,1
-CityFeedback,com.example.cityfeedback.feedbackmanagement.application,FeedbackController,14,6,0,0,3,3,3,1,3,1
-CityFeedback,com.example.cityfeedback.feedbackmanagement.application,FeedbackDTO,3,0,0,0,1,0,1,0,1,0
-CityFeedback,com.example.cityfeedback.feedbackmanagement.application,FeedbackService,54,9,0,0,9,4,5,1,5,1
+CityFeedback,com.example.cityfeedback.feedbackmanagement.application,FeedbackController,9,11,0,0,2,4,2,2,2,2
+CityFeedback,com.example.cityfeedback.feedbackmanagement.application,FeedbackDTO,0,3,0,0,0,1,0,1,0,1
+CityFeedback,com.example.cityfeedback.feedbackmanagement.application,FeedbackService,18,45,0,0,2,11,3,3,3,3

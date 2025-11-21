@@ -23,7 +23,7 @@ public class FeedbackService {
 <span class="fc" id="L23">    }</span>
 
     public List&lt;Feedback&gt; getAllFeedbacks() {
-<span class="nc" id="L26">        return feedbackRepository.findAll();</span>
+<span class="fc" id="L26">        return feedbackRepository.findAll();</span>
     }
 
     public Feedback getFeedbackById(Long id) {
@@ -33,22 +33,22 @@ public class FeedbackService {
 
     public Feedback createFeedback(FeedbackDTO dto) {
 
-<span class="nc" id="L36">        var user = userRepository.findById(dto.userId)</span>
-<span class="nc" id="L37">                .orElseThrow(() -&gt; new EntityNotFoundException(&quot;User not found&quot;));</span>
+<span class="fc" id="L36">        var user = userRepository.findById(dto.userId)</span>
+<span class="pc" id="L37">                .orElseThrow(() -&gt; new EntityNotFoundException(&quot;User not found&quot;));</span>
 
-<span class="nc" id="L39">        Feedback feedback = new Feedback(</span>
+<span class="fc" id="L39">        Feedback feedback = new Feedback(</span>
                 null,
                 dto.title,
                 dto.category,
-<span class="nc" id="L43">                LocalDate.now(),</span>
+<span class="fc" id="L43">                LocalDate.now(),</span>
                 dto.content,
                 Status.OPEN,
                 false
         );
 
-<span class="nc" id="L49">        feedback.setUser(user);</span>
+<span class="fc" id="L49">        feedback.setUser(user);</span>
 
-<span class="nc" id="L51">        return feedbackRepository.save(feedback);</span>
+<span class="fc" id="L51">        return feedbackRepository.save(feedback);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>
