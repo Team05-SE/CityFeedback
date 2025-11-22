@@ -29,9 +29,7 @@ public class User {
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
-    public User() {
-
-    }
+    public User() {}
 
     public User(Email email, Password password, UserRole role) {
         this.email = Objects.requireNonNull(email);
@@ -49,6 +47,10 @@ public class User {
 
     public Email getEmail() {
         return email;
+    }
+
+    public Password getPassword() {
+        return password;
     }
 
     public UserRole getRole() {

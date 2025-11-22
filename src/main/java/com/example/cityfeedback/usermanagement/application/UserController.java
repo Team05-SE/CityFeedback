@@ -19,21 +19,29 @@ public class UserController {
         this.userService = userService;
     }
 
+    // GET ALL USERS
     @GetMapping
     public List<User> getAllUsers() {
         return this.userService.getAllUsers();
     }
 
+    // GET USER BY ID
     @GetMapping("/{id}")
     public User getUserById(@PathVariable UUID id) {
         return this.userService.getUserById(id);
     }
 
-
+    // SIGNUP
     @PostMapping
     public User create(@RequestBody UserDTO dto) {
         Email email = new Email(dto.email);
         Password password = new Password(dto.password);
         return userService.createUser(email, password, dto.role);
+    }
+
+    // LOGIN
+    @PostMapping("/login")
+    public User login(@RequestBody LoginRequestDTO dto) {
+        return userService.login(dto.email, dto.password);
     }
 }

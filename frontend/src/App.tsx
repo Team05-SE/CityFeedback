@@ -5,6 +5,7 @@ import './App.css'
 import { Routes, Route, Link } from 'react-router-dom'
 import SignupPage from "@/app/signup/page"
 import LoginPage from "@/app/login/page"
+import DashboardWelcomePage from "@/app/dashboard-welcome/page"
 
 function HomePage() {
   return (
@@ -36,6 +37,7 @@ function App() {
       <Route path="/" element={<HomePage />} />
       <Route path="/signup" element={<SignupPage />} />
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/dashboard-welcome" element={<DashboardWelcomePage />} />
     </Routes>
   )
 }
