@@ -20,21 +20,34 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
+    // GET ALL USERS
     public List<User> getAllUsers() {
         return this.userRepository.findAll();
     }
 
+    // GET USER BY ID
     public User getUserById(UUID id) {
-        if(!this.userRepository.existsById(id)) {
-            throw new EntityNotFoundException("no user with given id found");
-        }
-        return this.userRepository.findById(id).get();
+        return this.userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
     }
 
+    // SIGNUP
     public User createUser(Email email, Password password, UserRole role) {
         User user = new User(email, password, role);
         return userRepository.save(user);
     }
 
-}
+    // LOGIN (EMAIL + PASSWORD)
+    public User login(String email, String rawPassword) {
+        Email emailVO = new Email(email);
 
+        User user = userRepository.findByEmail(emailVO)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        if (!user.getPassword().matches(rawPassword)) {
+            throw new EntityNotFoundException("Invalid password");
+        }
+
+        return user;
+    }
+}
