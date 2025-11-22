@@ -19,22 +19,30 @@ public class UserController {
 <span class="fc" id="L19">        this.userService = userService;</span>
 <span class="fc" id="L20">    }</span>
 
+    // GET ALL USERS
     @GetMapping
     public List&lt;User&gt; getAllUsers() {
-<span class="nc" id="L24">        return this.userService.getAllUsers();</span>
+<span class="nc" id="L25">        return this.userService.getAllUsers();</span>
     }
 
+    // GET USER BY ID
     @GetMapping(&quot;/{id}&quot;)
     public User getUserById(@PathVariable UUID id) {
-<span class="nc" id="L29">        return this.userService.getUserById(id);</span>
+<span class="nc" id="L31">        return this.userService.getUserById(id);</span>
     }
 
-
+    // SIGNUP
     @PostMapping
     public User create(@RequestBody UserDTO dto) {
-<span class="fc" id="L35">        Email email = new Email(dto.email);</span>
-<span class="fc" id="L36">        Password password = new Password(dto.password);</span>
-<span class="fc" id="L37">        return userService.createUser(email, password, dto.role);</span>
+<span class="fc" id="L37">        Email email = new Email(dto.email);</span>
+<span class="fc" id="L38">        Password password = new Password(dto.password);</span>
+<span class="fc" id="L39">        return userService.createUser(email, password, dto.role);</span>
+    }
+
+    // LOGIN
+    @PostMapping(&quot;/login&quot;)
+    public User login(@RequestBody LoginRequestDTO dto) {
+<span class="nc" id="L45">        return userService.login(dto.email, dto.password);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

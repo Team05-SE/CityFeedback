@@ -20,22 +20,35 @@ public class UserService {
 <span class="fc" id="L20">        this.userRepository = userRepository;</span>
 <span class="fc" id="L21">    }</span>
 
+    // GET ALL USERS
     public List&lt;User&gt; getAllUsers() {
-<span class="nc" id="L24">        return this.userRepository.findAll();</span>
+<span class="nc" id="L25">        return this.userRepository.findAll();</span>
     }
 
+    // GET USER BY ID
     public User getUserById(UUID id) {
-<span class="fc bfc" id="L28" title="All 2 branches covered.">        if(!this.userRepository.existsById(id)) {</span>
-<span class="fc" id="L29">            throw new EntityNotFoundException(&quot;no user with given id found&quot;);</span>
-        }
-<span class="fc" id="L31">        return this.userRepository.findById(id).get();</span>
+<span class="fc" id="L30">        return this.userRepository.findById(id)</span>
+<span class="fc" id="L31">                .orElseThrow(() -&gt; new EntityNotFoundException(&quot;User not found&quot;));</span>
     }
 
+    // SIGNUP
     public User createUser(Email email, Password password, UserRole role) {
-<span class="fc" id="L35">        User user = new User(email, password, role);</span>
-<span class="fc" id="L36">        return userRepository.save(user);</span>
+<span class="fc" id="L36">        User user = new User(email, password, role);</span>
+<span class="fc" id="L37">        return userRepository.save(user);</span>
     }
 
-}
+    // LOGIN (EMAIL + PASSWORD)
+    public User login(String email, String rawPassword) {
+<span class="nc" id="L42">        Email emailVO = new Email(email);</span>
 
+<span class="nc" id="L44">        User user = userRepository.findByEmail(emailVO)</span>
+<span class="nc" id="L45">                .orElseThrow(() -&gt; new EntityNotFoundException(&quot;User not found&quot;));</span>
+
+<span class="nc bnc" id="L47" title="All 2 branches missed.">        if (!user.getPassword().matches(rawPassword)) {</span>
+<span class="nc" id="L48">            throw new EntityNotFoundException(&quot;Invalid password&quot;);</span>
+        }
+
+<span class="nc" id="L51">        return user;</span>
+    }
+}
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>
