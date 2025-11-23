@@ -1,9 +1,11 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
-CityFeedback,com.example.cityfeedback.usermanagement.domain.model,User,0,40,0,0,0,11,0,7,0,7
-CityFeedback,com.example.cityfeedback.usermanagement.application,UserService,34,32,2,0,7,7,4,4,3,4
+CityFeedback,com.example.cityfeedback.usermanagement.domain.model,User,4,71,0,0,2,17,1,9,1,9
+CityFeedback,com.example.cityfeedback.usermanagement.application,UserRegisteredEventHandler,0,9,0,0,0,3,0,2,0,2
+CityFeedback,com.example.cityfeedback.usermanagement.application,UserService,34,49,2,0,7,11,4,4,3,4
 CityFeedback,com.example.cityfeedback.usermanagement.application,LoginRequestDTO,0,3,0,0,0,1,0,1,0,1
 CityFeedback,com.example.cityfeedback.usermanagement.application,UserController,17,26,0,0,3,6,3,2,3,2
 CityFeedback,com.example.cityfeedback.usermanagement.application,UserDTO,0,3,0,0,0,1,0,1,0,1
+CityFeedback,com.example.cityfeedback.usermanagement.domain.events,UserRegisteredEvent,9,22,0,0,3,6,3,2,3,2
 CityFeedback,com.example.cityfeedback.feedbackmanagement.domain.model,Feedback,19,79,0,0,1,33,1,17,1,17
 CityFeedback,com.example.cityfeedback.feedbackmanagement.domain.valueobjects,Category,0,33,0,0,0,6,0,1,0,1
 CityFeedback,com.example.cityfeedback.feedbackmanagement.domain.valueobjects,Status,0,27,0,0,0,5,0,1,0,1

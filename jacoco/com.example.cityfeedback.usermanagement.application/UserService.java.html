@@ -4,9 +4,12 @@ import com.example.cityfeedback.usermanagement.domain.model.User;
 import com.example.cityfeedback.usermanagement.domain.valueobjects.Email;
 import com.example.cityfeedback.usermanagement.domain.valueobjects.Password;
 import com.example.cityfeedback.usermanagement.domain.valueobjects.UserRole;
+import com.example.cityfeedback.usermanagement.domain.events.UserRegisteredEvent;
 import com.example.cityfeedback.usermanagement.infrastructure.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -15,40 +18,49 @@ import java.util.UUID;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
-<span class="fc" id="L19">    public UserService(UserRepository userRepository) {</span>
-<span class="fc" id="L20">        this.userRepository = userRepository;</span>
-<span class="fc" id="L21">    }</span>
+<span class="fc" id="L23">    public UserService(UserRepository userRepository, ApplicationEventPublisher eventPublisher) {</span>
+<span class="fc" id="L24">        this.userRepository = userRepository;</span>
+<span class="fc" id="L25">        this.eventPublisher = eventPublisher;</span>
+<span class="fc" id="L26">    }</span>
 
     // GET ALL USERS
     public List&lt;User&gt; getAllUsers() {
-<span class="nc" id="L25">        return this.userRepository.findAll();</span>
+<span class="nc" id="L30">        return this.userRepository.findAll();</span>
     }
 
     // GET USER BY ID
     public User getUserById(UUID id) {
-<span class="fc" id="L30">        return this.userRepository.findById(id)</span>
-<span class="fc" id="L31">                .orElseThrow(() -&gt; new EntityNotFoundException(&quot;User not found&quot;));</span>
+<span class="fc" id="L35">        return this.userRepository.findById(id)</span>
+<span class="fc" id="L36">                .orElseThrow(() -&gt; new EntityNotFoundException(&quot;User not found&quot;));</span>
     }
 
     // SIGNUP
+    @Transactional
     public User createUser(Email email, Password password, UserRole role) {
-<span class="fc" id="L36">        User user = new User(email, password, role);</span>
-<span class="fc" id="L37">        return userRepository.save(user);</span>
+<span class="fc" id="L42">        User user = new User(email, password, role);</span>
+<span class="fc" id="L43">        user = userRepository.save(user);</span>
+
+        // Domain Event publishen
+<span class="fc" id="L46">        UserRegisteredEvent event = new UserRegisteredEvent(user.getId(), email.getValue());</span>
+<span class="fc" id="L47">        eventPublisher.publishEvent(event);</span>
+
+<span class="fc" id="L49">        return user;</span>
     }
 
     // LOGIN (EMAIL + PASSWORD)
     public User login(String email, String rawPassword) {
-<span class="nc" id="L42">        Email emailVO = new Email(email);</span>
+<span class="nc" id="L54">        Email emailVO = new Email(email);</span>
 
-<span class="nc" id="L44">        User user = userRepository.findByEmail(emailVO)</span>
-<span class="nc" id="L45">                .orElseThrow(() -&gt; new EntityNotFoundException(&quot;User not found&quot;));</span>
+<span class="nc" id="L56">        User user = userRepository.findByEmail(emailVO)</span>
+<span class="nc" id="L57">                .orElseThrow(() -&gt; new EntityNotFoundException(&quot;User not found&quot;));</span>
 
-<span class="nc bnc" id="L47" title="All 2 branches missed.">        if (!user.getPassword().matches(rawPassword)) {</span>
-<span class="nc" id="L48">            throw new EntityNotFoundException(&quot;Invalid password&quot;);</span>
+<span class="nc bnc" id="L59" title="All 2 branches missed.">        if (!user.getPassword().matches(rawPassword)) {</span>
+<span class="nc" id="L60">            throw new EntityNotFoundException(&quot;Invalid password&quot;);</span>
         }
 
-<span class="nc" id="L51">        return user;</span>
+<span class="nc" id="L63">        return user;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>
