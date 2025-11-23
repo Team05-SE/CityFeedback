@@ -1,27 +1,33 @@
 package com.example.cityfeedback.usermanagement.domain.valueobjects;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Embeddable;
-import org.springframework.security.crypto.bcrypt.BCrypt;
+import com.example.cityfeedback.usermanagement.domain.services.PasswordHasher;
 
-@Embeddable
 public class Password {
 
-    @Column(name = "password", nullable = false)
-    private String hashed;
+    private final String hashed;
 
-    protected Password() {
-        // Für JPA
+    public Password() {
+        // Für Framework-Unabhängigkeit - sollte nicht direkt verwendet werden
+        this.hashed = null;
     }
 
-    // Registrierung: Hash wird direkt erzeugt
-    public Password(String rawPassword) {
+    // Konstruktor für bereits gehashtes Passwort (z.B. aus DB)
+    public Password(String hashed) {
+        if (hashed == null) {
+            throw new IllegalArgumentException("Passwort-Hash darf nicht null sein.");
+        }
+        this.hashed = hashed;
+    }
+
+    // Factory-Methode für neue Passwörter (mit Hashing)
+    public static Password create(String rawPassword, PasswordHasher hasher) {
         validatePassword(rawPassword);
-        this.hashed = hash(rawPassword);
+        String hashed = hasher.hash(rawPassword);
+        return new Password(hashed);
     }
 
     // Passwort-Anforderungen überprüfen
-    private void validatePassword(String value) {
+    public static void validatePassword(String value) {
         if (value == null)
             throw new IllegalArgumentException("Passwort darf nicht null sein.");
 
@@ -35,19 +41,14 @@ public class Password {
             throw new IllegalArgumentException("Passwort muss mindestens eine Zahl enthalten.");
     }
 
-    // BCrypt Hash generieren
-    private String hash(String rawPassword) {
-        return BCrypt.hashpw(rawPassword, BCrypt.gensalt());
-    }
-
-    // Getter für JPA & Login-Service
+    // Getter für Hash-Wert
     public String getValue() {
         return hashed;
     }
 
-    // Wird vom Login-Service genutzt
-    public boolean matches(String rawPassword) {
-        return BCrypt.checkpw(rawPassword, this.hashed);
+    // Wird vom Login-Service genutzt - benötigt PasswordHasher Service
+    public boolean matches(String rawPassword, PasswordHasher hasher) {
+        return hasher.matches(rawPassword, this.hashed);
     }
 
     @Override

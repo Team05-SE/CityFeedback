@@ -1,8 +1,6 @@
 package com.example.cityfeedback.usermanagement.application;
 
 import com.example.cityfeedback.usermanagement.domain.model.User;
-import com.example.cityfeedback.usermanagement.domain.valueobjects.Email;
-import com.example.cityfeedback.usermanagement.domain.valueobjects.Password;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,7 +8,6 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/user")
-@CrossOrigin(origins = "http://localhost:5173")
 public class UserController {
 
     private final UserService userService;
@@ -34,9 +31,7 @@ public class UserController {
     // SIGNUP
     @PostMapping
     public User create(@RequestBody UserDTO dto) {
-        Email email = new Email(dto.email);
-        Password password = new Password(dto.password);
-        return userService.createUser(email, password, dto.role);
+        return userService.createUser(dto.email, dto.password, dto.role);
     }
 
     // LOGIN

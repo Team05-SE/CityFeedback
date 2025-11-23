@@ -3,16 +3,16 @@ package com.example.cityfeedback.feedbackmanagement.application;
 import com.example.cityfeedback.feedbackmanagement.domain.model.Feedback;
 import com.example.cityfeedback.feedbackmanagement.domain.valueobjects.Category;
 import com.example.cityfeedback.usermanagement.domain.model.User;
+import com.example.cityfeedback.usermanagement.domain.repositories.UserRepository;
 import com.example.cityfeedback.usermanagement.domain.valueobjects.Email;
 import com.example.cityfeedback.usermanagement.domain.valueobjects.Password;
 import com.example.cityfeedback.usermanagement.domain.valueobjects.UserRole;
+import com.example.cityfeedback.usermanagement.domain.services.PasswordHasher;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
-
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -23,12 +23,18 @@ class FeedbackControllerTest {
     private TestRestTemplate rest;
 
     @Autowired
-    private com.example.cityfeedback.usermanagement.infrastructure.UserRepository userRepository;
+    private UserRepository userRepository;
+
+    @Autowired
+    private PasswordHasher passwordHasher;
 
     @Test
     void postFeedback_shouldReturn200() {
-        // User vorbereiten
-        User user = new User(new Email("controller@test.de"), new Password("Abcdef12"), UserRole.CITIZEN);
+        // User vorbereiten - erstelle ohne ID (wird beim Speichern gesetzt)
+        Email email = new Email("controller@test.de");
+        Password password = Password.create("Abcdef12", passwordHasher);
+        User user = new User(email, password, UserRole.CITIZEN);
+        // Keine ID setzen - wird beim Speichern generiert
         userRepository.save(user);
 
         FeedbackDTO dto = new FeedbackDTO();
