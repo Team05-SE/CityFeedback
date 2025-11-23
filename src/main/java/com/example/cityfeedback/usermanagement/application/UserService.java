@@ -4,9 +4,12 @@ import com.example.cityfeedback.usermanagement.domain.model.User;
 import com.example.cityfeedback.usermanagement.domain.valueobjects.Email;
 import com.example.cityfeedback.usermanagement.domain.valueobjects.Password;
 import com.example.cityfeedback.usermanagement.domain.valueobjects.UserRole;
+import com.example.cityfeedback.usermanagement.domain.events.UserRegisteredEvent;
 import com.example.cityfeedback.usermanagement.infrastructure.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -15,9 +18,11 @@ import java.util.UUID;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, ApplicationEventPublisher eventPublisher) {
         this.userRepository = userRepository;
+        this.eventPublisher = eventPublisher;
     }
 
     // GET ALL USERS
@@ -32,9 +37,16 @@ public class UserService {
     }
 
     // SIGNUP
+    @Transactional
     public User createUser(Email email, Password password, UserRole role) {
         User user = new User(email, password, role);
-        return userRepository.save(user);
+        user = userRepository.save(user);
+
+        // Domain Event publishen
+        UserRegisteredEvent event = new UserRegisteredEvent(user.getId(), email.getValue());
+        eventPublisher.publishEvent(event);
+
+        return user;
     }
 
     // LOGIN (EMAIL + PASSWORD)

@@ -3,8 +3,12 @@ package com.example.cityfeedback.usermanagement.domain.model;
 import com.example.cityfeedback.usermanagement.domain.valueobjects.Email;
 import com.example.cityfeedback.usermanagement.domain.valueobjects.Password;
 import com.example.cityfeedback.usermanagement.domain.valueobjects.UserRole;
+import com.example.cityfeedback.usermanagement.domain.events.UserRegisteredEvent;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -29,6 +33,9 @@ public class User {
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
+    @Transient
+    private final List<Object> domainEvents = new ArrayList<>();
+
     public User() {}
 
     public User(Email email, Password password, UserRole role) {
@@ -38,7 +45,21 @@ public class User {
     }
 
     public static User register(Email email, Password password) {
-        return new User(email, password, UserRole.CITIZEN);
+        User user = new User(email, password, UserRole.CITIZEN);
+        user.registerEvent(new UserRegisteredEvent(user.id, email.getValue()));
+        return user;
+    }
+
+    private void registerEvent(Object event) {
+        this.domainEvents.add(event);
+    }
+
+    public List<Object> getDomainEvents() {
+        return Collections.unmodifiableList(domainEvents);
+    }
+
+    public void clearDomainEvents() {
+        this.domainEvents.clear();
     }
 
     public UUID getId() {
