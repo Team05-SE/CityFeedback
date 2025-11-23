@@ -2,52 +2,55 @@ package com.example.cityfeedback.feedbackmanagement.domain.model;
 
 import com.example.cityfeedback.feedbackmanagement.domain.valueobjects.Category;
 import com.example.cityfeedback.feedbackmanagement.domain.valueobjects.Status;
-import jakarta.persistence.*;
-import com.example.cityfeedback.usermanagement.domain.model.User;
+import com.example.cityfeedback.feedbackmanagement.domain.valueobjects.UserId;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
-@Entity
+/**
+ * Aggregate Root: Feedback
+ * Framework-unabhängige Domain-Entität.
+ */
 public class Feedback {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
-    @Enumerated(EnumType.STRING)
     private Category category;
     private LocalDate feedbackDate;
     private String content;
     private Status status;
     private boolean isPublished;
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private UserId creatorId;
 
     public Feedback() {
-
+        // Für Framework-Unabhängigkeit
     }
 
-    public Feedback(Long id, String title, Category category, LocalDate feedbackDate, String content, Status status, boolean isPublished) {
+    public Feedback(Long id, String title, Category category, LocalDate feedbackDate, String content, Status status, boolean isPublished, UserId creatorId) {
         this.id = id;
-        this.title = title;
-        this.category = category;
-        this.feedbackDate = feedbackDate;
-        this.content = content;
-        this.status = status;
+        this.title = Objects.requireNonNull(title, "Titel darf nicht null sein");
+        this.category = Objects.requireNonNull(category, "Kategorie darf nicht null sein");
+        this.feedbackDate = Objects.requireNonNull(feedbackDate, "Datum darf nicht null sein");
+        this.content = Objects.requireNonNull(content, "Inhalt darf nicht null sein");
+        this.status = Objects.requireNonNull(status, "Status darf nicht null sein");
         this.isPublished = isPublished;
+        this.creatorId = Objects.requireNonNull(creatorId, "Ersteller-ID darf nicht null sein");
     }
 
     public Long getId() {
         return id;
     }
 
-    public User getUser() {
-        return user;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public UserId getCreatorId() {
+        return creatorId;
+    }
+
+    public void setCreatorId(UserId creatorId) {
+        this.creatorId = Objects.requireNonNull(creatorId, "Ersteller-ID darf nicht null sein");
     }
 
     public String getTitle() {
@@ -86,8 +89,8 @@ public class Feedback {
         return status;
     }
 
-    public void setStatus(Status stats) {
-        this.status = stats;
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
     public boolean isPublished() {
@@ -107,8 +110,9 @@ public class Feedback {
                 ", category=" + category +
                 ", feedbackDate=" + feedbackDate +
                 ", content='" + content + '\'' +
-                ", stats=" + status +
+                ", status=" + status +
                 ", isPublished=" + isPublished +
+                ", creatorId=" + creatorId +
                 '}';
     }
 }

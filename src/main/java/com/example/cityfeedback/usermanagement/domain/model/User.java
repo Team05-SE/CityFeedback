@@ -4,7 +4,6 @@ import com.example.cityfeedback.usermanagement.domain.valueobjects.Email;
 import com.example.cityfeedback.usermanagement.domain.valueobjects.Password;
 import com.example.cityfeedback.usermanagement.domain.valueobjects.UserRole;
 import com.example.cityfeedback.usermanagement.domain.events.UserRegisteredEvent;
-import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,28 +14,20 @@ import java.util.UUID;
 /**
  * Aggregate Root: User
  * Repräsentiert einen registrierten Benutzer in unserem City-Feedback-System.
+ * Framework-unabhängige Domain-Entität.
  */
-@Entity
-@Table(name = "users")
 public class User {
 
-    @Id
-    @GeneratedValue
     private UUID id;
 
-    @Embedded
     private Email email;
-
-    @Embedded
     private Password password;
-
-    @Enumerated(EnumType.STRING)
     private UserRole role;
-
-    @Transient
     private final List<Object> domainEvents = new ArrayList<>();
 
-    public User() {}
+    public User() {
+        // Für Framework-Unabhängigkeit
+    }
 
     public User(Email email, Password password, UserRole role) {
         this.email = Objects.requireNonNull(email);
@@ -46,8 +37,15 @@ public class User {
 
     public static User register(Email email, Password password) {
         User user = new User(email, password, UserRole.CITIZEN);
-        user.registerEvent(new UserRegisteredEvent(user.id, email.getValue()));
+        // ID wird beim Speichern im Repository gesetzt
+        // Temporäre ID für Domain Event (wird später durch echte ID ersetzt)
+        UUID tempId = UUID.randomUUID();
+        user.registerEvent(new UserRegisteredEvent(tempId, email.getValue()));
         return user;
+    }
+    
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     private void registerEvent(Object event) {

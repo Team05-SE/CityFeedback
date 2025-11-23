@@ -2,15 +2,11 @@ package com.example.cityfeedback.feedbackmanagement.application;
 
 import com.example.cityfeedback.feedbackmanagement.domain.model.Feedback;
 import org.springframework.web.bind.annotation.*;
-import com.example.cityfeedback.feedbackmanagement.application.FeedbackDTO;
-
-
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/feedback")
-@CrossOrigin(origins = "http://localhost:5173")
 public class FeedbackController {
 
     private final FeedbackService feedbackService;
@@ -33,7 +29,4 @@ public class FeedbackController {
     public Feedback createFeedback(@RequestBody FeedbackDTO dto) {
         return feedbackService.createFeedback(dto);
     }
-
-
-
 }

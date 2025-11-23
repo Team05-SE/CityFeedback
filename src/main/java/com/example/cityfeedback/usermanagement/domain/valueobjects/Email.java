@@ -1,22 +1,18 @@
 package com.example.cityfeedback.usermanagement.domain.valueobjects;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Embeddable;
-
 import java.util.Objects;
 import java.util.regex.Pattern;
 
-@Embeddable
 public class Email {
 
     private static final Pattern EMAIL_PATTERN =
             Pattern.compile("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
 
-    @Column(name = "email", nullable = false, unique = true)
-    private String value;
+    private final String value;
 
-    protected Email() {
-        // JPA benötigt einen geschützten No-Args Konstruktor
+    public Email() {
+        // Für Framework-Unabhängigkeit - sollte nicht direkt verwendet werden
+        this.value = null;
     }
 
     public Email(String value) {
