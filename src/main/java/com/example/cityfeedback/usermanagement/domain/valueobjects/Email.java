@@ -1,23 +1,20 @@
 package com.example.cityfeedback.usermanagement.domain.valueobjects;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Embeddable;
-
 import java.util.Objects;
 import java.util.regex.Pattern;
 
-@Embeddable
+/**
+ * Value Object für E-Mail-Adressen.
+ * Kapselt Validierung und Normalisierung von E-Mail-Adressen.
+ * 
+ * Diese Klasse ist framework-unabhängig und enthält keine JPA-Annotationen.
+ */
 public class Email {
 
     private static final Pattern EMAIL_PATTERN =
             Pattern.compile("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
 
-    @Column(name = "email", nullable = false, unique = true)
-    private String value;
-
-    protected Email() {
-        // JPA benötigt einen geschützten No-Args Konstruktor
-    }
+    private final String value;
 
     public Email(String value) {
         if (value == null) {

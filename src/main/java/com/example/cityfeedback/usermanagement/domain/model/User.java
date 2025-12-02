@@ -4,7 +4,6 @@ import com.example.cityfeedback.usermanagement.domain.valueobjects.Email;
 import com.example.cityfeedback.usermanagement.domain.valueobjects.Password;
 import com.example.cityfeedback.usermanagement.domain.valueobjects.UserRole;
 import com.example.cityfeedback.usermanagement.domain.events.UserRegisteredEvent;
-import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,27 +14,25 @@ import java.util.UUID;
 /**
  * Aggregate Root: User
  * Repräsentiert einen registrierten Benutzer in unserem City-Feedback-System.
+ * 
+ * Diese Klasse ist framework-unabhängig und enthält keine JPA-Annotationen.
+ * Die Persistierung wird über UserEntity und UserMapper in der Infrastructure-Schicht gehandhabt.
  */
-@Entity
-@Table(name = "users")
 public class User {
 
-    @Id
-    @GeneratedValue
     private UUID id;
 
-    @Embedded
     private Email email;
-
-    @Embedded
     private Password password;
-
-    @Enumerated(EnumType.STRING)
     private UserRole role;
 
-    @Transient
+    // Domain Events werden nicht persistiert
     private final List<Object> domainEvents = new ArrayList<>();
 
+    /**
+     * No-Args Konstruktor für Mapper in Infrastructure.
+     * WARNUNG: Verwende stattdessen die Factory-Methode register() oder den öffentlichen Konstruktor.
+     */
     public User() {}
 
     public User(Email email, Password password, UserRole role) {
@@ -76,5 +73,13 @@ public class User {
 
     public UserRole getRole() {
         return role;
+    }
+
+    /**
+     * Setter für Mapper in Infrastructure.
+     * WARNUNG: Diese Methode ist nur für die Persistierung gedacht.
+     */
+    public void setId(UUID id) {
+        this.id = id;
     }
 }

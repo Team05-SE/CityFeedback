@@ -12,8 +12,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 
-import java.util.UUID;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -23,13 +21,13 @@ class FeedbackControllerTest {
     private TestRestTemplate rest;
 
     @Autowired
-    private com.example.cityfeedback.usermanagement.infrastructure.UserRepository userRepository;
+    private com.example.cityfeedback.usermanagement.domain.repositories.UserRepository userRepository;
 
     @Test
     void postFeedback_shouldReturn200() {
         // User vorbereiten
         User user = new User(new Email("controller@test.de"), new Password("Abcdef12"), UserRole.CITIZEN);
-        userRepository.save(user);
+        user = userRepository.save(user);
 
         FeedbackDTO dto = new FeedbackDTO();
         dto.userId = user.getId();
