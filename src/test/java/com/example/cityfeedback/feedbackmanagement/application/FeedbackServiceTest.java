@@ -11,8 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.UUID;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -23,16 +21,13 @@ class FeedbackServiceTest {
     private FeedbackService feedbackService;
 
     @Autowired
-    private com.example.cityfeedback.usermanagement.infrastructure.UserRepository userRepository;
-
-    @Autowired
-    private com.example.cityfeedback.feedbackmanagement.infrastructure.FeedbackRepository feedbackRepository;
+    private com.example.cityfeedback.usermanagement.domain.repositories.UserRepository userRepository;
 
     @Test
     void createFeedback_shouldPersistFeedback() {
         // Arrange: User exists
         User user = new User(new Email("test@mail.de"), new Password("Abcdef12"), UserRole.CITIZEN);
-        userRepository.save(user);
+        user = userRepository.save(user);
 
         FeedbackDTO dto = new FeedbackDTO();
         dto.userId = user.getId();
@@ -47,7 +42,7 @@ class FeedbackServiceTest {
         assertNotNull(saved.getId());
         assertEquals(dto.title, saved.getTitle());
         assertEquals(dto.content, saved.getContent());
-        assertEquals(user.getId(), saved.getUser().getId());
+        assertEquals(user.getId(), saved.getUserId()); // Jetzt userId statt getUser().getId()
         assertEquals(Category.VERKEHR, saved.getCategory());
     }
 

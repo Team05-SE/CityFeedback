@@ -42,7 +42,6 @@ class FeedbackDTOTest {
 
     @Test
     void dtoIsPureDataContainer() {
-        FeedbackDTO dto = new FeedbackDTO();
         // erwartet: keine Exceptions, keine Logik
         assertDoesNotThrow(() -> new FeedbackDTO());
     }

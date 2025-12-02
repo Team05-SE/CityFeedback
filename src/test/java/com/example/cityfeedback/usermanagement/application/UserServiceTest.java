@@ -1,12 +1,11 @@
 package com.example.cityfeedback.usermanagement.application;
 
-import com.example.cityfeedback.usermanagement.application.UserService;
+import com.example.cityfeedback.usermanagement.domain.exceptions.UserNotFoundException;
 import com.example.cityfeedback.usermanagement.domain.model.User;
 import com.example.cityfeedback.usermanagement.domain.valueobjects.Email;
 import com.example.cityfeedback.usermanagement.domain.valueobjects.Password;
 import com.example.cityfeedback.usermanagement.domain.valueobjects.UserRole;
-import com.example.cityfeedback.usermanagement.infrastructure.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
+import com.example.cityfeedback.usermanagement.domain.repositories.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -48,6 +47,6 @@ class UserServiceTest {
 
     @Test
     void getUserById_notExisting_shouldThrow() {
-        assertThrows(EntityNotFoundException.class, () -> userService.getUserById(UUID.randomUUID()));
+        assertThrows(UserNotFoundException.class, () -> userService.getUserById(UUID.randomUUID()));
     }
 }

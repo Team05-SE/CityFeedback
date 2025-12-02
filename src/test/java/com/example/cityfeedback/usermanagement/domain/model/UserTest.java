@@ -3,8 +3,7 @@ package com.example.cityfeedback.usermanagement.domain.model;
 import com.example.cityfeedback.usermanagement.domain.valueobjects.Email;
 import com.example.cityfeedback.usermanagement.domain.valueobjects.Password;
 import com.example.cityfeedback.usermanagement.domain.valueobjects.UserRole;
-import com.example.cityfeedback.usermanagement.infrastructure.UserRepository;
-import org.junit.jupiter.api.Assertions;
+import com.example.cityfeedback.usermanagement.domain.repositories.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,9 +25,9 @@ class UserTest {
     @Test
     void register_shouldAssignUniqueId() {
         User user = User.register(new Email("test@test.com"), new Password("Passwort123"));
-        userRepository.save(user);
+        User saved = userRepository.save(user);
 
-        assertNotNull(user.getId());
+        assertNotNull(saved.getId());
     }
 
     @Test

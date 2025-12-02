@@ -1,16 +1,13 @@
 package com.example.cityfeedback.feedbackmanagement.application;
 
 import com.example.cityfeedback.feedbackmanagement.domain.model.Feedback;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
-import com.example.cityfeedback.feedbackmanagement.application.FeedbackDTO;
-
-
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/feedback")
-@CrossOrigin(origins = "http://localhost:5173")
 public class FeedbackController {
 
     private final FeedbackService feedbackService;
@@ -30,7 +27,7 @@ public class FeedbackController {
     }
 
     @PostMapping
-    public Feedback createFeedback(@RequestBody FeedbackDTO dto) {
+    public Feedback createFeedback(@Valid @RequestBody FeedbackDTO dto) {
         return feedbackService.createFeedback(dto);
     }
 

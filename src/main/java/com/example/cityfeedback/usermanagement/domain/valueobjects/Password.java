@@ -1,23 +1,37 @@
 package com.example.cityfeedback.usermanagement.domain.valueobjects;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Embeddable;
-import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-@Embeddable
+/**
+ * Value Object für Passwörter.
+ * Kapselt Validierung, Hashing und Verifikation von Passwörtern.
+ * 
+ * Diese Klasse ist framework-unabhängig und enthält keine JPA-Annotationen.
+ */
 public class Password {
 
-    @Column(name = "password", nullable = false)
     private String hashed;
 
-    protected Password() {
-        // Für JPA
-    }
 
     // Registrierung: Hash wird direkt erzeugt
     public Password(String rawPassword) {
         validatePassword(rawPassword);
         this.hashed = hash(rawPassword);
+    }
+
+    // Factory-Methode für bereits gehashte Passwörter (z.B. beim Laden aus DB)
+    public static Password fromHash(String hashedPassword) {
+        if (hashedPassword == null || hashedPassword.isBlank()) {
+            throw new IllegalArgumentException("Gehashtes Passwort darf nicht null oder leer sein.");
+        }
+        Password password = new Password();
+        password.hashed = hashedPassword;
+        return password;
+    }
+
+    // Package-private Konstruktor für fromHash
+    private Password() {
+        // Für JPA und fromHash
     }
 
     // Passwort-Anforderungen überprüfen
@@ -37,7 +51,8 @@ public class Password {
 
     // BCrypt Hash generieren
     private String hash(String rawPassword) {
-        return BCrypt.hashpw(rawPassword, BCrypt.gensalt());
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        return encoder.encode(rawPassword);
     }
 
     // Getter für JPA & Login-Service
@@ -47,7 +62,8 @@ public class Password {
 
     // Wird vom Login-Service genutzt
     public boolean matches(String rawPassword) {
-        return BCrypt.checkpw(rawPassword, this.hashed);
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        return encoder.matches(rawPassword, this.hashed);
     }
 
     @Override

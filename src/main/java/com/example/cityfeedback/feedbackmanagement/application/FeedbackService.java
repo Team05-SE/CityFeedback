@@ -1,15 +1,14 @@
 package com.example.cityfeedback.feedbackmanagement.application;
 
 import com.example.cityfeedback.feedbackmanagement.domain.model.Feedback;
-import com.example.cityfeedback.feedbackmanagement.domain.valueobjects.Status;
-import com.example.cityfeedback.feedbackmanagement.infrastructure.FeedbackRepository;
-import com.example.cityfeedback.usermanagement.infrastructure.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
+import com.example.cityfeedback.feedbackmanagement.domain.exceptions.FeedbackNotFoundException;
+import com.example.cityfeedback.feedbackmanagement.domain.repositories.FeedbackRepository;
+import com.example.cityfeedback.usermanagement.domain.exceptions.UserNotFoundException;
+import com.example.cityfeedback.usermanagement.domain.repositories.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class FeedbackService {
@@ -28,25 +27,28 @@ public class FeedbackService {
 
     public Feedback getFeedbackById(Long id) {
         return feedbackRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("no feedback with given id found"));
+                .orElseThrow(() -> new FeedbackNotFoundException(id));
     }
 
+    @Transactional
     public Feedback createFeedback(FeedbackDTO dto) {
+        if (dto == null || dto.userId == null || dto.title == null || dto.title.isBlank() 
+                || dto.category == null || dto.content == null || dto.content.isBlank()) {
+            throw new IllegalArgumentException("Feedback-Daten sind unvollständig.");
+        }
 
-        var user = userRepository.findById(dto.userId)
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+        // Prüfen, ob User existiert (lose Kopplung: nur ID-Prüfung)
+        if (!userRepository.findById(dto.userId).isPresent()) {
+            throw new UserNotFoundException(dto.userId);
+        }
 
-        Feedback feedback = new Feedback(
-                null,
+        // Factory-Methode des Aggregats verwenden
+        Feedback feedback = Feedback.create(
                 dto.title,
                 dto.category,
-                LocalDate.now(),
                 dto.content,
-                Status.OPEN,
-                false
+                dto.userId
         );
-
-        feedback.setUser(user);
 
         return feedbackRepository.save(feedback);
     }
