@@ -3,6 +3,7 @@
 import com.example.cityfeedback.usermanagement.domain.model.User;
 import com.example.cityfeedback.usermanagement.domain.valueobjects.Email;
 import com.example.cityfeedback.usermanagement.domain.valueobjects.Password;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,7 +11,6 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping(&quot;/user&quot;)
-@CrossOrigin(origins = &quot;http://localhost:5173&quot;)
 public class UserController {
 
     private final UserService userService;
@@ -33,7 +33,7 @@ public class UserController {
 
     // SIGNUP
     @PostMapping
-    public User create(@RequestBody UserDTO dto) {
+    public User create(@Valid @RequestBody UserDTO dto) {
 <span class="fc" id="L37">        Email email = new Email(dto.email);</span>
 <span class="fc" id="L38">        Password password = new Password(dto.password);</span>
 <span class="fc" id="L39">        return userService.createUser(email, password, dto.role);</span>
@@ -41,7 +41,7 @@ public class UserController {
 
     // LOGIN
     @PostMapping(&quot;/login&quot;)
-    public User login(@RequestBody LoginRequestDTO dto) {
+    public User login(@Valid @RequestBody LoginRequestDTO dto) {
 <span class="nc" id="L45">        return userService.login(dto.email, dto.password);</span>
     }
 }

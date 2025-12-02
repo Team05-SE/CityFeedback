@@ -2,114 +2,244 @@
 
 import com.example.cityfeedback.feedbackmanagement.domain.valueobjects.Category;
 import com.example.cityfeedback.feedbackmanagement.domain.valueobjects.Status;
-import jakarta.persistence.*;
-import com.example.cityfeedback.usermanagement.domain.model.User;
 
 import java.time.LocalDate;
+import java.util.Objects;
+import java.util.UUID;
 
-@Entity
+/**
+ * Aggregate Root: Feedback
+ * Repräsentiert ein Feedback-Eintrag im City-Feedback-System.
+ * 
+ * Diese Klasse ist framework-unabhängig und enthält keine JPA-Annotationen.
+ * Die Persistierung wird über FeedbackEntity und FeedbackMapper in der Infrastructure-Schicht gehandhabt.
+ */
 public class Feedback {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
-    @Enumerated(EnumType.STRING)
     private Category category;
     private LocalDate feedbackDate;
     private String content;
     private Status status;
     private boolean isPublished;
-    @ManyToOne
-    @JoinColumn(name = &quot;user_id&quot;, nullable = false)
-    private User user;
+    private UUID userId; // Lose Kopplung: Nur User-ID statt User-Entity
 
-<span class="fc" id="L27">    public Feedback() {</span>
+    /**
+     * No-Args Konstruktor für Mapper in Infrastructure.
+     * WARNUNG: Verwende stattdessen die Factory-Methode create().
+     */
+<span class="fc" id="L32">    public Feedback() {</span>
+<span class="fc" id="L33">    }</span>
 
-<span class="fc" id="L29">    }</span>
+    /**
+     * Privater Konstruktor für interne Verwendung.
+     * Verwende stattdessen die Factory-Methode create().
+     */
+    private Feedback(Long id, String title, Category category, LocalDate feedbackDate,
+<span class="fc" id="L40">                     String content, Status status, boolean isPublished, UUID userId) {</span>
+<span class="fc" id="L41">        this.id = id;</span>
+<span class="fc" id="L42">        this.title = title;</span>
+<span class="fc" id="L43">        this.category = category;</span>
+<span class="fc" id="L44">        this.feedbackDate = feedbackDate;</span>
+<span class="fc" id="L45">        this.content = content;</span>
+<span class="fc" id="L46">        this.status = status;</span>
+<span class="fc" id="L47">        this.isPublished = isPublished;</span>
+<span class="fc" id="L48">        this.userId = userId;</span>
+<span class="fc" id="L49">    }</span>
 
-<span class="fc" id="L31">    public Feedback(Long id, String title, Category category, LocalDate feedbackDate, String content, Status status, boolean isPublished) {</span>
-<span class="fc" id="L32">        this.id = id;</span>
-<span class="fc" id="L33">        this.title = title;</span>
-<span class="fc" id="L34">        this.category = category;</span>
-<span class="fc" id="L35">        this.feedbackDate = feedbackDate;</span>
-<span class="fc" id="L36">        this.content = content;</span>
-<span class="fc" id="L37">        this.status = status;</span>
-<span class="fc" id="L38">        this.isPublished = isPublished;</span>
-<span class="fc" id="L39">    }</span>
+    /**
+     * Factory-Methode zum Erstellen eines neuen Feedbacks.
+     * 
+     * @param title Titel des Feedbacks
+     * @param category Kategorie des Feedbacks
+     * @param content Inhalt des Feedbacks
+     * @param userId ID des Benutzers, der das Feedback erstellt
+     * @return Neues Feedback-Objekt mit Status OPEN und nicht veröffentlicht
+     * @throws IllegalArgumentException wenn Validierung fehlschlägt
+     */
+    public static Feedback create(String title, Category category, String content, UUID userId) {
+<span class="fc" id="L62">        validateTitle(title);</span>
+<span class="fc" id="L63">        validateContent(content);</span>
+<span class="fc" id="L64">        validateCategory(category);</span>
+<span class="fc" id="L65">        Objects.requireNonNull(userId, &quot;User-ID darf nicht null sein&quot;);</span>
 
+<span class="fc" id="L67">        return new Feedback(</span>
+            null, // ID wird von der Datenbank generiert
+            title,
+            category,
+<span class="fc" id="L71">            LocalDate.now(),</span>
+            content,
+            Status.OPEN,
+            false, // Neues Feedback ist zunächst nicht veröffentlicht
+            userId
+        );
+    }
+
+    /**
+     * Veröffentlicht das Feedback.
+     * 
+     * @throws IllegalStateException wenn das Feedback bereits veröffentlicht ist
+     */
+    public void publish() {
+<span class="fc bfc" id="L85" title="All 2 branches covered.">        if (isPublished) {</span>
+<span class="fc" id="L86">            throw new IllegalStateException(&quot;Feedback ist bereits veröffentlicht.&quot;);</span>
+        }
+<span class="pc bpc" id="L88" title="1 of 2 branches missed.">        if (status == Status.CLOSED) {</span>
+<span class="nc" id="L89">            throw new IllegalStateException(&quot;Geschlossenes Feedback kann nicht veröffentlicht werden.&quot;);</span>
+        }
+<span class="fc" id="L91">        this.isPublished = true;</span>
+<span class="fc" id="L92">    }</span>
+
+    /**
+     * Aktualisiert den Status des Feedbacks.
+     * 
+     * @param newStatus Neuer Status
+     * @throws IllegalArgumentException wenn der Status-Übergang ungültig ist
+     */
+    public void updateStatus(Status newStatus) {
+<span class="fc" id="L101">        Objects.requireNonNull(newStatus, &quot;Status darf nicht null sein&quot;);</span>
+        
+        // Validierung von Status-Übergängen
+<span class="pc bpc" id="L104" title="3 of 4 branches missed.">        if (this.status == Status.CLOSED &amp;&amp; newStatus != Status.CLOSED) {</span>
+<span class="nc" id="L105">            throw new IllegalArgumentException(&quot;Ein geschlossenes Feedback kann nicht wieder geöffnet werden.&quot;);</span>
+        }
+        
+<span class="fc" id="L108">        this.status = newStatus;</span>
+        
+        // Wenn Feedback geschlossen wird, automatisch als nicht veröffentlicht markieren
+<span class="fc bfc" id="L111" title="All 2 branches covered.">        if (newStatus == Status.CLOSED) {</span>
+<span class="fc" id="L112">            this.isPublished = false;</span>
+        }
+<span class="fc" id="L114">    }</span>
+
+    /**
+     * Schließt das Feedback.
+     */
+    public void close() {
+<span class="fc" id="L120">        updateStatus(Status.CLOSED);</span>
+<span class="fc" id="L121">    }</span>
+
+    // Validierungsmethoden
+    private static void validateTitle(String title) {
+<span class="fc bfc" id="L125" title="All 4 branches covered.">        if (title == null || title.isBlank()) {</span>
+<span class="fc" id="L126">            throw new IllegalArgumentException(&quot;Titel darf nicht null oder leer sein.&quot;);</span>
+        }
+<span class="pc bpc" id="L128" title="1 of 2 branches missed.">        if (title.length() &gt; 200) {</span>
+<span class="nc" id="L129">            throw new IllegalArgumentException(&quot;Titel darf maximal 200 Zeichen lang sein.&quot;);</span>
+        }
+<span class="fc" id="L131">    }</span>
+
+    private static void validateContent(String content) {
+<span class="fc bfc" id="L134" title="All 4 branches covered.">        if (content == null || content.isBlank()) {</span>
+<span class="fc" id="L135">            throw new IllegalArgumentException(&quot;Inhalt darf nicht null oder leer sein.&quot;);</span>
+        }
+<span class="pc bpc" id="L137" title="1 of 2 branches missed.">        if (content.length() &gt; 5000) {</span>
+<span class="nc" id="L138">            throw new IllegalArgumentException(&quot;Inhalt darf maximal 5000 Zeichen lang sein.&quot;);</span>
+        }
+<span class="fc" id="L140">    }</span>
+
+    private static void validateCategory(Category category) {
+<span class="fc" id="L143">        Objects.requireNonNull(category, &quot;Kategorie darf nicht null sein.&quot;);</span>
+<span class="fc" id="L144">    }</span>
+
+    // Getter
     public Long getId() {
-<span class="fc" id="L42">        return id;</span>
+<span class="fc" id="L148">        return id;</span>
     }
-
-    public User getUser() {
-<span class="fc" id="L46">        return user;</span>
-    }
-
-    public void setUser(User user) {
-<span class="fc" id="L50">        this.user = user;</span>
-<span class="fc" id="L51">    }</span>
 
     public String getTitle() {
-<span class="fc" id="L54">        return title;</span>
+<span class="fc" id="L152">        return title;</span>
     }
-
-    public void setTitle(String title) {
-<span class="fc" id="L58">        this.title = title;</span>
-<span class="fc" id="L59">    }</span>
 
     public Category getCategory() {
-<span class="fc" id="L62">        return category;</span>
+<span class="fc" id="L156">        return category;</span>
     }
-
-    public void setCategory(Category category) {
-<span class="fc" id="L66">        this.category = category;</span>
-<span class="fc" id="L67">    }</span>
 
     public LocalDate getFeedbackDate() {
-<span class="fc" id="L70">        return feedbackDate;</span>
+<span class="fc" id="L160">        return feedbackDate;</span>
     }
-
-    public void setFeedbackDate(LocalDate feedbackDate) {
-<span class="fc" id="L74">        this.feedbackDate = feedbackDate;</span>
-<span class="fc" id="L75">    }</span>
 
     public String getContent() {
-<span class="fc" id="L78">        return content;</span>
+<span class="fc" id="L164">        return content;</span>
     }
-
-    public void setContent(String content) {
-<span class="fc" id="L82">        this.content = content;</span>
-<span class="fc" id="L83">    }</span>
 
     public Status getStatus() {
-<span class="fc" id="L86">        return status;</span>
+<span class="fc" id="L168">        return status;</span>
     }
-
-    public void setStatus(Status stats) {
-<span class="fc" id="L90">        this.status = stats;</span>
-<span class="fc" id="L91">    }</span>
 
     public boolean isPublished() {
-<span class="fc" id="L94">        return isPublished;</span>
+<span class="fc" id="L172">        return isPublished;</span>
     }
 
-    public void setPublished(boolean published) {
-<span class="fc" id="L98">        isPublished = published;</span>
-<span class="fc" id="L99">    }</span>
+    public UUID getUserId() {
+<span class="fc" id="L176">        return userId;</span>
+    }
 
+    /**
+     * Setter für Mapper in Infrastructure.
+     * WARNUNG: Diese Methoden sind nur für die Persistierung gedacht.
+     * Verwende stattdessen die Business-Methoden (create, publish, updateStatus, etc.).
+     */
+    public void setId(Long id) {
+<span class="fc" id="L185">        this.id = id;</span>
+<span class="fc" id="L186">    }</span>
+
+    public void setTitle(String title) {
+<span class="fc" id="L189">        this.title = title;</span>
+<span class="fc" id="L190">    }</span>
+
+    public void setCategory(Category category) {
+<span class="fc" id="L193">        this.category = category;</span>
+<span class="fc" id="L194">    }</span>
+
+    public void setFeedbackDate(LocalDate feedbackDate) {
+<span class="fc" id="L197">        this.feedbackDate = feedbackDate;</span>
+<span class="fc" id="L198">    }</span>
+
+    public void setContent(String content) {
+<span class="fc" id="L201">        this.content = content;</span>
+<span class="fc" id="L202">    }</span>
+
+    public void setStatus(Status status) {
+<span class="fc" id="L205">        this.status = status;</span>
+<span class="fc" id="L206">    }</span>
+
+    public void setPublished(boolean published) {
+<span class="fc" id="L209">        isPublished = published;</span>
+<span class="fc" id="L210">    }</span>
+
+    public void setUserId(UUID userId) {
+<span class="fc" id="L213">        this.userId = userId;</span>
+<span class="fc" id="L214">    }</span>
+
+    @Override
+    public boolean equals(Object o) {
+<span class="nc bnc" id="L218" title="All 2 branches missed.">        if (this == o) return true;</span>
+<span class="nc bnc" id="L219" title="All 4 branches missed.">        if (o == null || getClass() != o.getClass()) return false;</span>
+<span class="nc" id="L220">        Feedback feedback = (Feedback) o;</span>
+<span class="nc" id="L221">        return Objects.equals(id, feedback.id);</span>
+    }
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L226">        return Objects.hash(id);</span>
+    }
 
     @Override
     public String toString() {
-<span class="nc" id="L104">        return &quot;Feedback{&quot; +</span>
+<span class="nc" id="L231">        return &quot;Feedback{&quot; +</span>
                 &quot;id=&quot; + id +
                 &quot;, title='&quot; + title + '\'' +
                 &quot;, category=&quot; + category +
                 &quot;, feedbackDate=&quot; + feedbackDate +
                 &quot;, content='&quot; + content + '\'' +
-                &quot;, stats=&quot; + status +
+                &quot;, status=&quot; + status +
                 &quot;, isPublished=&quot; + isPublished +
+                &quot;, userId=&quot; + userId +
                 '}';
     }
 }
+
+
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

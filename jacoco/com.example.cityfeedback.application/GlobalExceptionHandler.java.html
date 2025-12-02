@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GlobalExceptionHandler.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">CityFeedback</a> &gt; <a href="index.source.html" class="el_package">com.example.cityfeedback.application</a> &gt; <span class="el_source">GlobalExceptionHandler.java</span></div><h1>GlobalExceptionHandler.java</h1><pre class="source lang-java linenums">package com.example.cityfeedback.application;
+
+import com.example.cityfeedback.feedbackmanagement.domain.exceptions.FeedbackNotFoundException;
+import com.example.cityfeedback.usermanagement.domain.exceptions.EmailAlreadyExistsException;
+import com.example.cityfeedback.usermanagement.domain.exceptions.InvalidCredentialsException;
+import com.example.cityfeedback.usermanagement.domain.exceptions.UserNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * Globaler Exception Handler für die gesamte Anwendung.
+ * Behandelt alle Exceptions und gibt strukturierte Fehlerantworten zurück.
+ */
+@RestControllerAdvice
+<span class="fc" id="L24">public class GlobalExceptionHandler {</span>
+
+<span class="fc" id="L26">    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);</span>
+
+    @ExceptionHandler(FeedbackNotFoundException.class)
+    public ResponseEntity&lt;ErrorResponse&gt; handleFeedbackNotFound(FeedbackNotFoundException ex) {
+<span class="nc" id="L30">        logger.warn(&quot;Feedback nicht gefunden: {}&quot;, ex.getMessage());</span>
+<span class="nc" id="L31">        ErrorResponse error = new ErrorResponse(</span>
+<span class="nc" id="L32">                HttpStatus.NOT_FOUND.value(),</span>
+<span class="nc" id="L33">                ex.getMessage(),</span>
+<span class="nc" id="L34">                LocalDateTime.now()</span>
+        );
+<span class="nc" id="L36">        return new ResponseEntity&lt;&gt;(error, HttpStatus.NOT_FOUND);</span>
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity&lt;ErrorResponse&gt; handleUserNotFound(UserNotFoundException ex) {
+<span class="nc" id="L41">        logger.warn(&quot;Benutzer nicht gefunden: {}&quot;, ex.getMessage());</span>
+<span class="nc" id="L42">        ErrorResponse error = new ErrorResponse(</span>
+<span class="nc" id="L43">                HttpStatus.NOT_FOUND.value(),</span>
+<span class="nc" id="L44">                ex.getMessage(),</span>
+<span class="nc" id="L45">                LocalDateTime.now()</span>
+        );
+<span class="nc" id="L47">        return new ResponseEntity&lt;&gt;(error, HttpStatus.NOT_FOUND);</span>
+    }
+
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity&lt;ErrorResponse&gt; handleInvalidCredentials(InvalidCredentialsException ex) {
+<span class="nc" id="L52">        logger.warn(&quot;Ungültige Anmeldedaten: {}&quot;, ex.getMessage());</span>
+<span class="nc" id="L53">        ErrorResponse error = new ErrorResponse(</span>
+<span class="nc" id="L54">                HttpStatus.UNAUTHORIZED.value(),</span>
+<span class="nc" id="L55">                ex.getMessage(),</span>
+<span class="nc" id="L56">                LocalDateTime.now()</span>
+        );
+<span class="nc" id="L58">        return new ResponseEntity&lt;&gt;(error, HttpStatus.UNAUTHORIZED);</span>
+    }
+
+    @ExceptionHandler(EmailAlreadyExistsException.class)
+    public ResponseEntity&lt;ErrorResponse&gt; handleEmailAlreadyExists(EmailAlreadyExistsException ex) {
+<span class="nc" id="L63">        logger.warn(&quot;E-Mail bereits vorhanden: {}&quot;, ex.getMessage());</span>
+<span class="nc" id="L64">        ErrorResponse error = new ErrorResponse(</span>
+<span class="nc" id="L65">                HttpStatus.CONFLICT.value(),</span>
+<span class="nc" id="L66">                ex.getMessage(),</span>
+<span class="nc" id="L67">                LocalDateTime.now()</span>
+        );
+<span class="nc" id="L69">        return new ResponseEntity&lt;&gt;(error, HttpStatus.CONFLICT);</span>
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity&lt;Map&lt;String, Object&gt;&gt; handleValidationExceptions(
+            MethodArgumentNotValidException ex) {
+<span class="nc" id="L75">        logger.warn(&quot;Validierungsfehler: {}&quot;, ex.getMessage());</span>
+<span class="nc" id="L76">        Map&lt;String, Object&gt; errors = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L77">        ex.getBindingResult().getFieldErrors().forEach(error -&gt; {</span>
+<span class="nc" id="L78">            errors.put(error.getField(), error.getDefaultMessage());</span>
+<span class="nc" id="L79">        });</span>
+<span class="nc" id="L80">        return new ResponseEntity&lt;&gt;(errors, HttpStatus.BAD_REQUEST);</span>
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity&lt;ErrorResponse&gt; handleIllegalArgument(IllegalArgumentException ex) {
+<span class="nc" id="L85">        logger.warn(&quot;Ungültiges Argument: {}&quot;, ex.getMessage());</span>
+<span class="nc" id="L86">        ErrorResponse error = new ErrorResponse(</span>
+<span class="nc" id="L87">                HttpStatus.BAD_REQUEST.value(),</span>
+<span class="nc" id="L88">                ex.getMessage(),</span>
+<span class="nc" id="L89">                LocalDateTime.now()</span>
+        );
+<span class="nc" id="L91">        return new ResponseEntity&lt;&gt;(error, HttpStatus.BAD_REQUEST);</span>
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity&lt;ErrorResponse&gt; handleGenericException(Exception ex) {
+<span class="nc" id="L96">        logger.error(&quot;Unerwarteter Fehler aufgetreten&quot;, ex);</span>
+<span class="nc" id="L97">        ErrorResponse error = new ErrorResponse(</span>
+<span class="nc" id="L98">                HttpStatus.INTERNAL_SERVER_ERROR.value(),</span>
+                &quot;Ein unerwarteter Fehler ist aufgetreten.&quot;,
+<span class="nc" id="L100">                LocalDateTime.now()</span>
+        );
+<span class="nc" id="L102">        return new ResponseEntity&lt;&gt;(error, HttpStatus.INTERNAL_SERVER_ERROR);</span>
+    }
+
+    /**
+     * DTO für Fehlerantworten.
+     */
+    public static class ErrorResponse {
+        private final int status;
+        private final String message;
+        private final LocalDateTime timestamp;
+
+<span class="nc" id="L113">        public ErrorResponse(int status, String message, LocalDateTime timestamp) {</span>
+<span class="nc" id="L114">            this.status = status;</span>
+<span class="nc" id="L115">            this.message = message;</span>
+<span class="nc" id="L116">            this.timestamp = timestamp;</span>
+<span class="nc" id="L117">        }</span>
+
+        public int getStatus() {
+<span class="nc" id="L120">            return status;</span>
+        }
+
+        public String getMessage() {
+<span class="nc" id="L124">            return message;</span>
+        }
+
+        public LocalDateTime getTimestamp() {
+<span class="nc" id="L128">            return timestamp;</span>
+        }
+    }
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

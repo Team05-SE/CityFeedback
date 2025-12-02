@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">CityFeedback</a> &gt; <a href="index.source.html" class="el_package">com.example.cityfeedback.usermanagement.application</a> &gt; <span class="el_source">UserService.java</span></div><h1>UserService.java</h1><pre class="source lang-java linenums">package com.example.cityfeedback.usermanagement.application;
 
 import com.example.cityfeedback.usermanagement.domain.model.User;
+import com.example.cityfeedback.usermanagement.domain.repositories.UserRepository;
+import com.example.cityfeedback.usermanagement.domain.services.UserRegistrationService;
 import com.example.cityfeedback.usermanagement.domain.valueobjects.Email;
 import com.example.cityfeedback.usermanagement.domain.valueobjects.Password;
 import com.example.cityfeedback.usermanagement.domain.valueobjects.UserRole;
 import com.example.cityfeedback.usermanagement.domain.events.UserRegisteredEvent;
-import com.example.cityfeedback.usermanagement.infrastructure.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
+import com.example.cityfeedback.usermanagement.domain.exceptions.InvalidCredentialsException;
+import com.example.cityfeedback.usermanagement.domain.exceptions.UserNotFoundException;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,49 +20,70 @@ import java.util.UUID;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final UserRegistrationService registrationService;
     private final ApplicationEventPublisher eventPublisher;
 
-<span class="fc" id="L23">    public UserService(UserRepository userRepository, ApplicationEventPublisher eventPublisher) {</span>
-<span class="fc" id="L24">        this.userRepository = userRepository;</span>
-<span class="fc" id="L25">        this.eventPublisher = eventPublisher;</span>
-<span class="fc" id="L26">    }</span>
+    public UserService(UserRepository userRepository, 
+                      UserRegistrationService registrationService,
+<span class="fc" id="L28">                      ApplicationEventPublisher eventPublisher) {</span>
+<span class="fc" id="L29">        this.userRepository = userRepository;</span>
+<span class="fc" id="L30">        this.registrationService = registrationService;</span>
+<span class="fc" id="L31">        this.eventPublisher = eventPublisher;</span>
+<span class="fc" id="L32">    }</span>
 
     // GET ALL USERS
     public List&lt;User&gt; getAllUsers() {
-<span class="nc" id="L30">        return this.userRepository.findAll();</span>
+<span class="nc" id="L36">        return this.userRepository.findAll();</span>
     }
 
     // GET USER BY ID
     public User getUserById(UUID id) {
-<span class="fc" id="L35">        return this.userRepository.findById(id)</span>
-<span class="fc" id="L36">                .orElseThrow(() -&gt; new EntityNotFoundException(&quot;User not found&quot;));</span>
+<span class="fc" id="L41">        return this.userRepository.findById(id)</span>
+<span class="fc" id="L42">                .orElseThrow(() -&gt; new UserNotFoundException(id));</span>
     }
 
     // SIGNUP
     @Transactional
     public User createUser(Email email, Password password, UserRole role) {
-<span class="fc" id="L42">        User user = new User(email, password, role);</span>
-<span class="fc" id="L43">        user = userRepository.save(user);</span>
+        User user;
+        
+<span class="pc bpc" id="L50" title="1 of 2 branches missed.">        if (role == UserRole.CITIZEN) {</span>
+            // Domain Service für Registrierung verwenden (prüft E-Mail-Eindeutigkeit)
+<span class="fc" id="L52">            user = registrationService.registerUser(email, password);</span>
+        } else {
+            // Für andere Rollen (STAFF, ADMIN) direkt erstellen
+            // E-Mail-Eindeutigkeit prüfen
+<span class="nc bnc" id="L56" title="All 2 branches missed.">            if (userRepository.existsByEmail(email)) {</span>
+<span class="nc" id="L57">                throw new com.example.cityfeedback.usermanagement.domain.exceptions.EmailAlreadyExistsException(email.getValue());</span>
+            }
+<span class="nc" id="L59">            user = new User(email, password, role);</span>
+<span class="nc" id="L60">            user = userRepository.save(user);</span>
+        }
 
-        // Domain Event publishen
-<span class="fc" id="L46">        UserRegisteredEvent event = new UserRegisteredEvent(user.getId(), email.getValue());</span>
-<span class="fc" id="L47">        eventPublisher.publishEvent(event);</span>
+        // Domain Events aus dem Aggregat holen und publishen
+<span class="fc" id="L64">        List&lt;Object&gt; domainEvents = user.getDomainEvents();</span>
+<span class="pc bpc" id="L65" title="1 of 2 branches missed.">        for (Object event : domainEvents) {</span>
+<span class="nc bnc" id="L66" title="All 2 branches missed.">            if (event instanceof UserRegisteredEvent) {</span>
+<span class="nc" id="L67">                eventPublisher.publishEvent(event);</span>
+            }
+<span class="nc" id="L69">        }</span>
+<span class="fc" id="L70">        user.clearDomainEvents();</span>
 
-<span class="fc" id="L49">        return user;</span>
+<span class="fc" id="L72">        return user;</span>
     }
 
     // LOGIN (EMAIL + PASSWORD)
     public User login(String email, String rawPassword) {
-<span class="nc" id="L54">        Email emailVO = new Email(email);</span>
+<span class="nc" id="L77">        Email emailVO = new Email(email);</span>
 
-<span class="nc" id="L56">        User user = userRepository.findByEmail(emailVO)</span>
-<span class="nc" id="L57">                .orElseThrow(() -&gt; new EntityNotFoundException(&quot;User not found&quot;));</span>
+<span class="nc" id="L79">        User user = userRepository.findByEmail(emailVO)</span>
+<span class="nc" id="L80">                .orElseThrow(() -&gt; new InvalidCredentialsException(&quot;Benutzer nicht gefunden oder Passwort ungültig.&quot;));</span>
 
-<span class="nc bnc" id="L59" title="All 2 branches missed.">        if (!user.getPassword().matches(rawPassword)) {</span>
-<span class="nc" id="L60">            throw new EntityNotFoundException(&quot;Invalid password&quot;);</span>
+<span class="nc bnc" id="L82" title="All 2 branches missed.">        if (!user.getPassword().matches(rawPassword)) {</span>
+<span class="nc" id="L83">            throw new InvalidCredentialsException(&quot;Benutzer nicht gefunden oder Passwort ungültig.&quot;);</span>
         }
 
-<span class="nc" id="L63">        return user;</span>
+<span class="nc" id="L86">        return user;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

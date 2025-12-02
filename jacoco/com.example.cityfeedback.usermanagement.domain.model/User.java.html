@@ -4,7 +4,6 @@ import com.example.cityfeedback.usermanagement.domain.valueobjects.Email;
 import com.example.cityfeedback.usermanagement.domain.valueobjects.Password;
 import com.example.cityfeedback.usermanagement.domain.valueobjects.UserRole;
 import com.example.cityfeedback.usermanagement.domain.events.UserRegisteredEvent;
-import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,67 +14,73 @@ import java.util.UUID;
 /**
  * Aggregate Root: User
  * Repräsentiert einen registrierten Benutzer in unserem City-Feedback-System.
+ * 
+ * Diese Klasse ist framework-unabhängig und enthält keine JPA-Annotationen.
+ * Die Persistierung wird über UserEntity und UserMapper in der Infrastructure-Schicht gehandhabt.
  */
-@Entity
-@Table(name = &quot;users&quot;)
 public class User {
 
-    @Id
-    @GeneratedValue
     private UUID id;
 
-    @Embedded
     private Email email;
-
-    @Embedded
     private Password password;
-
-    @Enumerated(EnumType.STRING)
     private UserRole role;
 
-<span class="fc" id="L36">    @Transient</span>
-    private final List&lt;Object&gt; domainEvents = new ArrayList&lt;&gt;();
+    // Domain Events werden nicht persistiert
+<span class="fc" id="L30">    private final List&lt;Object&gt; domainEvents = new ArrayList&lt;&gt;();</span>
 
-<span class="fc" id="L39">    public User() {}</span>
+    /**
+     * No-Args Konstruktor für Mapper in Infrastructure.
+     * WARNUNG: Verwende stattdessen die Factory-Methode register() oder den öffentlichen Konstruktor.
+     */
+<span class="fc" id="L36">    public User() {}</span>
 
-<span class="fc" id="L41">    public User(Email email, Password password, UserRole role) {</span>
-<span class="fc" id="L42">        this.email = Objects.requireNonNull(email);</span>
-<span class="fc" id="L43">        this.password = Objects.requireNonNull(password);</span>
-<span class="fc" id="L44">        this.role = Objects.requireNonNull(role);</span>
-<span class="fc" id="L45">    }</span>
+<span class="fc" id="L38">    public User(Email email, Password password, UserRole role) {</span>
+<span class="fc" id="L39">        this.email = Objects.requireNonNull(email);</span>
+<span class="fc" id="L40">        this.password = Objects.requireNonNull(password);</span>
+<span class="fc" id="L41">        this.role = Objects.requireNonNull(role);</span>
+<span class="fc" id="L42">    }</span>
 
     public static User register(Email email, Password password) {
-<span class="fc" id="L48">        User user = new User(email, password, UserRole.CITIZEN);</span>
-<span class="fc" id="L49">        user.registerEvent(new UserRegisteredEvent(user.id, email.getValue()));</span>
-<span class="fc" id="L50">        return user;</span>
+<span class="fc" id="L45">        User user = new User(email, password, UserRole.CITIZEN);</span>
+<span class="fc" id="L46">        user.registerEvent(new UserRegisteredEvent(user.id, email.getValue()));</span>
+<span class="fc" id="L47">        return user;</span>
     }
 
     private void registerEvent(Object event) {
-<span class="fc" id="L54">        this.domainEvents.add(event);</span>
-<span class="fc" id="L55">    }</span>
+<span class="fc" id="L51">        this.domainEvents.add(event);</span>
+<span class="fc" id="L52">    }</span>
 
     public List&lt;Object&gt; getDomainEvents() {
-<span class="fc" id="L58">        return Collections.unmodifiableList(domainEvents);</span>
+<span class="fc" id="L55">        return Collections.unmodifiableList(domainEvents);</span>
     }
 
     public void clearDomainEvents() {
-<span class="nc" id="L62">        this.domainEvents.clear();</span>
-<span class="nc" id="L63">    }</span>
+<span class="fc" id="L59">        this.domainEvents.clear();</span>
+<span class="fc" id="L60">    }</span>
 
     public UUID getId() {
-<span class="fc" id="L66">        return id;</span>
+<span class="fc" id="L63">        return id;</span>
     }
 
     public Email getEmail() {
-<span class="fc" id="L70">        return email;</span>
+<span class="fc" id="L67">        return email;</span>
     }
 
     public Password getPassword() {
-<span class="fc" id="L74">        return password;</span>
+<span class="fc" id="L71">        return password;</span>
     }
 
     public UserRole getRole() {
-<span class="fc" id="L78">        return role;</span>
+<span class="fc" id="L75">        return role;</span>
     }
+
+    /**
+     * Setter für Mapper in Infrastructure.
+     * WARNUNG: Diese Methode ist nur für die Persistierung gedacht.
+     */
+    public void setId(UUID id) {
+<span class="fc" id="L83">        this.id = id;</span>
+<span class="fc" id="L84">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FeedbackMapper.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">CityFeedback</a> &gt; <a href="index.source.html" class="el_package">com.example.cityfeedback.feedbackmanagement.infrastructure.persistence</a> &gt; <span class="el_source">FeedbackMapper.java</span></div><h1>FeedbackMapper.java</h1><pre class="source lang-java linenums">package com.example.cityfeedback.feedbackmanagement.infrastructure.persistence;
+
+import com.example.cityfeedback.feedbackmanagement.domain.model.Feedback;
+
+/**
+ * Mapper zwischen Domain-Modell (Feedback) und Persistence-Entity (FeedbackEntity).
+ * Übersetzt zwischen der Domain-Schicht und der Datenbank-Schicht.
+ */
+<span class="nc" id="L9">public class FeedbackMapper {</span>
+
+    /**
+     * Konvertiert ein Domain-Feedback-Objekt in eine Persistence-Entity.
+     * 
+     * @param feedback Domain-Feedback-Objekt
+     * @return FeedbackEntity für die Persistierung
+     */
+    public static FeedbackEntity toEntity(Feedback feedback) {
+<span class="pc bpc" id="L18" title="1 of 2 branches missed.">        if (feedback == null) {</span>
+<span class="nc" id="L19">            return null;</span>
+        }
+
+<span class="fc" id="L22">        FeedbackEntity entity = new FeedbackEntity();</span>
+<span class="fc" id="L23">        entity.setId(feedback.getId());</span>
+<span class="fc" id="L24">        entity.setTitle(feedback.getTitle());</span>
+<span class="fc" id="L25">        entity.setCategory(feedback.getCategory());</span>
+<span class="fc" id="L26">        entity.setFeedbackDate(feedback.getFeedbackDate());</span>
+<span class="fc" id="L27">        entity.setContent(feedback.getContent());</span>
+<span class="fc" id="L28">        entity.setStatus(feedback.getStatus());</span>
+<span class="fc" id="L29">        entity.setPublished(feedback.isPublished());</span>
+        // User wird nur als ID gespeichert (lose Kopplung zwischen Bounded Contexts)
+<span class="fc" id="L31">        entity.setUserId(feedback.getUserId());</span>
+<span class="fc" id="L32">        return entity;</span>
+    }
+
+    /**
+     * Konvertiert eine Persistence-Entity in ein Domain-Feedback-Objekt.
+     * 
+     * @param entity FeedbackEntity aus der Datenbank
+     * @return Domain-Feedback-Objekt
+     */
+    public static Feedback toDomain(FeedbackEntity entity) {
+<span class="pc bpc" id="L42" title="1 of 2 branches missed.">        if (entity == null) {</span>
+<span class="nc" id="L43">            return null;</span>
+        }
+
+        // Verwende Reflection, um Feedback zu erstellen, da der Konstruktor privat ist
+        // Oder wir verwenden einen Package-Private Konstruktor
+<span class="fc" id="L48">        Feedback feedback = new Feedback();</span>
+<span class="fc" id="L49">        feedback.setId(entity.getId());</span>
+<span class="fc" id="L50">        feedback.setTitle(entity.getTitle());</span>
+<span class="fc" id="L51">        feedback.setCategory(entity.getCategory());</span>
+<span class="fc" id="L52">        feedback.setFeedbackDate(entity.getFeedbackDate());</span>
+<span class="fc" id="L53">        feedback.setContent(entity.getContent());</span>
+<span class="fc" id="L54">        feedback.setStatus(entity.getStatus());</span>
+<span class="fc" id="L55">        feedback.setPublished(entity.isPublished());</span>
+<span class="fc" id="L56">        feedback.setUserId(entity.getUserId());</span>
+
+<span class="fc" id="L58">        return feedback;</span>
+    }
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>
