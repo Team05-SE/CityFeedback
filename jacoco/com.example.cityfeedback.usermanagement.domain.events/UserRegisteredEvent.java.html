@@ -5,7 +5,7 @@ import java.util.UUID;
 
 /**
  * Domain Event: UserRegisteredEvent
- * Wird ausgelöst, wenn sich ein neuer User erfolgreich registriert hat.
+ * Dieser Event wird ausgelöst, wenn sich ein neuer User erfolgreich registriert hat.
  */
 public class UserRegisteredEvent {
 
