@@ -16,7 +16,7 @@ import java.util.UUID;
 public interface UserRepository {
 
     /**
-     * Speichert einen User.
+     * save speichert einen User.
      * 
      * @param user Der zu speichernde User
      * @return Der gespeicherte User (mit generierter ID)
@@ -24,7 +24,7 @@ public interface UserRepository {
     User save(User user);
 
     /**
-     * Findet einen User anhand seiner ID.
+     * findById findet einen User anhand seiner ID.
      * 
      * @param id Die UUID des Users
      * @return Optional mit dem gefundenen User oder leer
@@ -32,14 +32,14 @@ public interface UserRepository {
     Optional<User> findById(UUID id);
 
     /**
-     * Findet alle Users.
+     * findAll findet alle Users.
      * 
      * @return Liste aller Users
      */
     List<User> findAll();
 
     /**
-     * Prüft, ob ein User mit der angegebenen E-Mail existiert.
+     * existsByEmail prüft, ob ein User mit der angegebenen E-Mail existiert.
      * 
      * @param email Die E-Mail-Adresse
      * @return true, wenn ein User mit dieser E-Mail existiert
@@ -47,7 +47,7 @@ public interface UserRepository {
     boolean existsByEmail(Email email);
 
     /**
-     * Findet einen User anhand seiner E-Mail-Adresse.
+     * findByEmail findet einen User anhand seiner E-Mail-Adresse.
      * 
      * @param email Die E-Mail-Adresse
      * @return Optional mit dem gefundenen User oder leer
@@ -55,7 +55,7 @@ public interface UserRepository {
     Optional<User> findByEmail(Email email);
 
     /**
-     * Löscht einen User.
+     * delete löscht einen User.
      * 
      * @param user Der zu löschende User
      */
