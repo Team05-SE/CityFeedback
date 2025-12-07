@@ -45,8 +45,8 @@ export function LoginForm({
       // User speichern (z.B. Session)
       localStorage.setItem("user", JSON.stringify(user))
 
-      // Weiterleiten
-      window.location.href = "/dashboard-welcome"
+      // Weiterleiten zum Dashboard
+      window.location.href = "/dashboard"
 
     } catch (err) {
       setError("Backend nicht erreichbar.")

@@ -1,29 +1,32 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
 import { Routes, Route, Link } from 'react-router-dom'
 import SignupPage from "@/app/signup/page"
 import LoginPage from "@/app/login/page"
-import DashboardWelcomePage from "@/app/dashboard-welcome/page"
+import { DashboardLayout } from "@/components/dashboard-layout"
+import DashboardPage from "@/app/dashboard/page"
+import CreateFeedbackPage from "@/app/dashboard/create/page"
 
 function HomePage() {
   return (
-    <div className="flex min-h-screen items-center justify-center">
-      <div className="text-center space-y-4">
-        <h1 className="text-3xl font-bold">Welcome to CityFeedback</h1>
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-background via-background to-muted">
+      <div className="text-center space-y-6 p-8">
+        <div className="space-y-2">
+          <h1 className="text-4xl font-bold tracking-tight">CityFeedback</h1>
+          <p className="text-muted-foreground text-lg">
+            Das Bürgerfeedback-Portal für Ihre Stadt
+          </p>
+        </div>
         <div className="flex gap-4 justify-center">
           <Link
             to="/signup"
-            className="bg-primary text-primary-foreground px-4 py-2 rounded-md hover:opacity-90"
+            className="bg-primary text-primary-foreground px-6 py-3 rounded-lg font-medium hover:opacity-90 transition-opacity"
           >
-            Sign Up
+            Registrieren
           </Link>
           <Link
             to="/login"
-            className="border border-border px-4 py-2 rounded-md hover:bg-accent"
+            className="border border-border px-6 py-3 rounded-lg font-medium hover:bg-accent transition-colors"
           >
-            Login
+            Anmelden
           </Link>
         </div>
       </div>
@@ -37,7 +40,17 @@ function App() {
       <Route path="/" element={<HomePage />} />
       <Route path="/signup" element={<SignupPage />} />
       <Route path="/login" element={<LoginPage />} />
-      <Route path="/dashboard-welcome" element={<DashboardWelcomePage />} />
+      
+      {/* Dashboard Routes with Layout */}
+      <Route path="/dashboard" element={<DashboardLayout />}>
+        <Route index element={<DashboardPage />} />
+        <Route path="create" element={<CreateFeedbackPage />} />
+      </Route>
+      
+      {/* Legacy route redirect */}
+      <Route path="/dashboard-welcome" element={<DashboardLayout />}>
+        <Route index element={<DashboardPage />} />
+      </Route>
     </Routes>
   )
 }
