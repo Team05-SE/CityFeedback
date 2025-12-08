@@ -166,7 +166,7 @@ public FeedbackStatisticsDTO getFeedbackStatistics() {
 **Nachteile:**
 - Code ist für Entwickler ohne Stream API-Erfahrung schwerer zu verstehen
 - Komplexe Pipelines erfordern gutes Verständnis funktionaler Konzepte
-- Debugging schwieriger (tiefere Stacktraces)
+- Debugging schwieriger 
 - Performance kann bei kleinen Collections schlechter sein
 
 ### Technologien
@@ -175,7 +175,7 @@ Als einzige Technologie wurde ein **Large Language Model (LLM) - Auto (Cursor AI
 
 ### Auswirkungen auf Codequalität und Lesbarkeit
 
-Die funktionale Implementierung hat **gemischte Auswirkungen**. Einerseits ist der Code deklarativer, andererseits ist **deutlich mehr Code hinzugekommen** (ca. 150 Zeilen für Collection-Processing-Methoden plus DTOs). Die **Lesbarkeit** wurde generell **schwerer**, besonders für Teammitglieder ohne Stream API-Erfahrung. Komplexe Pipelines mit mehreren Operationen erfordern mentale Anstrengung. Die **Wartbarkeit** leidet unter der höheren Komplexität - Änderungen an Stream-Pipelines sind fehleranfälliger als bei imperativen Schleifen.
+Die funktionale Implementierung hat **gemischte Auswirkungen**. Einerseits ist der Code deklarativer, andererseits ist **deutlich mehr Code hinzugekommen** (ca. 150 Zeilen für Collection-Processing-Methoden plus DTOs). Die **Lesbarkeit** wurde generell **schwerer**. Die **Wartbarkeit** leidet unter der höheren Komplexität - Änderungen an Stream-Pipelines sind fehleranfälliger als bei imperativen Schleifen.
 
 ### Herausforderungen
 
@@ -183,7 +183,7 @@ Die größte Herausforderung waren **Test-Fehler beim Maven Build**. Die Tests w
 
 ### Lessons Learned
 
-**Funktionale Programmierung ist nicht immer besser** - sie sollte selektiv eingesetzt werden. Bei komplexen Transformationen ist sie ideal, bei einfachen Operationen kann imperativer Code klarer sein. **Test-Isolation** ist kritisch - auch mit `@Transactional` können Daten zwischen Tests persistieren. Die **Dokumentation** funktionaler Code-Stellen ist essentiell. **Code-Reviews** sind besonders wichtig bei LLM-generiertem Code. Letztendlich ist **Balance** der Schlüssel: Funktionale Konzepte dort nutzen, wo sie Mehrwert bringen, aber nicht um jeden Preis.
+**Funktionale Programmierung ist nicht immer besser** - sie sollte selektiv eingesetzt werden. Bei komplexen Transformationen ist sie ideal, bei einfachen Operationen kann imperativer Code klarer sein. Die **Dokumentation** funktionaler Code-Stellen ist essentiell. **Code-Reviews** sind besonders wichtig bei LLM-generiertem Code. Letztendlich ist **Balance** der Schlüssel: Funktionale Konzepte dort nutzen, wo sie Mehrwert bringen, aber nicht um jeden Preis.
 
 ---
 
@@ -201,8 +201,5 @@ Die größte Herausforderung waren **Test-Fehler beim Maven Build**. Die Tests w
 - ~150 Zeilen Test-Code
 - 69 Tests insgesamt, alle bestehen ✅
 
----
 
-*Übung 7 - Funktionale Programmierung*  
-*Implementiert am: 07.12.2025*  
-*Java Version: 25.0.1, Spring Boot Version: 3.5.7*
+
