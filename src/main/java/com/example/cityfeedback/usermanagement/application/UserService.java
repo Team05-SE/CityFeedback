@@ -60,13 +60,10 @@ public class UserService {
             user = userRepository.save(user);
         }
 
-        // Domain Events aus dem Aggregat holen und publishen
-        List<Object> domainEvents = user.getDomainEvents();
-        for (Object event : domainEvents) {
-            if (event instanceof UserRegisteredEvent) {
-                eventPublisher.publishEvent(event);
-            }
-        }
+        // Domain Events aus dem Aggregat holen und publishen (funktional mit Stream API)
+        user.getDomainEvents().stream()
+                .filter(UserRegisteredEvent.class::isInstance)
+                .forEach(eventPublisher::publishEvent);
         user.clearDomainEvents();
 
         return user;
