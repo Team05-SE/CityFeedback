@@ -2,7 +2,7 @@ GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_
 CityFeedback,com.example.cityfeedback.feedbackmanagement.domain.exceptions,FeedbackNotFoundException,9,0,0,0,4,0,2,0,2,0
 CityFeedback,com.example.cityfeedback.usermanagement.domain.services,UserRegistrationService,6,20,1,1,1,6,1,2,0,2
 CityFeedback,com.example.cityfeedback.usermanagement.application,UserRegisteredEventHandler,6,3,0,0,2,1,1,1,1,1
-CityFeedback,com.example.cityfeedback.usermanagement.application,UserService,68,49,8,2,14,13,8,4,3,4
+CityFeedback,com.example.cityfeedback.usermanagement.application,UserService,57,56,5,1,11,14,6,4,3,4
 CityFeedback,com.example.cityfeedback.usermanagement.application,LoginRequestDTO,0,3,0,0,0,1,0,1,0,1
 CityFeedback,com.example.cityfeedback.usermanagement.application,UserDTO,0,3,0,0,0,1,0,1,0,1
 CityFeedback,com.example.cityfeedback.usermanagement.application,UserController,17,26,0,0,3,6,3,2,3,2
@@ -29,7 +29,9 @@ CityFeedback,com.example.cityfeedback,WebConfig,0,8,0,0,0,2,0,2,0,2
 CityFeedback,com.example.cityfeedback,CityFeedbackApplication,8,3,0,0,3,1,1,1,1,1
 CityFeedback,com.example.cityfeedback,WebConfig.new WebMvcConfigurer() {...},0,47,0,0,0,7,0,2,0,2
 CityFeedback,com.example.cityfeedback.feedbackmanagement.infrastructure,FeedbackRepositoryImpl,15,28,0,0,5,9,2,3,2,3
+CityFeedback,com.example.cityfeedback.feedbackmanagement.application,FeedbackService.FeedbackSummaryDTO,0,33,0,0,0,12,0,6,0,6
 CityFeedback,com.example.cityfeedback.feedbackmanagement.application,FeedbackDTO,0,3,0,0,0,1,0,1,0,1
-CityFeedback,com.example.cityfeedback.feedbackmanagement.application,FeedbackController,9,11,0,0,2,4,2,2,2,2
-CityFeedback,com.example.cityfeedback.feedbackmanagement.application,FeedbackService,25,57,8,8,4,10,10,3,2,3
+CityFeedback,com.example.cityfeedback.feedbackmanagement.application,FeedbackService.FeedbackStatisticsDTO,0,39,0,0,0,14,0,7,0,7
+CityFeedback,com.example.cityfeedback.feedbackmanagement.application,FeedbackController,9,27,0,0,2,8,2,6,2,6
+CityFeedback,com.example.cityfeedback.feedbackmanagement.application,FeedbackService,38,250,5,11,4,63,9,17,4,14
 CityFeedback,com.example.cityfeedback.usermanagement.infrastructure,UserRepositoryImpl,26,31,0,0,8,9,3,4,3,4

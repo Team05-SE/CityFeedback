@@ -8,7 +8,13 @@ import com.example.cityfeedback.usermanagement.domain.repositories.UserRepositor
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class FeedbackService {
@@ -16,41 +22,263 @@ public class FeedbackService {
     private final FeedbackRepository feedbackRepository;
     private final UserRepository userRepository;
 
-<span class="fc" id="L19">    public FeedbackService(FeedbackRepository feedbackRepository, UserRepository userRepository) {</span>
-<span class="fc" id="L20">        this.feedbackRepository = feedbackRepository;</span>
-<span class="fc" id="L21">        this.userRepository = userRepository;</span>
-<span class="fc" id="L22">    }</span>
+<span class="fc" id="L25">    public FeedbackService(FeedbackRepository feedbackRepository, UserRepository userRepository) {</span>
+<span class="fc" id="L26">        this.feedbackRepository = feedbackRepository;</span>
+<span class="fc" id="L27">        this.userRepository = userRepository;</span>
+<span class="fc" id="L28">    }</span>
 
     public List&lt;Feedback&gt; getAllFeedbacks() {
-<span class="fc" id="L25">        return feedbackRepository.findAll();</span>
+<span class="fc" id="L31">        return feedbackRepository.findAll();</span>
     }
 
     public Feedback getFeedbackById(Long id) {
-<span class="nc" id="L29">        return feedbackRepository.findById(id)</span>
-<span class="nc" id="L30">                .orElseThrow(() -&gt; new FeedbackNotFoundException(id));</span>
+<span class="nc" id="L35">        return feedbackRepository.findById(id)</span>
+<span class="nc" id="L36">                .orElseThrow(() -&gt; new FeedbackNotFoundException(id));</span>
     }
 
     @Transactional
     public Feedback createFeedback(FeedbackDTO dto) {
-<span class="pc bpc" id="L35" title="6 of 12 branches missed.">        if (dto == null || dto.userId == null || dto.title == null || dto.title.isBlank() </span>
-<span class="pc bpc" id="L36" title="1 of 2 branches missed.">                || dto.category == null || dto.content == null || dto.content.isBlank()) {</span>
-<span class="nc" id="L37">            throw new IllegalArgumentException(&quot;Feedback-Daten sind unvollständig.&quot;);</span>
-        }
+<span class="fc" id="L41">        validateFeedbackDTO(dto);</span>
 
-        // Prüfen, ob User existiert (lose Kopplung: nur ID-Prüfung)
-<span class="pc bpc" id="L41" title="1 of 2 branches missed.">        if (!userRepository.findById(dto.userId).isPresent()) {</span>
-<span class="nc" id="L42">            throw new UserNotFoundException(dto.userId);</span>
-        }
+        // Prüfen, ob User existiert (lose Kopplung: nur ID-Prüfung) - funktional mit Optional
+<span class="fc" id="L44">        userRepository.findById(dto.userId)</span>
+<span class="pc" id="L45">                .orElseThrow(() -&gt; new UserNotFoundException(dto.userId));</span>
 
         // Factory-Methode des Aggregats verwenden
-<span class="fc" id="L46">        Feedback feedback = Feedback.create(</span>
+<span class="fc" id="L48">        Feedback feedback = Feedback.create(</span>
                 dto.title,
                 dto.category,
                 dto.content,
                 dto.userId
         );
 
-<span class="fc" id="L53">        return feedbackRepository.save(feedback);</span>
+<span class="fc" id="L55">        return feedbackRepository.save(feedback);</span>
+    }
+
+    /**
+     * Validiert das FeedbackDTO funktional mit Stream API.
+     * Nutzt funktionale Interfaces und Methodenreferenzen.
+     */
+    private void validateFeedbackDTO(FeedbackDTO dto) {
+<span class="pc bpc" id="L63" title="1 of 2 branches missed.">        if (dto == null) {</span>
+<span class="nc" id="L64">            throw new IllegalArgumentException(&quot;Feedback-DTO darf nicht null sein&quot;);</span>
+        }
+
+<span class="fc" id="L67">        Stream.of(</span>
+<span class="fc" id="L68">                validateNotNull(dto.userId, &quot;userId&quot;),</span>
+<span class="fc" id="L69">                validateNotBlank(dto.title, &quot;title&quot;),</span>
+<span class="fc" id="L70">                validateNotNull(dto.category, &quot;category&quot;),</span>
+<span class="fc" id="L71">                validateNotBlank(dto.content, &quot;content&quot;)</span>
+        )
+<span class="fc" id="L73">        .filter(Objects::nonNull)</span>
+<span class="fc" id="L74">        .findFirst()</span>
+<span class="fc" id="L75">        .ifPresent(error -&gt; {</span>
+<span class="nc" id="L76">            throw new IllegalArgumentException(&quot;Feedback-Daten sind unvollständig: &quot; + error);</span>
+        });
+<span class="fc" id="L78">    }</span>
+
+    /**
+     * Validiert, dass ein Feld nicht null ist.
+     * Gibt eine Fehlermeldung zurück, wenn das Feld null ist, sonst null.
+     */
+    private String validateNotNull(Object field, String fieldName) {
+<span class="pc bpc" id="L85" title="1 of 2 branches missed.">        return field == null ? fieldName + &quot; darf nicht null sein&quot; : null;</span>
+    }
+
+    /**
+     * Validiert, dass ein String-Feld nicht null oder leer ist.
+     * Nutzt Methodenreferenz String::isBlank für die Prüfung.
+     */
+    private String validateNotBlank(String field, String fieldName) {
+<span class="pc bpc" id="L93" title="2 of 4 branches missed.">        return (field == null || field.isBlank()) ? fieldName + &quot; darf nicht leer sein&quot; : null;</span>
+    }
+
+    // ===================================================================
+    // Collection Processing - Funktionale Programmierung
+    // ===================================================================
+
+    /**
+     * Gruppierung von Feedbacks nach Status mit Counting.
+     * Nutzt funktionale Konzepte: Stream API, Collectors.groupingBy(), Collectors.counting()
+     * 
+     * @return Map mit Status als Key und Anzahl der Feedbacks als Value
+     */
+    public Map&lt;com.example.cityfeedback.feedbackmanagement.domain.valueobjects.Status, Long&gt; getFeedbackStatusStatistics() {
+<span class="fc" id="L107">        return feedbackRepository.findAll().stream()</span>
+<span class="fc" id="L108">                .collect(Collectors.groupingBy(</span>
+                        Feedback::getStatus,
+<span class="fc" id="L110">                        Collectors.counting()</span>
+                ));
+    }
+
+    /**
+     * Gruppierung von Feedbacks nach Kategorie mit Aggregation.
+     * Zeigt erweiterte Collection-Processing-Funktionalität.
+     * 
+     * @return Map mit Kategorie als Key und Liste der Feedback-Titel als Value
+     */
+    public Map&lt;com.example.cityfeedback.feedbackmanagement.domain.valueobjects.Category, List&lt;String&gt;&gt; getFeedbackTitlesByCategory() {
+<span class="fc" id="L121">        return feedbackRepository.findAll().stream()</span>
+<span class="fc" id="L122">                .collect(Collectors.groupingBy(</span>
+                        Feedback::getCategory,
+<span class="fc" id="L124">                        Collectors.mapping(</span>
+                                Feedback::getTitle,
+<span class="fc" id="L126">                                Collectors.toList()</span>
+                        )
+                ));
+    }
+
+    /**
+     * Komplexe Transformation mit mehreren Filtern.
+     * Filtert veröffentlichte Feedbacks, die nicht geschlossen sind,
+     * transformiert sie zu SummaryDTOs und sortiert nach Datum.
+     * 
+     * Nutzt funktionale Konzepte:
+     * - Mehrfaches Filtering
+     * - Transformation (Mapping)
+     * - Sorting mit Comparator
+     * 
+     * @return Liste von FeedbackSummaryDTO, sortiert nach Feedback-Datum (neueste zuerst)
+     */
+    public List&lt;FeedbackSummaryDTO&gt; getPublishedActiveFeedbacksSummary() {
+<span class="fc" id="L144">        return feedbackRepository.findAll().stream()</span>
+<span class="fc" id="L145">                .filter(Feedback::isPublished)  // Erster Filter: Nur veröffentlichte Feedbacks</span>
+<span class="pc bpc" id="L146" title="1 of 2 branches missed.">                .filter(f -&gt; f.getStatus() != com.example.cityfeedback.feedbackmanagement.domain.valueobjects.Status.CLOSED)  // Zweiter Filter: Nicht geschlossen</span>
+<span class="fc" id="L147">                .map(feedback -&gt; new FeedbackSummaryDTO(  // Transformation zu DTO</span>
+<span class="fc" id="L148">                        feedback.getId(),</span>
+<span class="fc" id="L149">                        feedback.getTitle(),</span>
+<span class="fc" id="L150">                        feedback.getCategory().toString(),</span>
+<span class="fc" id="L151">                        feedback.getStatus().toString(),</span>
+<span class="fc" id="L152">                        feedback.getFeedbackDate()</span>
+                ))
+<span class="fc" id="L154">                .sorted(Comparator.comparing(FeedbackSummaryDTO::getFeedbackDate).reversed())  // Sortierung nach Datum (neueste zuerst)</span>
+<span class="fc" id="L155">                .collect(Collectors.toList());</span>
+    }
+
+    /**
+     * Aggregation/Reduktion: Berechnet Statistiken über alle Feedbacks.
+     * Nutzt funktionale Konzepte: Stream API, Reduktion, Optionale Werte
+     * 
+     * @return FeedbackStatisticsDTO mit aggregierten Werten
+     */
+    public FeedbackStatisticsDTO getFeedbackStatistics() {
+<span class="fc" id="L165">        List&lt;Feedback&gt; allFeedbacks = feedbackRepository.findAll();</span>
+        
+<span class="fc bfc" id="L167" title="All 2 branches covered.">        if (allFeedbacks.isEmpty()) {</span>
+<span class="fc" id="L168">            return new FeedbackStatisticsDTO(0L, 0L, 0L, 0L, null, null);</span>
+        }
+
+<span class="fc" id="L171">        long totalCount = allFeedbacks.stream()</span>
+<span class="fc" id="L172">                .count();</span>
+
+<span class="fc" id="L174">        long publishedCount = allFeedbacks.stream()</span>
+<span class="fc" id="L175">                .filter(Feedback::isPublished)</span>
+<span class="fc" id="L176">                .count();</span>
+
+<span class="fc" id="L178">        long closedCount = allFeedbacks.stream()</span>
+<span class="fc bfc" id="L179" title="All 2 branches covered.">                .filter(f -&gt; f.getStatus() == com.example.cityfeedback.feedbackmanagement.domain.valueobjects.Status.CLOSED)</span>
+<span class="fc" id="L180">                .count();</span>
+
+<span class="fc" id="L182">        long openCount = allFeedbacks.stream()</span>
+<span class="fc bfc" id="L183" title="All 2 branches covered.">                .filter(f -&gt; f.getStatus() == com.example.cityfeedback.feedbackmanagement.domain.valueobjects.Status.OPEN)</span>
+<span class="fc" id="L184">                .count();</span>
+
+<span class="fc" id="L186">        LocalDate oldestDate = allFeedbacks.stream()</span>
+<span class="fc" id="L187">                .map(Feedback::getFeedbackDate)</span>
+<span class="fc" id="L188">                .min(LocalDate::compareTo)</span>
+<span class="fc" id="L189">                .orElse(null);</span>
+
+<span class="fc" id="L191">        LocalDate newestDate = allFeedbacks.stream()</span>
+<span class="fc" id="L192">                .map(Feedback::getFeedbackDate)</span>
+<span class="fc" id="L193">                .max(LocalDate::compareTo)</span>
+<span class="fc" id="L194">                .orElse(null);</span>
+
+<span class="fc" id="L196">        return new FeedbackStatisticsDTO(totalCount, publishedCount, closedCount, openCount, oldestDate, newestDate);</span>
+    }
+
+    /**
+     * DTO für Feedback-Zusammenfassung (für Transformation).
+     */
+    public static class FeedbackSummaryDTO {
+        private final Long id;
+        private final String title;
+        private final String category;
+        private final String status;
+        private final LocalDate feedbackDate;
+
+<span class="fc" id="L209">        public FeedbackSummaryDTO(Long id, String title, String category, String status, LocalDate feedbackDate) {</span>
+<span class="fc" id="L210">            this.id = id;</span>
+<span class="fc" id="L211">            this.title = title;</span>
+<span class="fc" id="L212">            this.category = category;</span>
+<span class="fc" id="L213">            this.status = status;</span>
+<span class="fc" id="L214">            this.feedbackDate = feedbackDate;</span>
+<span class="fc" id="L215">        }</span>
+
+        public Long getId() {
+<span class="fc" id="L218">            return id;</span>
+        }
+
+        public String getTitle() {
+<span class="fc" id="L222">            return title;</span>
+        }
+
+        public String getCategory() {
+<span class="fc" id="L226">            return category;</span>
+        }
+
+        public String getStatus() {
+<span class="fc" id="L230">            return status;</span>
+        }
+
+        public LocalDate getFeedbackDate() {
+<span class="fc" id="L234">            return feedbackDate;</span>
+        }
+    }
+
+    /**
+     * DTO für Feedback-Statistiken (für Aggregation/Reduktion).
+     */
+    public static class FeedbackStatisticsDTO {
+        private final Long totalCount;
+        private final Long publishedCount;
+        private final Long closedCount;
+        private final Long openCount;
+        private final LocalDate oldestDate;
+        private final LocalDate newestDate;
+
+        public FeedbackStatisticsDTO(Long totalCount, Long publishedCount, Long closedCount, Long openCount,
+<span class="fc" id="L250">                                     LocalDate oldestDate, LocalDate newestDate) {</span>
+<span class="fc" id="L251">            this.totalCount = totalCount;</span>
+<span class="fc" id="L252">            this.publishedCount = publishedCount;</span>
+<span class="fc" id="L253">            this.closedCount = closedCount;</span>
+<span class="fc" id="L254">            this.openCount = openCount;</span>
+<span class="fc" id="L255">            this.oldestDate = oldestDate;</span>
+<span class="fc" id="L256">            this.newestDate = newestDate;</span>
+<span class="fc" id="L257">        }</span>
+
+        public Long getTotalCount() {
+<span class="fc" id="L260">            return totalCount;</span>
+        }
+
+        public Long getPublishedCount() {
+<span class="fc" id="L264">            return publishedCount;</span>
+        }
+
+        public Long getClosedCount() {
+<span class="fc" id="L268">            return closedCount;</span>
+        }
+
+        public Long getOpenCount() {
+<span class="fc" id="L272">            return openCount;</span>
+        }
+
+        public LocalDate getOldestDate() {
+<span class="fc" id="L276">            return oldestDate;</span>
+        }
+
+        public LocalDate getNewestDate() {
+<span class="fc" id="L280">            return newestDate;</span>
+        }
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>
