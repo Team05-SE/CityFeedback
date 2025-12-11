@@ -1,0 +1,226 @@
+# Logging-Konfiguration
+
+## 📁 Log-Verzeichnis
+
+Die Anwendung schreibt Logs in das Verzeichnis **`./logs/`** (relativ zum Projektverzeichnis).
+
+### Cross-Platform Pfade:
+
+| Betriebssystem | Standard-Log-Pfad | Environment Variable |
+|----------------|-------------------|---------------------|
+| **Windows** | `C:\Users\...\CityFeedback\logs\` | `LOG_DIR=C:\Logs\CityFeedback` |
+| **Linux/macOS** | `/home/user/CityFeedback/logs/` | `LOG_DIR=/var/log/cityfeedback` |
+
+### Log-Dateien:
+
+```
+logs/
+├── cityfeedback.log              # Alle Application-Logs
+├── cityfeedback-error.log        # Nur ERROR-Level Logs
+├── cityfeedback-aop.log          # AOP-Logs (LoggingAspect)
+├── cityfeedback.2025-12-11.0.log # Rotierte Logs (täglich/10MB)
+└── cityfeedback-error.2025-12-11.0.log
+```
+
+---
+
+## ⚙️ Konfiguration
+
+### 1. Standard-Verhalten
+
+Logs werden automatisch in `./logs/` geschrieben, wenn die Application startet.
+
+```bash
+mvn spring-boot:run
+# → Erstellt automatisch ./logs/ Verzeichnis
+# → Schreibt: cityfeedback.log, cityfeedback-error.log, cityfeedback-aop.log
+```
+
+### 2. Custom Log-Verzeichnis (via Environment Variable)
+
+**Linux/macOS:**
+```bash
+export LOG_DIR=/var/log/cityfeedback
+mvn spring-boot:run
+# → Logs werden nach /var/log/cityfeedback/ geschrieben
+```
+
+**Windows (PowerShell):**
+```powershell
+$env:LOG_DIR="C:\Logs\CityFeedback"
+mvn spring-boot:run
+# → Logs werden nach C:\Logs\CityFeedback\ geschrieben
+```
+
+**Windows (CMD):**
+```cmd
+set LOG_DIR=C:\Logs\CityFeedback
+mvn spring-boot:run
+```
+
+### 3. In Production (Linux Server)
+
+**Option A: Systemd Service mit Environment Variable**
+```ini
+[Service]
+Environment="LOG_DIR=/var/log/cityfeedback"
+```
+
+**Option B: Direkt im Start-Befehl**
+```bash
+LOG_DIR=/var/log/cityfeedback java -jar cityfeedback.jar
+```
+
+---
+
+## 📝 Log-Dateien Details
+
+### cityfeedback.log
+- **Inhalt:** Alle Application-Logs (INFO, DEBUG, WARN, ERROR)
+- **Rotation:** Täglich oder bei 10MB
+- **Aufbewahrung:** 30 Tage
+- **Max. Größe:** 300MB (gesamt)
+
+### cityfeedback-error.log
+- **Inhalt:** Nur ERROR-Level Logs
+- **Rotation:** Täglich oder bei 10MB
+- **Aufbewahrung:** 60 Tage
+- **Max. Größe:** 200MB (gesamt)
+
+### cityfeedback-aop.log
+- **Inhalt:** Nur Logs vom LoggingAspect (AOP)
+- **Rotation:** Täglich oder bei 10MB
+- **Aufbewahrung:** 30 Tage
+- **Max. Größe:** 100MB (gesamt)
+
+---
+
+## 🔄 Log-Rotation
+
+Logs werden automatisch rotiert:
+- **Täglich:** Neue Datei jeden Tag (z.B. `cityfeedback.2025-12-11.0.log`)
+- **Bei Größe:** Neue Datei bei 10MB (`cityfeedback.2025-12-11.1.log`, `.2.log`, etc.)
+- **Kompression:** Alte Logs können komprimiert werden
+- **Aufräumen:** Alte Logs werden nach 30-60 Tagen gelöscht
+
+---
+
+## 📊 Log-Level
+
+### Standard (INFO):
+- INFO, WARN, ERROR werden geloggt
+- DEBUG nur für bestimmte Logger (z.B. Hibernate SQL)
+
+### Development:
+```properties
+# In application.properties
+spring.profiles.active=dev
+```
+→ DEBUG-Level aktiviert, mehr Details
+
+### Production:
+```properties
+spring.profiles.active=prod
+```
+→ Nur INFO+ in Dateien, keine Console-Logs
+
+---
+
+## 🔍 Log-Dateien durchsuchen
+
+**Linux/macOS:**
+```bash
+# Alle Logs anzeigen
+tail -f logs/cityfeedback.log
+
+# Fehler-Logs anzeigen
+tail -f logs/cityfeedback-error.log
+
+# AOP-Logs anzeigen
+tail -f logs/cityfeedback-aop.log
+
+# Nach Text suchen
+grep "ERROR" logs/cityfeedback.log
+grep "LoggingAspect" logs/cityfeedback-aop.log
+```
+
+**Windows (PowerShell):**
+```powershell
+# Logs anzeigen
+Get-Content logs/cityfeedback.log -Wait
+
+# Fehler suchen
+Select-String -Path logs/cityfeedback.log -Pattern "ERROR"
+```
+
+---
+
+## ⚠️ Wichtige Hinweise
+
+1. **`.gitignore`** enthält `logs/` und `*.log` - Log-Dateien werden nicht ins Git committed
+2. **Verzeichnis-Erstellung:** Das `logs/` Verzeichnis wird automatisch erstellt
+3. **Berechtigungen:** Auf Linux/macOS stelle sicher, dass die Application Schreibrechte hat:
+   ```bash
+   sudo mkdir -p /var/log/cityfeedback
+   sudo chown $USER:$USER /var/log/cityfeedback
+   ```
+
+---
+
+## 🎯 Beispiel-Logs
+
+### cityfeedback.log
+```
+2025-12-11 18:40:48.033 [main] INFO  CityFeedbackApplication - Started CityFeedbackApplication in 2.963 seconds
+2025-12-11 18:41:02.131 [nio-8080-exec-1] INFO  LoggingAspect - ➡️ Aufruf: UserService.getAllUsers()(0)
+```
+
+### cityfeedback-error.log
+```
+2025-12-11 18:41:21.053 [nio-8080-exec-6] ERROR LoggingAspect - ❌ Fehler in FeedbackService.getFeedbackById(..): FeedbackNotFoundException - Feedback mit ID 999999 wurde nicht gefunden.
+```
+
+### cityfeedback-aop.log
+```
+2025-12-11 18:41:02.131 [nio-8080-exec-1] INFO  LoggingAspect - ➡️ Aufruf: UserService.getAllUsers()(0)
+2025-12-11 18:41:14.622 [nio-8080-exec-4] INFO  LoggingAspect - ➡️ Aufruf: FeedbackService.getFeedbackStatusStatistics()(0)
+```
+
+---
+
+## 📂 Datei-Struktur
+
+```
+CityFeedback/
+├── src/
+│   └── main/
+│       └── resources/
+│           ├── application.properties
+│           └── logback-spring.xml    ← Logging-Konfiguration
+├── logs/                              ← Log-Verzeichnis (wird erstellt)
+│   ├── cityfeedback.log
+│   ├── cityfeedback-error.log
+│   ├── cityfeedback-aop.log
+│   └── cityfeedback.2025-12-11.0.log
+└── .gitignore                         ← enthält logs/
+```
+
+---
+
+## 🚀 Quick Start
+
+```bash
+# 1. Application starten
+mvn spring-boot:run
+
+# 2. Logs prüfen (in neuem Terminal)
+tail -f logs/cityfeedback.log
+
+# 3. Custom Log-Verzeichnis (Linux/macOS)
+export LOG_DIR=/var/log/cityfeedback
+mvn spring-boot:run
+
+# 4. Nur Fehler-Logs anzeigen
+tail -f logs/cityfeedback-error.log
+```
+

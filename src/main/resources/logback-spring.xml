@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!-- 
+        Cross-Platform Log-Verzeichnis:
+        - Verwendet ${LOG_DIR:-./logs} für Flexibilität
+        - Default: ./logs (relativ zum Arbeitsverzeichnis)
+        - Kann via Environment Variable LOG_DIR überschrieben werden
+        - Funktioniert auf Windows, Linux, macOS
+    -->
+    <property name="LOG_DIR" value="${LOG_DIR:-./logs}"/>
+    <property name="LOG_FILE_NAME" value="cityfeedback"/>
+    
+    <!-- Pattern für Log-Einträge -->
+    <property name="LOG_PATTERN" 
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"/>
+
+    <!-- ========================================== -->
+    <!-- Console Appender (für Development) -->
+    <!-- ========================================== -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- ========================================== -->
+    <!-- File Appender: Application Logs -->
+    <!-- ========================================== -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/${LOG_FILE_NAME}.log</file>
+        
+        <!-- Rolling Policy: Neue Datei täglich oder bei 10MB -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- Datei-Muster: cityfeedback.2025-12-11.0.log -->
+            <fileNamePattern>${LOG_DIR}/${LOG_FILE_NAME}.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            
+            <!-- Maximale Dateigröße: 10MB -->
+            <maxFileSize>10MB</maxFileSize>
+            
+            <!-- Behalte Logs der letzten 30 Tage -->
+            <maxHistory>30</maxHistory>
+            
+            <!-- Gesamtgröße aller Log-Dateien: 300MB -->
+            <totalSizeCap>300MB</totalSizeCap>
+            
+            <!-- Komprimiere alte Logs -->
+            <cleanHistoryOnStart>false</cleanHistoryOnStart>
+        </rollingPolicy>
+        
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- ========================================== -->
+    <!-- File Appender: Error Logs (nur ERROR) -->
+    <!-- ========================================== -->
+    <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/${LOG_FILE_NAME}-error.log</file>
+        
+        <!-- Nur ERROR-Level -->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_DIR}/${LOG_FILE_NAME}-error.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>60</maxHistory>
+            <totalSizeCap>200MB</totalSizeCap>
+        </rollingPolicy>
+        
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- ========================================== -->
+    <!-- File Appender: AOP Logs (LoggingAspect) -->
+    <!-- ========================================== -->
+    <appender name="AOP_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/${LOG_FILE_NAME}-aop.log</file>
+        
+        <!-- Nur Logs vom LoggingAspect -->
+        <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+            <evaluator>
+                <expression>logger.contains("LoggingAspect")</expression>
+            </evaluator>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_DIR}/${LOG_FILE_NAME}-aop.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>100MB</totalSizeCap>
+        </rollingPolicy>
+        
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- ========================================== -->
+    <!-- Logger-Konfigurationen -->
+    <!-- ========================================== -->
+    
+    <!-- LoggingAspect: Separate Datei für AOP-Logs -->
+    <logger name="com.example.cityfeedback.config.LoggingAspect" level="INFO" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="AOP_FILE"/>
+        <appender-ref ref="ERROR_FILE"/>
+    </logger>
+    
+    <!-- SQL-Logs: Optional, wenn du SQL-Statements sehen willst -->
+    <logger name="org.hibernate.SQL" level="DEBUG" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </logger>
+    
+    <!-- Hibernate: SQL-Parameter -->
+    <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </logger>
+
+    <!-- ========================================== -->
+    <!-- Root Logger -->
+    <!-- ========================================== -->
+    <root level="INFO">
+        <!-- In Production: Console weglassen -->
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+        <appender-ref ref="ERROR_FILE"/>
+    </root>
+
+    <!-- ========================================== -->
+    <!-- Profile-spezifische Konfigurationen -->
+    <!-- ========================================== -->
+    
+    <!-- Development: Mehr Details in Console -->
+    <springProfile name="dev">
+        <root level="DEBUG">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="FILE"/>
+        </root>
+    </springProfile>
+    
+    <!-- Production: Nur File-Logs, keine Console -->
+    <springProfile name="prod">
+        <root level="INFO">
+            <appender-ref ref="FILE"/>
+            <appender-ref ref="ERROR_FILE"/>
+        </root>
+    </springProfile>
+
+</configuration>
+
