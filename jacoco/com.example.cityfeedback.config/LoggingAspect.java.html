@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LoggingAspect.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">CityFeedback</a> &gt; <a href="index.source.html" class="el_package">com.example.cityfeedback.config</a> &gt; <span class="el_source">LoggingAspect.java</span></div><h1>LoggingAspect.java</h1><pre class="source lang-java linenums">package com.example.cityfeedback.config;
+
+import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+
+/**
+ * AOP-Aspekt für Logging und Performance-Monitoring im Application Layer.
+ * 
+ * Cross-Cutting Concerns:
+ * - Methodenaufrufe loggen (Before Advice)
+ * - Exceptions zentral loggen (AfterThrowing Advice)
+ * - Performance-Messung (Around Advice)
+ * 
+ * Dieser Aspekt wird automatisch auf alle öffentlichen Methoden in Application Services angewendet:
+ * - UserService (usermanagement.application)
+ * - FeedbackService (feedbackmanagement.application)
+ */
+@Aspect
+@Component
+<span class="fc" id="L24">public class LoggingAspect {</span>
+
+<span class="fc" id="L26">    private static final Logger logger = LoggerFactory.getLogger(LoggingAspect.class);</span>
+
+    /**
+     * Pointcut: Alle öffentlichen Methoden in Application Services.
+     * Deckt ab:
+     * - UserService (usermanagement.application)
+     * - FeedbackService (feedbackmanagement.application)
+     */
+    @Pointcut(&quot;execution(public * com.example.cityfeedback.usermanagement.application.*Service.*(..)) || &quot; +
+              &quot;execution(public * com.example.cityfeedback.feedbackmanagement.application.*Service.*(..))&quot;)
+<span class="nc" id="L36">    public void applicationServiceMethods() {}</span>
+
+    /**
+     * Before Advice: Loggt jeden Methodenaufruf.
+     * Zeigt: Methodenname und Anzahl der Parameter.
+     */
+    @Before(&quot;applicationServiceMethods()&quot;)
+    public void logMethodCall(JoinPoint joinPoint) {
+<span class="fc" id="L44">        logger.info(&quot;➡️ Aufruf: {}({})&quot;,</span>
+<span class="fc" id="L45">                joinPoint.getSignature().toShortString(),</span>
+<span class="fc" id="L46">                joinPoint.getArgs().length</span>
+        );
+<span class="fc" id="L48">    }</span>
+
+    /**
+     * AfterThrowing Advice: Loggt alle Exceptions in Services.
+     * Wichtig: Wird VOR dem GlobalExceptionHandler ausgeführt.
+     */
+    @AfterThrowing(pointcut = &quot;applicationServiceMethods()&quot;, throwing = &quot;error&quot;)
+    public void logException(JoinPoint joinPoint, Throwable error) {
+<span class="fc" id="L56">        logger.error(&quot;❌ Fehler in {}: {} - {}&quot;,</span>
+<span class="fc" id="L57">                joinPoint.getSignature().toShortString(),</span>
+<span class="fc" id="L58">                error.getClass().getSimpleName(),</span>
+<span class="fc" id="L59">                error.getMessage()</span>
+        );
+<span class="fc" id="L61">    }</span>
+
+    /**
+     * Around Advice: Misst die Ausführungszeit jeder Service-Methode.
+     * Loggt nur Methoden, die länger als 100ms dauern (Performance-Warnung).
+     */
+    @Around(&quot;applicationServiceMethods()&quot;)
+    public Object measureExecutionTime(ProceedingJoinPoint pjp) throws Throwable {
+<span class="fc" id="L69">        long start = System.currentTimeMillis();</span>
+<span class="fc" id="L70">        Object result = pjp.proceed();</span>
+<span class="fc" id="L71">        long duration = System.currentTimeMillis() - start;</span>
+
+        // Nur langsame Methoden loggen (Performance-Warnung)
+<span class="fc bfc" id="L74" title="All 2 branches covered.">        if (duration &gt; 100) {</span>
+<span class="fc" id="L75">            logger.warn(&quot;⏱️ Langsame Methode {}(): {} ms&quot;,</span>
+<span class="fc" id="L76">                    pjp.getSignature().getName(),</span>
+<span class="fc" id="L77">                    duration</span>
+            );
+        } else {
+<span class="fc" id="L80">            logger.debug(&quot;⏱️ Dauer {}(): {} ms&quot;,</span>
+<span class="fc" id="L81">                    pjp.getSignature().getName(),</span>
+<span class="fc" id="L82">                    duration</span>
+            );
+        }
+
+<span class="fc" id="L86">        return result;</span>
+    }
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>
