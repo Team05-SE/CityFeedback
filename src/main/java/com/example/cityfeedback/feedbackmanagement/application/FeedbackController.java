@@ -73,4 +73,84 @@ public class FeedbackController {
     public FeedbackService.FeedbackStatisticsDTO getFeedbackStatistics() {
         return feedbackService.getFeedbackStatistics();
     }
+
+    // ===================================================================
+    // Mitarbeiter/Admin Endpunkte
+    // ===================================================================
+
+    /**
+     * Gibt ein PENDING Feedback frei (setzt Status auf OPEN).
+     * PUT /feedback/{id}/approve
+     */
+    @PutMapping("/{id}/approve")
+    public Feedback approveFeedback(@PathVariable Long id) {
+        return feedbackService.approveFeedback(id);
+    }
+
+    /**
+     * Aktualisiert den Status eines Feedbacks.
+     * PUT /feedback/{id}/status
+     */
+    @PutMapping("/{id}/status")
+    public Feedback updateStatus(@PathVariable Long id, @Valid @RequestBody UpdateStatusDTO dto) {
+        return feedbackService.updateFeedbackStatus(id, dto.status);
+    }
+
+    /**
+     * Veröffentlicht ein Feedback.
+     * PUT /feedback/{id}/publish
+     */
+    @PutMapping("/{id}/publish")
+    public Feedback publishFeedback(@PathVariable Long id) {
+        return feedbackService.publishFeedback(id);
+    }
+
+    /**
+     * Löscht ein Feedback komplett (nur für Admins).
+     * DELETE /feedback/{id}
+     */
+    @DeleteMapping("/{id}")
+    public void deleteFeedback(
+            @RequestHeader(value = "X-Admin-Id", required = true) java.util.UUID adminId,
+            @PathVariable Long id) {
+        feedbackService.deleteFeedback(adminId, id);
+    }
+
+    // ===================================================================
+    // Kommentar-Endpunkte
+    // ===================================================================
+
+    /**
+     * Fügt einen Kommentar zu einem Feedback hinzu.
+     * POST /feedback/{id}/comments
+     */
+    @PostMapping("/{id}/comments")
+    public com.example.cityfeedback.feedbackmanagement.domain.model.Comment addComment(
+            @PathVariable Long id,
+            @Valid @RequestBody com.example.cityfeedback.feedbackmanagement.application.CommentDTO dto) {
+        return feedbackService.addComment(id, dto.authorId, dto.content);
+    }
+
+    /**
+     * Gibt alle Kommentare zu einem Feedback zurück.
+     * GET /feedback/{id}/comments
+     */
+    @GetMapping("/{id}/comments")
+    public List<com.example.cityfeedback.feedbackmanagement.domain.model.Comment> getComments(
+            @PathVariable Long id) {
+        return feedbackService.getCommentsByFeedbackId(id);
+    }
+
+    // ===================================================================
+    // Öffentliche Endpunkte (ohne Login)
+    // ===================================================================
+
+    /**
+     * Gibt alle veröffentlichten Feedbacks zurück.
+     * GET /feedback/public
+     */
+    @GetMapping("/public")
+    public List<Feedback> getPublishedFeedbacks() {
+        return feedbackService.getPublishedFeedbacks();
+    }
 }

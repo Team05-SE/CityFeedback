@@ -1,10 +1,16 @@
 package com.example.cityfeedback.feedbackmanagement.application;
 
 import com.example.cityfeedback.feedbackmanagement.domain.model.Feedback;
+import com.example.cityfeedback.feedbackmanagement.domain.model.Comment;
 import com.example.cityfeedback.feedbackmanagement.domain.exceptions.FeedbackNotFoundException;
 import com.example.cityfeedback.feedbackmanagement.domain.repositories.FeedbackRepository;
+import com.example.cityfeedback.feedbackmanagement.domain.repositories.CommentRepository;
+import com.example.cityfeedback.feedbackmanagement.domain.valueobjects.Status;
+import com.example.cityfeedback.usermanagement.domain.exceptions.UnauthorizedException;
 import com.example.cityfeedback.usermanagement.domain.exceptions.UserNotFoundException;
+import com.example.cityfeedback.usermanagement.domain.model.User;
 import com.example.cityfeedback.usermanagement.domain.repositories.UserRepository;
+import com.example.cityfeedback.usermanagement.domain.valueobjects.UserRole;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,10 +27,14 @@ public class FeedbackService {
 
     private final FeedbackRepository feedbackRepository;
     private final UserRepository userRepository;
+    private final CommentRepository commentRepository;
 
-    public FeedbackService(FeedbackRepository feedbackRepository, UserRepository userRepository) {
+    public FeedbackService(FeedbackRepository feedbackRepository, 
+                          UserRepository userRepository,
+                          CommentRepository commentRepository) {
         this.feedbackRepository = feedbackRepository;
         this.userRepository = userRepository;
+        this.commentRepository = commentRepository;
     }
 
     public List<Feedback> getAllFeedbacks() {
@@ -194,6 +204,143 @@ public class FeedbackService {
                 .orElse(null);
 
         return new FeedbackStatisticsDTO(totalCount, publishedCount, closedCount, openCount, oldestDate, newestDate);
+    }
+
+    /**
+     * Löscht alle Feedbacks eines bestimmten Users.
+     * Wird verwendet, wenn ein User gelöscht wird.
+     * 
+     * @param userId Die UUID des Users, dessen Feedbacks gelöscht werden sollen
+     */
+    @Transactional
+    public void deleteFeedbacksByUserId(java.util.UUID userId) {
+        // Finde alle Feedbacks des Users
+        List<Feedback> userFeedbacks = feedbackRepository.findByUserId(userId);
+        
+        // Lösche alle Kommentare dieser Feedbacks
+        userFeedbacks.stream()
+                .map(Feedback::getId)
+                .forEach(commentRepository::deleteByFeedbackId);
+        
+        // Lösche die Feedbacks
+        feedbackRepository.deleteByUserId(userId);
+    }
+
+    /**
+     * Gibt ein PENDING Feedback frei (setzt Status auf OPEN).
+     * Nur für Mitarbeiter/Admins.
+     * 
+     * @param feedbackId Die ID des Feedbacks
+     * @return Das aktualisierte Feedback
+     */
+    @Transactional
+    public Feedback approveFeedback(Long feedbackId) {
+        Feedback feedback = getFeedbackById(feedbackId);
+        feedback.approve();
+        return feedbackRepository.save(feedback);
+    }
+
+    /**
+     * Aktualisiert den Status eines Feedbacks.
+     * Nur für Mitarbeiter/Admins.
+     * 
+     * @param feedbackId Die ID des Feedbacks
+     * @param newStatus Der neue Status
+     * @return Das aktualisierte Feedback
+     */
+    @Transactional
+    public Feedback updateFeedbackStatus(Long feedbackId, Status newStatus) {
+        Feedback feedback = getFeedbackById(feedbackId);
+        feedback.updateStatus(newStatus);
+        return feedbackRepository.save(feedback);
+    }
+
+    /**
+     * Veröffentlicht ein Feedback (setzt isPublished auf true).
+     * Nur für Mitarbeiter/Admins.
+     * 
+     * @param feedbackId Die ID des Feedbacks
+     * @return Das aktualisierte Feedback
+     */
+    @Transactional
+    public Feedback publishFeedback(Long feedbackId) {
+        Feedback feedback = getFeedbackById(feedbackId);
+        feedback.publish();
+        return feedbackRepository.save(feedback);
+    }
+
+    /**
+     * Gibt alle veröffentlichten Feedbacks zurück.
+     * Für öffentliche Ansicht ohne Login.
+     * 
+     * @return Liste aller veröffentlichten Feedbacks
+     */
+    public List<Feedback> getPublishedFeedbacks() {
+        return feedbackRepository.findAll().stream()
+                .filter(Feedback::isPublished)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Löscht ein Feedback komplett (nur für Admins).
+     * 
+     * @param adminId Die ID des ausführenden Admins
+     * @param feedbackId Die ID des zu löschenden Feedbacks
+     * @throws UnauthorizedException wenn der ausführende User kein Admin ist
+     * @throws FeedbackNotFoundException wenn das Feedback nicht gefunden wird
+     */
+    @Transactional
+    public void deleteFeedback(java.util.UUID adminId, Long feedbackId) {
+        User admin = userRepository.findById(adminId)
+                .orElseThrow(() -> new UserNotFoundException(adminId));
+        
+        if (admin.getRole() != UserRole.ADMIN) {
+            throw new UnauthorizedException("Nur Administratoren können Feedbacks löschen.");
+        }
+
+        Feedback feedback = getFeedbackById(feedbackId);
+        
+        // Lösche alle Kommentare des Feedbacks
+        commentRepository.deleteByFeedbackId(feedbackId);
+        
+        // Lösche das Feedback
+        feedbackRepository.delete(feedback);
+    }
+
+    /**
+     * Fügt einen Kommentar zu einem Feedback hinzu (nur für Mitarbeiter/Admins).
+     * 
+     * @param feedbackId Die ID des Feedbacks
+     * @param authorId Die ID des Autors (Mitarbeiter/Admin)
+     * @param content Der Kommentar-Text
+     * @return Der erstellte Kommentar
+     * @throws FeedbackNotFoundException wenn das Feedback nicht gefunden wird
+     */
+    @Transactional
+    public Comment addComment(Long feedbackId, java.util.UUID authorId, String content) {
+        // Prüfen, ob Feedback existiert
+        getFeedbackById(feedbackId);
+        
+        // Prüfen, ob Autor existiert und Mitarbeiter/Admin ist
+        User author = userRepository.findById(authorId)
+                .orElseThrow(() -> new UserNotFoundException(authorId));
+        
+        if (author.getRole() != UserRole.STAFF && author.getRole() != UserRole.ADMIN) {
+            throw new UnauthorizedException("Nur Mitarbeiter und Administratoren können Kommentare hinzufügen.");
+        }
+
+        Comment comment = new Comment(feedbackId, authorId, content);
+        return commentRepository.save(comment);
+    }
+
+    /**
+     * Gibt alle Kommentare zu einem Feedback zurück.
+     * 
+     * @param feedbackId Die ID des Feedbacks
+     * @return Liste aller Kommentare, sortiert nach Erstellungsdatum (älteste zuerst)
+     */
+    public List<Comment> getCommentsByFeedbackId(Long feedbackId) {
+        return commentRepository.findByFeedbackId(feedbackId);
     }
 
     /**

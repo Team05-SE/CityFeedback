@@ -1,9 +1,12 @@
 package com.example.cityfeedback.feedbackmanagement.application;
 
 import com.example.cityfeedback.feedbackmanagement.domain.model.Feedback;
+import com.example.cityfeedback.feedbackmanagement.domain.model.Comment;
 import com.example.cityfeedback.feedbackmanagement.domain.valueobjects.Category;
 import com.example.cityfeedback.feedbackmanagement.domain.valueobjects.Status;
+import com.example.cityfeedback.feedbackmanagement.domain.exceptions.FeedbackNotFoundException;
 import com.example.cityfeedback.usermanagement.domain.model.User;
+import com.example.cityfeedback.usermanagement.domain.exceptions.UnauthorizedException;
 import com.example.cityfeedback.usermanagement.domain.valueobjects.Email;
 import com.example.cityfeedback.usermanagement.domain.valueobjects.Password;
 import com.example.cityfeedback.usermanagement.domain.valueobjects.UserRole;
@@ -15,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -270,6 +274,214 @@ class FeedbackServiceTest {
             assertTrue(statistics.getClosedCount() <= statistics.getTotalCount());
             assertTrue(statistics.getOpenCount() <= statistics.getTotalCount());
         }
+    }
+
+    // ===================================================================
+    // Kommentar-Tests
+    // ===================================================================
+
+    @Test
+    void addComment_shouldPersistComment() {
+        // Arrange
+        User staffUser = new User(new Email("staff@test.de"), new Password("Abcdef12"), UserRole.STAFF);
+        staffUser = userRepository.save(staffUser);
+
+        FeedbackDTO dto = createFeedbackDTO("Test Feedback", Category.VERKEHR);
+        Feedback feedback = feedbackService.createFeedback(dto);
+
+        // Act
+        Comment comment = feedbackService.addComment(feedback.getId(), staffUser.getId(), "Test-Kommentar");
+
+        // Assert
+        assertNotNull(comment.getId());
+        assertEquals(feedback.getId(), comment.getFeedbackId());
+        assertEquals(staffUser.getId(), comment.getAuthorId());
+        assertEquals("Test-Kommentar", comment.getContent());
+        assertNotNull(comment.getCreatedAt());
+    }
+
+    @Test
+    void addComment_asCitizen_shouldThrow() {
+        // Arrange
+        User citizenUser = new User(new Email("citizen@test.de"), new Password("Abcdef12"), UserRole.CITIZEN);
+        citizenUser = userRepository.save(citizenUser);
+        final UUID citizenUserId = citizenUser.getId();
+
+        FeedbackDTO dto = createFeedbackDTO("Test Feedback", Category.VERKEHR);
+        Feedback feedback = feedbackService.createFeedback(dto);
+        final Long feedbackId = feedback.getId();
+
+        // Act & Assert
+        assertThrows(UnauthorizedException.class,
+                () -> feedbackService.addComment(feedbackId, citizenUserId, "Test-Kommentar"));
+    }
+
+    @Test
+    void addComment_asAdmin_shouldSucceed() {
+        // Arrange
+        User adminUser = new User(new Email("admin@test.de"), new Password("Abcdef12"), UserRole.ADMIN);
+        adminUser = userRepository.save(adminUser);
+
+        FeedbackDTO dto = createFeedbackDTO("Test Feedback", Category.VERKEHR);
+        Feedback feedback = feedbackService.createFeedback(dto);
+
+        // Act
+        Comment comment = feedbackService.addComment(feedback.getId(), adminUser.getId(), "Admin-Kommentar");
+
+        // Assert
+        assertNotNull(comment.getId());
+        assertEquals(adminUser.getId(), comment.getAuthorId());
+    }
+
+    @Test
+    void addComment_withNonExistentFeedback_shouldThrow() {
+        // Arrange
+        User staffUser = new User(new Email("staff@test.de"), new Password("Abcdef12"), UserRole.STAFF);
+        staffUser = userRepository.save(staffUser);
+        final UUID staffUserId = staffUser.getId();
+
+        // Act & Assert
+        assertThrows(FeedbackNotFoundException.class,
+                () -> feedbackService.addComment(99999L, staffUserId, "Test-Kommentar"));
+    }
+
+    @Test
+    void getCommentsByFeedbackId_shouldReturnComments() {
+        // Arrange
+        User staffUser = new User(new Email("staff@test.de"), new Password("Abcdef12"), UserRole.STAFF);
+        staffUser = userRepository.save(staffUser);
+
+        FeedbackDTO dto = createFeedbackDTO("Test Feedback", Category.VERKEHR);
+        Feedback feedback = feedbackService.createFeedback(dto);
+
+        feedbackService.addComment(feedback.getId(), staffUser.getId(), "Erster Kommentar");
+        feedbackService.addComment(feedback.getId(), staffUser.getId(), "Zweiter Kommentar");
+
+        // Act
+        List<Comment> comments = feedbackService.getCommentsByFeedbackId(feedback.getId());
+
+        // Assert
+        assertNotNull(comments);
+        assertTrue(comments.size() >= 2);
+        assertTrue(comments.stream().anyMatch(c -> c.getContent().equals("Erster Kommentar")));
+        assertTrue(comments.stream().anyMatch(c -> c.getContent().equals("Zweiter Kommentar")));
+    }
+
+    @Test
+    void getCommentsByFeedbackId_withNoComments_shouldReturnEmptyList() {
+        // Arrange
+        FeedbackDTO dto = createFeedbackDTO("Test Feedback", Category.VERKEHR);
+        Feedback feedback = feedbackService.createFeedback(dto);
+
+        // Act
+        List<Comment> comments = feedbackService.getCommentsByFeedbackId(feedback.getId());
+
+        // Assert
+        assertNotNull(comments);
+        assertTrue(comments.isEmpty());
+    }
+
+    // ===================================================================
+    // Feedback-Verwaltung Tests
+    // ===================================================================
+
+    @Test
+    void approveFeedback_shouldChangeStatusToOpen() {
+        // Arrange
+        FeedbackDTO dto = createFeedbackDTO("Test Feedback", Category.VERKEHR);
+        Feedback feedback = feedbackService.createFeedback(dto);
+        assertEquals(Status.PENDING, feedback.getStatus());
+
+        // Act
+        Feedback approved = feedbackService.approveFeedback(feedback.getId());
+
+        // Assert
+        assertEquals(Status.OPEN, approved.getStatus());
+        assertTrue(approved.isPublished());
+    }
+
+    @Test
+    void updateFeedbackStatus_shouldChangeStatus() {
+        // Arrange
+        FeedbackDTO dto = createFeedbackDTO("Test Feedback", Category.VERKEHR);
+        Feedback feedback = feedbackService.createFeedback(dto);
+
+        // Act
+        Feedback updated = feedbackService.updateFeedbackStatus(feedback.getId(), Status.INPROGRESS);
+
+        // Assert
+        assertEquals(Status.INPROGRESS, updated.getStatus());
+    }
+
+    @Test
+    void publishFeedback_shouldSetPublishedToTrue() {
+        // Arrange
+        FeedbackDTO dto = createFeedbackDTO("Test Feedback", Category.VERKEHR);
+        Feedback feedback = feedbackService.createFeedback(dto);
+        feedback.updateStatus(Status.OPEN);
+        feedbackRepository.save(feedback);
+
+        // Act
+        Feedback published = feedbackService.publishFeedback(feedback.getId());
+
+        // Assert
+        assertTrue(published.isPublished());
+    }
+
+    @Test
+    void deleteFeedback_asAdmin_shouldDeleteFeedbackAndComments() {
+        // Arrange
+        User adminUser = new User(new Email("admin@test.de"), new Password("Abcdef12"), UserRole.ADMIN);
+        adminUser = userRepository.save(adminUser);
+
+        User staffUser = new User(new Email("staff@test.de"), new Password("Abcdef12"), UserRole.STAFF);
+        staffUser = userRepository.save(staffUser);
+
+        FeedbackDTO dto = createFeedbackDTO("Test Feedback", Category.VERKEHR);
+        Feedback feedback = feedbackService.createFeedback(dto);
+
+        // Füge Kommentare hinzu
+        feedbackService.addComment(feedback.getId(), staffUser.getId(), "Kommentar 1");
+        feedbackService.addComment(feedback.getId(), staffUser.getId(), "Kommentar 2");
+
+        Long feedbackId = feedback.getId();
+
+        // Act
+        feedbackService.deleteFeedback(adminUser.getId(), feedbackId);
+
+        // Assert
+        assertThrows(FeedbackNotFoundException.class,
+                () -> feedbackService.getFeedbackById(feedbackId));
+        List<Comment> comments = feedbackService.getCommentsByFeedbackId(feedbackId);
+        assertTrue(comments.isEmpty());
+    }
+
+    @Test
+    void deleteFeedback_asStaff_shouldThrow() {
+        // Arrange
+        User staffUser = new User(new Email("staff@test.de"), new Password("Abcdef12"), UserRole.STAFF);
+        staffUser = userRepository.save(staffUser);
+        final UUID staffUserId = staffUser.getId();
+
+        FeedbackDTO dto = createFeedbackDTO("Test Feedback", Category.VERKEHR);
+        Feedback feedback = feedbackService.createFeedback(dto);
+        final Long feedbackId = feedback.getId();
+
+        // Act & Assert
+        assertThrows(UnauthorizedException.class,
+                () -> feedbackService.deleteFeedback(staffUserId, feedbackId));
+    }
+
+    @Test
+    void deleteFeedback_withNonExistentFeedback_shouldThrow() {
+        // Arrange
+        User adminUser = new User(new Email("admin@test.de"), new Password("Abcdef12"), UserRole.ADMIN);
+        adminUser = userRepository.save(adminUser);
+        final UUID adminUserId = adminUser.getId();
+
+        // Act & Assert
+        assertThrows(FeedbackNotFoundException.class,
+                () -> feedbackService.deleteFeedback(adminUserId, 99999L));
     }
 
     // Hilfsmethode

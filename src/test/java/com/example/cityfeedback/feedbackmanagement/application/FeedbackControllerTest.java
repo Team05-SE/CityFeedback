@@ -1,6 +1,7 @@
 package com.example.cityfeedback.feedbackmanagement.application;
 
 import com.example.cityfeedback.feedbackmanagement.domain.model.Feedback;
+import com.example.cityfeedback.feedbackmanagement.domain.model.Comment;
 import com.example.cityfeedback.feedbackmanagement.domain.valueobjects.Category;
 import com.example.cityfeedback.feedbackmanagement.domain.valueobjects.Status;
 import com.example.cityfeedback.feedbackmanagement.infrastructure.FeedbackRepositoryImpl;
@@ -194,6 +195,81 @@ class FeedbackControllerTest {
         assertNotNull(statistics.getOpenCount());
         assertTrue(statistics.getTotalCount() >= 2L, "Sollte mindestens 2 Feedbacks haben");
         assertTrue(statistics.getPublishedCount() >= 1L, "Sollte mindestens 1 veröffentlichtes Feedback haben");
+    }
+
+    @Test
+    void addComment_shouldReturn200() {
+        // Arrange
+        User staffUser = new User(new Email("staff@test.de"), new Password("Abcdef12"), UserRole.STAFF);
+        staffUser = userRepository.save(staffUser);
+
+        FeedbackDTO dto = createFeedbackDTO("Test Feedback", Category.VERKEHR);
+        Feedback feedback = feedbackService.createFeedback(dto);
+
+        CommentDTO commentDTO = new CommentDTO();
+        commentDTO.authorId = staffUser.getId();
+        commentDTO.content = "Test-Kommentar";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<CommentDTO> request = new HttpEntity<>(commentDTO, headers);
+
+        // Act
+        ResponseEntity<Comment> response = rest.postForEntity(
+                "/feedback/" + feedback.getId() + "/comments", request, Comment.class);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals("Test-Kommentar", response.getBody().getContent());
+    }
+
+    @Test
+    void getComments_shouldReturn200AndList() {
+        // Arrange
+        User staffUser = new User(new Email("staff@test.de"), new Password("Abcdef12"), UserRole.STAFF);
+        staffUser = userRepository.save(staffUser);
+
+        FeedbackDTO dto = createFeedbackDTO("Test Feedback", Category.VERKEHR);
+        Feedback feedback = feedbackService.createFeedback(dto);
+
+        // Füge Kommentare hinzu
+        feedbackService.addComment(feedback.getId(), staffUser.getId(), "Kommentar 1");
+        feedbackService.addComment(feedback.getId(), staffUser.getId(), "Kommentar 2");
+
+        // Act
+        ResponseEntity<Comment[]> response = rest.getForEntity(
+                "/feedback/" + feedback.getId() + "/comments", Comment[].class);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertTrue(response.getBody().length >= 2);
+    }
+
+    @Test
+    void deleteFeedback_asAdmin_shouldReturn204() {
+        // Arrange
+        User adminUser = new User(new Email("admin@test.de"), new Password("Abcdef12"), UserRole.ADMIN);
+        adminUser = userRepository.save(adminUser);
+
+        FeedbackDTO dto = createFeedbackDTO("Test Feedback", Category.VERKEHR);
+        Feedback feedback = feedbackService.createFeedback(dto);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("X-Admin-Id", adminUser.getId().toString());
+
+        HttpEntity<Void> request = new HttpEntity<>(headers);
+
+        // Act
+        ResponseEntity<Void> response = rest.exchange(
+                "/feedback/" + feedback.getId(),
+                org.springframework.http.HttpMethod.DELETE,
+                request,
+                Void.class);
+
+        // Assert
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
     }
 
     // Hilfsmethode

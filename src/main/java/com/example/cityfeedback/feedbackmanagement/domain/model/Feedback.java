@@ -55,7 +55,7 @@ public class Feedback {
      * @param category Kategorie des Feedbacks
      * @param content Inhalt des Feedbacks
      * @param userId ID des Benutzers, der das Feedback erstellt
-     * @return Neues Feedback-Objekt mit Status OPEN und nicht veröffentlicht
+     * @return Neues Feedback-Objekt mit Status PENDING und nicht veröffentlicht
      * @throws IllegalArgumentException wenn Validierung fehlschlägt
      */
     public static Feedback create(String title, Category category, String content, UUID userId) {
@@ -70,7 +70,7 @@ public class Feedback {
             category,
             LocalDate.now(),
             content,
-            Status.OPEN,
+            Status.PENDING, // Neues Feedback ist zunächst PENDING (Entwurf)
             false, // Neues Feedback ist zunächst nicht veröffentlicht
             userId
         );
@@ -88,7 +88,23 @@ public class Feedback {
         if (status == Status.CLOSED) {
             throw new IllegalStateException("Geschlossenes Feedback kann nicht veröffentlicht werden.");
         }
+        if (status == Status.PENDING) {
+            throw new IllegalStateException("PENDING Feedbacks müssen erst auf OPEN gesetzt werden, bevor sie veröffentlicht werden können.");
+        }
         this.isPublished = true;
+    }
+
+    /**
+     * Gibt ein PENDING Feedback frei (setzt Status auf OPEN).
+     * Kann nur von Mitarbeitern/Admins verwendet werden.
+     * 
+     * @throws IllegalStateException wenn das Feedback nicht PENDING ist
+     */
+    public void approve() {
+        if (status != Status.PENDING) {
+            throw new IllegalStateException("Nur PENDING Feedbacks können freigegeben werden.");
+        }
+        this.status = Status.OPEN;
     }
 
     /**
