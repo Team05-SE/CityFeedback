@@ -78,13 +78,14 @@ class UserServiceTest {
         // Arrange
         User staff = new User(new Email("staff@test.de"), new Password("Abcdef12"), UserRole.STAFF);
         staff = userRepository.save(staff);
+        final UUID staffId = staff.getId();
 
         Email newUserEmail = new Email("newuser@test.de");
         Password newUserPassword = new Password("Abcdef12");
 
         // Act & Assert
         assertThrows(UnauthorizedException.class,
-                () -> userService.createUserByAdmin(staff.getId(), newUserEmail, newUserPassword, UserRole.CITIZEN));
+                () -> userService.createUserByAdmin(staffId, newUserEmail, newUserPassword, UserRole.CITIZEN));
     }
 
     @Test
