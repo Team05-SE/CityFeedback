@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -48,6 +49,18 @@ public class FeedbackRepositoryImpl implements FeedbackRepository {
     public void delete(Feedback feedback) {
         FeedbackEntity entity = FeedbackMapper.toEntity(feedback);
         jpaRepository.delete(entity);
+    }
+
+    @Override
+    public List<Feedback> findByUserId(UUID userId) {
+        return jpaRepository.findByUserId(userId).stream()
+                .map(FeedbackMapper::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public void deleteByUserId(UUID userId) {
+        jpaRepository.deleteByUserId(userId);
     }
 }
 

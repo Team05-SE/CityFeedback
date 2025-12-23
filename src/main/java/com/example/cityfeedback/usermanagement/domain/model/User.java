@@ -82,4 +82,24 @@ public class User {
     public void setId(UUID id) {
         this.id = id;
     }
+
+    /**
+     * Ändert das Passwort des Users.
+     * 
+     * @param newPassword Das neue Passwort
+     * @throws IllegalArgumentException wenn das neue Passwort null ist
+     */
+    public void changePassword(Password newPassword) {
+        this.password = Objects.requireNonNull(newPassword, "Passwort darf nicht null sein");
+    }
+
+    /**
+     * Ändert die Rolle des Users.
+     * 
+     * @param newRole Die neue Rolle
+     * @throws IllegalArgumentException wenn die neue Rolle null ist
+     */
+    public void changeRole(UserRole newRole) {
+        this.role = Objects.requireNonNull(newRole, "Rolle darf nicht null sein");
+    }
 }

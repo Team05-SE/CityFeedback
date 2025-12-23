@@ -24,6 +24,8 @@ import {
   getAllFeedbacks,
   categoryLabels,
   statusConfig,
+  getStoredUser,
+  getUserId,
   type Feedback,
   type Status,
 } from "@/lib/api"
@@ -51,25 +53,28 @@ export default function DashboardPage() {
     loadFeedbacks()
   }, [])
 
-  // Statistics
-  const totalFeedbacks = feedbacks.length
-  const openCount = feedbacks.filter((f) => f.status === "OPEN").length
-  const inProgressCount = feedbacks.filter((f) => f.status === "IN_PROGRESS").length
-  const closedCount = feedbacks.filter((f) => f.status === "CLOSED").length
+  // Statistics - nur eigene Feedbacks für Bürger
+  const user = getStoredUser()
+  const userId = user ? getUserId(user) : null
+  const ownFeedbacks = userId ? feedbacks.filter((f) => f.userId === userId) : []
+  const totalFeedbacks = ownFeedbacks.length
+  const openCount = ownFeedbacks.filter((f) => f.status === "OPEN").length
+  const inProgressCount = ownFeedbacks.filter((f) => f.status === "INPROGRESS").length
+  const closedCount = ownFeedbacks.filter((f) => f.status === "CLOSED").length
 
   const stats = [
     {
       title: "Gesamt",
       value: totalFeedbacks,
       icon: MessageSquare,
-      description: "Alle Feedbacks",
+      description: "Meine Feedbacks",
       color: "text-primary",
     },
     {
       title: "Offen",
       value: openCount,
       icon: AlertCircle,
-      description: "Warten auf Bearbeitung",
+      description: "Freigegeben",
       color: "text-amber-500",
     },
     {
@@ -123,7 +128,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
         {stats.map((stat) => (
           <Card key={stat.title}>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -143,9 +148,9 @@ export default function DashboardPage() {
       {/* Feedbacks Table */}
       <Card>
         <CardHeader>
-          <CardTitle>Alle Feedbacks</CardTitle>
+          <CardTitle>Meine Feedbacks</CardTitle>
           <CardDescription>
-            Liste aller eingereichten Feedbacks mit Status und Kategorie
+            Liste Ihrer eingereichten Feedbacks mit Status und Kategorie
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -161,7 +166,7 @@ export default function DashboardPage() {
             <div className="flex items-center justify-center py-12">
               <RefreshCw className="size-8 animate-spin text-muted-foreground" />
             </div>
-          ) : feedbacks.length === 0 ? (
+          ) : ownFeedbacks.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12 text-center">
               <MessageSquare className="size-12 text-muted-foreground mb-4" />
               <p className="text-lg font-medium">Noch keine Feedbacks</p>
@@ -186,7 +191,7 @@ export default function DashboardPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {feedbacks.map((feedback) => (
+                  {ownFeedbacks.map((feedback) => (
                     <TableRow key={feedback.id} className="cursor-pointer hover:bg-muted/50">
                       <TableCell className="font-medium">{feedback.id}</TableCell>
                       <TableCell>

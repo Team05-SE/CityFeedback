@@ -1,8 +1,8 @@
 package com.example.cityfeedback.feedbackmanagement.domain.valueobjects;
 
 public enum Status {
-    OPEN,
-    INPROGRESS,
-    DONE,
-    CLOSED;
+    OPEN,       // Offen
+    INPROGRESS, // In Bearbeitung
+    DONE,       // Erledigt
+    CLOSED;     // Geschlossen
 }

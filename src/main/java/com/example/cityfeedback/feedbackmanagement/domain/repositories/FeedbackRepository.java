@@ -42,5 +42,20 @@ public interface FeedbackRepository {
      * @param feedback Das zu löschende Feedback
      */
     void delete(Feedback feedback);
+
+    /**
+     * Findet alle Feedbacks eines bestimmten Users.
+     * 
+     * @param userId Die UUID des Users
+     * @return Liste aller Feedbacks des Users
+     */
+    List<Feedback> findByUserId(java.util.UUID userId);
+
+    /**
+     * Löscht alle Feedbacks eines bestimmten Users.
+     * 
+     * @param userId Die UUID des Users
+     */
+    void deleteByUserId(java.util.UUID userId);
 }
 
