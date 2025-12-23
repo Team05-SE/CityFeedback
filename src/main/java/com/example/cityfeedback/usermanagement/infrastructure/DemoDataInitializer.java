@@ -121,7 +121,7 @@ public class DemoDataInitializer implements CommandLineRunner {
             citizens = users;
         }
 
-        // PENDING Feedbacks
+        // OPEN Feedbacks (werden direkt mit Status OPEN erstellt)
         createFeedback(citizens.get(0).getId(), "Müllcontainer überfüllt", Category.UMWELT,
             "Der Müllcontainer an der Ecke Hauptstraße/Neue Straße ist seit Tagen überfüllt. Der Müll quillt über und verursacht Gerüche.");
         createFeedback(citizens.get(1).getId(), "Straßenlaterne defekt", Category.BELEUCHTUNG,
@@ -131,33 +131,18 @@ public class DemoDataInitializer implements CommandLineRunner {
         createFeedback(citizens.get(0).getId(), "Grafitti an der Bushaltestelle", Category.VANDALISMUS,
             "Die Bushaltestelle am Marktplatz wurde mit Graffiti besprüht. Die Wände sind vollständig beschmiert.");
 
-        // OPEN Feedbacks (bereits freigegeben)
+        // OPEN Feedbacks (bereits mit Status OPEN)
         var openFeedback1 = createFeedback(citizens.get(1).getId(), "Baum beschädigt nach Sturm", Category.UMWELT,
             "Nach dem letzten Sturm ist ein großer Ast von der Eiche im Stadtpark abgebrochen. Der Ast liegt auf dem Gehweg.");
-        if (openFeedback1 != null) {
-            try {
-                feedbackService.approveFeedback(openFeedback1.getId());
-            } catch (Exception e) {
-                logger.warn("Konnte Feedback nicht freigeben: {}", e.getMessage());
-            }
-        }
 
         var openFeedback2 = createFeedback(citizens.get(2).getId(), "Ampel zeigt dauerhaft rot", Category.VERKEHR,
             "Die Ampel an der Kreuzung Hauptstraße/Bahnhofstraße zeigt seit gestern dauerhaft rot. Der Verkehr staut sich erheblich.");
-        if (openFeedback2 != null) {
-            try {
-                feedbackService.approveFeedback(openFeedback2.getId());
-            } catch (Exception e) {
-                logger.warn("Konnte Feedback nicht freigeben: {}", e.getMessage());
-            }
-        }
 
         // INPROGRESS Feedbacks
         var inProgressFeedback1 = createFeedback(citizens.get(3).getId(), "Spielplatzgerät defekt", Category.VERWALTUNG,
             "Die Schaukel auf dem Spielplatz am Park ist kaputt. Ein Seil ist gerissen.");
         if (inProgressFeedback1 != null) {
             try {
-                feedbackService.approveFeedback(inProgressFeedback1.getId());
                 feedbackService.updateFeedbackStatus(inProgressFeedback1.getId(), Status.INPROGRESS);
                 feedbackService.publishFeedback(inProgressFeedback1.getId());
             } catch (Exception e) {
@@ -169,7 +154,6 @@ public class DemoDataInitializer implements CommandLineRunner {
             "Nach dem Regen ist der Fußweg am Bach überschwemmt. Man kann nicht mehr trockenen Fußes passieren.");
         if (inProgressFeedback2 != null) {
             try {
-                feedbackService.approveFeedback(inProgressFeedback2.getId());
                 feedbackService.updateFeedbackStatus(inProgressFeedback2.getId(), Status.INPROGRESS);
                 feedbackService.publishFeedback(inProgressFeedback2.getId());
             } catch (Exception e) {
@@ -182,7 +166,6 @@ public class DemoDataInitializer implements CommandLineRunner {
             "Das Straßenschild für die Neue Straße fehlt. Es wurde vermutlich bei einem Unfall beschädigt.");
         if (doneFeedback != null) {
             try {
-                feedbackService.approveFeedback(doneFeedback.getId());
                 feedbackService.updateFeedbackStatus(doneFeedback.getId(), Status.DONE);
                 feedbackService.publishFeedback(doneFeedback.getId());
             } catch (Exception e) {

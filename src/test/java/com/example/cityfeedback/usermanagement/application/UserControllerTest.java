@@ -13,8 +13,10 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 
 import static org.junit.jupiter.api.Assertions.*;
+import org.springframework.test.annotation.DirtiesContext;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class UserControllerTest {
 
     @Autowired
@@ -120,7 +122,12 @@ class UserControllerTest {
 
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertTrue(response.getBody().getPassword().matches("NewPass12"));
+        // Lade User neu aus Repository, um sicherzustellen, dass Passwort persistiert wurde
+        User updatedUser = userRepository.findById(user.getId()).orElseThrow();
+        // Passwort wurde geändert - prüfe ob es mit dem neuen Passwort übereinstimmt
+        assertTrue(updatedUser.getPassword().matches("NewPass12"));
+        // Prüfe dass es nicht mit dem alten Passwort übereinstimmt
+        assertFalse(updatedUser.getPassword().matches("OldPass12"));
     }
 
     @Test

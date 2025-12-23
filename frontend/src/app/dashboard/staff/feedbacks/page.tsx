@@ -5,12 +5,10 @@ import {
   CheckCircle2,
   AlertCircle,
   Clock,
-  FileText,
   Eye,
   EyeOff,
   Trash2,
   MessageCircle,
-  ChevronDown,
   ChevronUp,
 } from "lucide-react"
 
@@ -45,16 +43,15 @@ import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import {
   getAllFeedbacks,
-  approveFeedback,
   updateFeedbackStatus,
   publishFeedback,
+  unpublishFeedback,
   deleteFeedback,
   getCommentsByFeedbackId,
   addComment,
   categoryLabels,
   statusConfig,
   getStoredUser,
-  getUserId,
   type Feedback,
   type Status,
   type Comment,
@@ -94,6 +91,24 @@ export default function StaffFeedbacksPage() {
         statusMap[f.id] = f.status as Status
       })
       setSelectedStatus(statusMap)
+      
+      // Kommentare für alle Feedbacks parallel laden
+      const commentsPromises = data.map(async (feedback) => {
+        try {
+          const feedbackComments = await getCommentsByFeedbackId(feedback.id)
+          return { feedbackId: feedback.id, comments: feedbackComments }
+        } catch (err) {
+          console.error(`Kommentare für Feedback ${feedback.id} konnten nicht geladen werden:`, err)
+          return { feedbackId: feedback.id, comments: [] }
+        }
+      })
+      
+      const commentsResults = await Promise.all(commentsPromises)
+      const commentsMap: Record<number, Comment[]> = {}
+      commentsResults.forEach((result) => {
+        commentsMap[result.feedbackId] = result.comments
+      })
+      setComments(commentsMap)
     } catch (err) {
       setError("Feedbacks konnten nicht geladen werden. Ist das Backend erreichbar?")
     } finally {
@@ -104,15 +119,6 @@ export default function StaffFeedbacksPage() {
   useEffect(() => {
     loadFeedbacks()
   }, [])
-
-  const handleApprove = async (feedbackId: number) => {
-    try {
-      await approveFeedback(feedbackId)
-      await loadFeedbacks()
-    } catch (err: any) {
-      setError(err.message || "Feedback konnte nicht freigegeben werden")
-    }
-  }
 
   const loadComments = async (feedbackId: number) => {
     try {
@@ -191,6 +197,15 @@ export default function StaffFeedbacksPage() {
     }
   }
 
+  const handleUnpublish = async (feedbackId: number) => {
+    try {
+      await unpublishFeedback(feedbackId)
+      await loadFeedbacks()
+    } catch (err: any) {
+      setError(err.message || "Feedback konnte nicht aus der Veröffentlichung genommen werden")
+    }
+  }
+
   const handleDeleteFeedback = async (feedbackId: number) => {
     try {
       await deleteFeedback(feedbackId)
@@ -214,21 +229,12 @@ export default function StaffFeedbacksPage() {
   }
 
   // Statistiken
-  const pendingCount = feedbacks.filter((f) => f.status === "PENDING").length
   const openCount = feedbacks.filter((f) => f.status === "OPEN").length
   const inProgressCount = feedbacks.filter((f) => f.status === "INPROGRESS").length
   const doneCount = feedbacks.filter((f) => f.status === "DONE").length
-  const closedCount = feedbacks.filter((f) => f.status === "CLOSED").length
   const publishedCount = feedbacks.filter((f) => f.published).length
 
   const stats = [
-    {
-      title: "Entwürfe",
-      value: pendingCount,
-      icon: FileText,
-      description: "Warten auf Freigabe",
-      color: "text-gray-500",
-    },
     {
       title: "Offen",
       value: openCount,
@@ -369,7 +375,6 @@ export default function StaffFeedbacksPage() {
                                 <SelectValue />
                               </SelectTrigger>
                               <SelectContent>
-                                <SelectItem value="PENDING">Entwurf</SelectItem>
                                 <SelectItem value="OPEN">Offen</SelectItem>
                                 <SelectItem value="INPROGRESS">In Bearbeitung</SelectItem>
                                 <SelectItem value="DONE">Erledigt</SelectItem>
@@ -412,21 +417,21 @@ export default function StaffFeedbacksPage() {
                                   </>
                                 )}
                               </Button>
-                              {feedback.status === "PENDING" && (
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  onClick={() => handleApprove(feedback.id)}
-                                >
-                                  Freigeben
-                                </Button>
-                              )}
-                              {feedback.status === "OPEN" && !feedback.published && (
+                              {feedback.status !== "CLOSED" && !feedback.published && (
                                 <Button
                                   size="sm"
                                   onClick={() => handlePublish(feedback.id)}
                                 >
                                   Veröffentlichen
+                                </Button>
+                              )}
+                              {feedback.published && (
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => handleUnpublish(feedback.id)}
+                                >
+                                  Nicht veröffentlichen
                                 </Button>
                               )}
                               {currentUser && currentUser.role === "ADMIN" && (

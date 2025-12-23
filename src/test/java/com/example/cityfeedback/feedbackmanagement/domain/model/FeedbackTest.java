@@ -48,6 +48,27 @@ class FeedbackTest {
     }
 
     @Test
+    void unpublish_shouldSetPublishedToFalse() {
+        UUID userId = UUID.randomUUID();
+        Feedback feedback = Feedback.create("Test", Category.VERKEHR, "Content", userId);
+        feedback.publish();
+        assertTrue(feedback.isPublished());
+        
+        feedback.unpublish();
+        
+        assertFalse(feedback.isPublished());
+    }
+
+    @Test
+    void unpublish_whenNotPublished_shouldThrow() {
+        UUID userId = UUID.randomUUID();
+        Feedback feedback = Feedback.create("Test", Category.VERKEHR, "Content", userId);
+        // Feedback ist nicht veröffentlicht
+        
+        assertThrows(IllegalStateException.class, () -> feedback.unpublish());
+    }
+
+    @Test
     void updateStatus_shouldChangeStatus() {
         UUID userId = UUID.randomUUID();
         Feedback feedback = Feedback.create("Test", Category.VERKEHR, "Content", userId);

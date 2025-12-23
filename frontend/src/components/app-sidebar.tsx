@@ -6,7 +6,6 @@ import {
   User,
   Building2,
   Users,
-  FileText,
 } from "lucide-react"
 import { useNavigate, useLocation } from "react-router-dom"
 

@@ -26,7 +26,7 @@ export function getUserId(user: User): string {
 }
 
 export type Category = "VERKEHR" | "UMWELT" | "BELEUCHTUNG" | "VANDALISMUS" | "VERWALTUNG"
-export type Status = "PENDING" | "OPEN" | "INPROGRESS" | "DONE" | "CLOSED"
+export type Status = "OPEN" | "INPROGRESS" | "DONE" | "CLOSED"
 
 export interface Feedback {
   id: number
@@ -103,7 +103,6 @@ export const categoryLabels: Record<Category, string> = {
 
 // Status labels and colors
 export const statusConfig: Record<Status, { label: string; variant: "default" | "secondary" | "destructive" | "outline" }> = {
-  PENDING: { label: "Entwurf", variant: "outline" },
   OPEN: { label: "Offen", variant: "default" },
   INPROGRESS: { label: "In Bearbeitung", variant: "secondary" },
   DONE: { label: "Erledigt", variant: "outline" },
@@ -190,18 +189,6 @@ export async function changeUserRole(userId: string, newRole: string): Promise<U
 }
 
 // Feedback API für Mitarbeiter
-export async function approveFeedback(feedbackId: number): Promise<Feedback> {
-  const res = await fetch(`${API_BASE}/feedback/${feedbackId}/approve`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-  })
-  if (!res.ok) {
-    const error = await res.text()
-    throw new Error(error || "Feedback konnte nicht freigegeben werden")
-  }
-  return res.json()
-}
-
 export async function updateFeedbackStatus(feedbackId: number, newStatus: Status): Promise<Feedback> {
   const res = await fetch(`${API_BASE}/feedback/${feedbackId}/status`, {
     method: "PUT",
@@ -223,6 +210,18 @@ export async function publishFeedback(feedbackId: number): Promise<Feedback> {
   if (!res.ok) {
     const error = await res.text()
     throw new Error(error || "Feedback konnte nicht veröffentlicht werden")
+  }
+  return res.json()
+}
+
+export async function unpublishFeedback(feedbackId: number): Promise<Feedback> {
+  const res = await fetch(`${API_BASE}/feedback/${feedbackId}/unpublish`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+  })
+  if (!res.ok) {
+    const error = await res.text()
+    throw new Error(error || "Feedback konnte nicht aus der Veröffentlichung genommen werden")
   }
   return res.json()
 }

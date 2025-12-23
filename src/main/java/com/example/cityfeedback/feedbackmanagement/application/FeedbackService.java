@@ -226,19 +226,6 @@ public class FeedbackService {
         feedbackRepository.deleteByUserId(userId);
     }
 
-    /**
-     * Gibt ein PENDING Feedback frei (setzt Status auf OPEN).
-     * Nur für Mitarbeiter/Admins.
-     * 
-     * @param feedbackId Die ID des Feedbacks
-     * @return Das aktualisierte Feedback
-     */
-    @Transactional
-    public Feedback approveFeedback(Long feedbackId) {
-        Feedback feedback = getFeedbackById(feedbackId);
-        feedback.approve();
-        return feedbackRepository.save(feedback);
-    }
 
     /**
      * Aktualisiert den Status eines Feedbacks.
@@ -266,6 +253,20 @@ public class FeedbackService {
     public Feedback publishFeedback(Long feedbackId) {
         Feedback feedback = getFeedbackById(feedbackId);
         feedback.publish();
+        return feedbackRepository.save(feedback);
+    }
+
+    /**
+     * Nimmt ein Feedback aus der Veröffentlichung (setzt isPublished auf false).
+     * Nur für Mitarbeiter/Admins.
+     * 
+     * @param feedbackId Die ID des Feedbacks
+     * @return Das aktualisierte Feedback
+     */
+    @Transactional
+    public Feedback unpublishFeedback(Long feedbackId) {
+        Feedback feedback = getFeedbackById(feedbackId);
+        feedback.unpublish();
         return feedbackRepository.save(feedback);
     }
 

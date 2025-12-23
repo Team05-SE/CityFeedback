@@ -163,6 +163,10 @@ public class UserService {
             throw new UnauthorizedException("Nur Administratoren können Benutzer löschen.");
         }
 
+        if (adminId.equals(userId)) {
+            throw new IllegalArgumentException("Ein Administrator kann sich nicht selbst löschen.");
+        }
+
         User user = getUserById(userId);
         
         // Alle Feedbacks des Users löschen

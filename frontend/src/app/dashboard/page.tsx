@@ -58,7 +58,6 @@ export default function DashboardPage() {
   const userId = user ? getUserId(user) : null
   const ownFeedbacks = userId ? feedbacks.filter((f) => f.userId === userId) : []
   const totalFeedbacks = ownFeedbacks.length
-  const pendingCount = ownFeedbacks.filter((f) => f.status === "PENDING").length
   const openCount = ownFeedbacks.filter((f) => f.status === "OPEN").length
   const inProgressCount = ownFeedbacks.filter((f) => f.status === "INPROGRESS").length
   const closedCount = ownFeedbacks.filter((f) => f.status === "CLOSED").length
@@ -70,13 +69,6 @@ export default function DashboardPage() {
       icon: MessageSquare,
       description: "Meine Feedbacks",
       color: "text-primary",
-    },
-    {
-      title: "Entwürfe",
-      value: pendingCount,
-      icon: AlertCircle,
-      description: "Warten auf Freigabe",
-      color: "text-gray-500",
     },
     {
       title: "Offen",

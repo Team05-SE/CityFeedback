@@ -73,6 +73,7 @@ public class UserController {
 
     // ADMIN: User löschen
     @DeleteMapping("/{id}")
+    @org.springframework.web.bind.annotation.ResponseStatus(org.springframework.http.HttpStatus.NO_CONTENT)
     public void deleteUser(
             @RequestHeader(value = "X-Admin-Id", required = true) UUID adminId,
             @PathVariable UUID id) {

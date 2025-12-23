@@ -23,7 +23,6 @@ import {
   categoryLabels,
   statusConfig,
   type Feedback,
-  type Category,
   type Status,
   type Comment,
 } from "@/lib/api"
@@ -60,7 +59,6 @@ export default function PublicFeedbacksPage() {
 
   // Gruppierung nach Status
   const groupedByStatus: Record<Status, Feedback[]> = {
-    PENDING: [],
     OPEN: [],
     INPROGRESS: [],
     DONE: [],

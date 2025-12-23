@@ -78,14 +78,6 @@ public class FeedbackController {
     // Mitarbeiter/Admin Endpunkte
     // ===================================================================
 
-    /**
-     * Gibt ein PENDING Feedback frei (setzt Status auf OPEN).
-     * PUT /feedback/{id}/approve
-     */
-    @PutMapping("/{id}/approve")
-    public Feedback approveFeedback(@PathVariable Long id) {
-        return feedbackService.approveFeedback(id);
-    }
 
     /**
      * Aktualisiert den Status eines Feedbacks.
@@ -106,10 +98,20 @@ public class FeedbackController {
     }
 
     /**
+     * Nimmt ein Feedback aus der Veröffentlichung.
+     * PUT /feedback/{id}/unpublish
+     */
+    @PutMapping("/{id}/unpublish")
+    public Feedback unpublishFeedback(@PathVariable Long id) {
+        return feedbackService.unpublishFeedback(id);
+    }
+
+    /**
      * Löscht ein Feedback komplett (nur für Admins).
      * DELETE /feedback/{id}
      */
     @DeleteMapping("/{id}")
+    @org.springframework.web.bind.annotation.ResponseStatus(org.springframework.http.HttpStatus.NO_CONTENT)
     public void deleteFeedback(
             @RequestHeader(value = "X-Admin-Id", required = true) java.util.UUID adminId,
             @PathVariable Long id) {

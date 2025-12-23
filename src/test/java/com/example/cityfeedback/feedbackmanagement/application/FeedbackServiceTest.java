@@ -385,20 +385,6 @@ class FeedbackServiceTest {
     // Feedback-Verwaltung Tests
     // ===================================================================
 
-    @Test
-    void approveFeedback_shouldChangeStatusToOpen() {
-        // Arrange
-        FeedbackDTO dto = createFeedbackDTO("Test Feedback", Category.VERKEHR);
-        Feedback feedback = feedbackService.createFeedback(dto);
-        assertEquals(Status.PENDING, feedback.getStatus());
-
-        // Act
-        Feedback approved = feedbackService.approveFeedback(feedback.getId());
-
-        // Assert
-        assertEquals(Status.OPEN, approved.getStatus());
-        assertTrue(approved.isPublished());
-    }
 
     @Test
     void updateFeedbackStatus_shouldChangeStatus() {
@@ -426,6 +412,36 @@ class FeedbackServiceTest {
 
         // Assert
         assertTrue(published.isPublished());
+    }
+
+    @Test
+    void unpublishFeedback_shouldSetPublishedToFalse() {
+        // Arrange
+        FeedbackDTO dto = createFeedbackDTO("Test Feedback", Category.VERKEHR);
+        Feedback feedback = feedbackService.createFeedback(dto);
+        feedback.updateStatus(Status.OPEN);
+        feedbackRepository.save(feedback);
+        Feedback published = feedbackService.publishFeedback(feedback.getId());
+        assertTrue(published.isPublished());
+
+        // Act
+        Feedback unpublished = feedbackService.unpublishFeedback(feedback.getId());
+
+        // Assert
+        assertFalse(unpublished.isPublished());
+    }
+
+    @Test
+    void unpublishFeedback_whenNotPublished_shouldThrow() {
+        // Arrange
+        FeedbackDTO dto = createFeedbackDTO("Test Feedback", Category.VERKEHR);
+        Feedback feedback = feedbackService.createFeedback(dto);
+        // Feedback ist nicht veröffentlicht
+
+        // Act & Assert
+        assertThrows(IllegalStateException.class, () -> 
+            feedbackService.unpublishFeedback(feedback.getId())
+        );
     }
 
     @Test

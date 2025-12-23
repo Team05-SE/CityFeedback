@@ -15,11 +15,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
+@org.springframework.test.annotation.DirtiesContext(classMode = org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class DemoDataServiceTest {
 
     @Autowired
@@ -36,6 +38,25 @@ class DemoDataServiceTest {
 
     @BeforeEach
     void setUp() {
+        // Lösche alle Demo-Daten vor jedem Test (falls vorhanden)
+        try {
+            List<User> allUsers = userRepository.findAll();
+            List<User> existingDemoUsers = allUsers.stream()
+                    .filter(user -> {
+                        String email = user.getEmail().getValue();
+                        return email.startsWith("demo.") || email.contains("@example.com");
+                    })
+                    .filter(user -> user.getRole() != UserRole.ADMIN)
+                    .toList();
+            
+            for (User demoUser : existingDemoUsers) {
+                feedbackService.deleteFeedbacksByUserId(demoUser.getId());
+                userRepository.delete(demoUser);
+            }
+        } catch (Exception e) {
+            // Ignore - Demo-Daten könnten nicht existieren
+        }
+        
         // Erstelle Admin für Tests
         String uniqueEmail = "admin-demo" + (userCounter++) + "@test.de";
         adminUser = new User(new Email(uniqueEmail), new Password("Abcdef12"), UserRole.ADMIN);
@@ -44,12 +65,24 @@ class DemoDataServiceTest {
 
     @Test
     void deleteAllDemoData_asAdmin_shouldDeleteDemoUsers() {
-        // Arrange: Erstelle Demo-User
-        User demoUser1 = new User(new Email("demo.buerger1@example.com"), new Password("Demo123!"), UserRole.CITIZEN);
-        demoUser1 = userRepository.save(demoUser1);
+        // Arrange: Erstelle Demo-User (falls nicht bereits vorhanden)
+        User demoUser1;
+        Email email1 = new Email("demo.buerger1@example.com");
+        if (userRepository.existsByEmail(email1)) {
+            demoUser1 = userRepository.findByEmail(email1).orElseThrow();
+        } else {
+            demoUser1 = new User(email1, new Password("Demo123!"), UserRole.CITIZEN);
+            demoUser1 = userRepository.save(demoUser1);
+        }
 
-        User demoUser2 = new User(new Email("demo.mitarbeiter1@stadt.de"), new Password("Demo123!"), UserRole.STAFF);
-        demoUser2 = userRepository.save(demoUser2);
+        User demoUser2;
+        Email email2 = new Email("demo.mitarbeiter1@stadt.de");
+        if (userRepository.existsByEmail(email2)) {
+            demoUser2 = userRepository.findByEmail(email2).orElseThrow();
+        } else {
+            demoUser2 = new User(email2, new Password("Demo123!"), UserRole.STAFF);
+            demoUser2 = userRepository.save(demoUser2);
+        }
 
         User normalUser = new User(new Email("normal@test.de"), new Password("Abcdef12"), UserRole.CITIZEN);
         normalUser = userRepository.save(normalUser);
@@ -66,9 +99,17 @@ class DemoDataServiceTest {
 
     @Test
     void deleteAllDemoData_shouldDeleteDemoUserFeedbacks() {
-        // Arrange: Erstelle Demo-User mit Feedback
-        User demoUser = new User(new Email("demo.buerger1@example.com"), new Password("Demo123!"), UserRole.CITIZEN);
-        demoUser = userRepository.save(demoUser);
+        // Arrange: Erstelle Demo-User mit Feedback (falls nicht bereits vorhanden)
+        Email demoEmail = new Email("demo.buerger1@example.com");
+        User demoUser;
+        if (userRepository.existsByEmail(demoEmail)) {
+            demoUser = userRepository.findByEmail(demoEmail).orElseThrow();
+            // Lösche vorhandene Feedbacks
+            feedbackService.deleteFeedbacksByUserId(demoUser.getId());
+        } else {
+            demoUser = new User(demoEmail, new Password("Demo123!"), UserRole.CITIZEN);
+            demoUser = userRepository.save(demoUser);
+        }
 
         // Erstelle Feedback für Demo-User
         com.example.cityfeedback.feedbackmanagement.application.FeedbackDTO dto = 
