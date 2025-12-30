@@ -15,10 +15,12 @@
 
 ## Backend lokal starten
 
+![Backend Start](.vhs/backend-start.gif)
+
 1. Ins Projektverzeichnis wechseln:
 
    ```bash
-   cd \CityFeedback
+   cd CityFeedback
    ```
 2. Backend bauen und Tests ausführen:
 
@@ -35,6 +37,8 @@
 * Standardmäßig läuft das Backend auf `http://localhost:8080`
 
 ## Frontend lokal starten (Vite + React)
+
+![Frontend Start](.vhs/frontend-start.gif)
 
 1. In den Frontend-Ordner wechseln:
 
