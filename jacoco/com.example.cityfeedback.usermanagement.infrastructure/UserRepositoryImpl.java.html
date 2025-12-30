@@ -41,9 +41,9 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public List&lt;User&gt; findAll() {
-<span class="nc" id="L44">        return jpaRepository.findAll().stream()</span>
-<span class="nc" id="L45">                .map(UserMapper::toDomain)</span>
-<span class="nc" id="L46">                .collect(Collectors.toList());</span>
+<span class="fc" id="L44">        return jpaRepository.findAll().stream()</span>
+<span class="fc" id="L45">                .map(UserMapper::toDomain)</span>
+<span class="fc" id="L46">                .collect(Collectors.toList());</span>
     }
 
     @Override
@@ -59,9 +59,9 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public void delete(User user) {
-<span class="nc" id="L62">        UserEntity entity = UserMapper.toEntity(user);</span>
-<span class="nc" id="L63">        jpaRepository.delete(entity);</span>
-<span class="nc" id="L64">    }</span>
+<span class="fc" id="L62">        UserEntity entity = UserMapper.toEntity(user);</span>
+<span class="fc" id="L63">        jpaRepository.delete(entity);</span>
+<span class="fc" id="L64">    }</span>
 }
 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

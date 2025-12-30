@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CommentMapper.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">CityFeedback</a> &gt; <a href="index.source.html" class="el_package">com.example.cityfeedback.feedbackmanagement.infrastructure.persistence</a> &gt; <span class="el_source">CommentMapper.java</span></div><h1>CommentMapper.java</h1><pre class="source lang-java linenums">package com.example.cityfeedback.feedbackmanagement.infrastructure.persistence;
+
+import com.example.cityfeedback.feedbackmanagement.domain.model.Comment;
+
+/**
+ * Mapper zwischen Domain-Modell (Comment) und Persistence-Entity (CommentEntity).
+ * Übersetzt zwischen der Domain-Schicht und der Datenbank-Schicht.
+ */
+<span class="nc" id="L9">public class CommentMapper {</span>
+
+    /**
+     * Konvertiert ein Domain-Comment-Objekt in eine Persistence-Entity.
+     * 
+     * @param comment Domain-Comment-Objekt
+     * @return CommentEntity für die Persistierung
+     */
+    public static CommentEntity toEntity(Comment comment) {
+<span class="fc bfc" id="L18" title="All 2 branches covered.">        if (comment == null) {</span>
+<span class="fc" id="L19">            return null;</span>
+        }
+
+<span class="fc" id="L22">        CommentEntity entity = new CommentEntity();</span>
+<span class="fc" id="L23">        entity.setId(comment.getId());</span>
+<span class="fc" id="L24">        entity.setFeedbackId(comment.getFeedbackId());</span>
+<span class="fc" id="L25">        entity.setAuthorId(comment.getAuthorId());</span>
+<span class="fc" id="L26">        entity.setContent(comment.getContent());</span>
+<span class="fc" id="L27">        entity.setCreatedAt(comment.getCreatedAt());</span>
+<span class="fc" id="L28">        return entity;</span>
+    }
+
+    /**
+     * Konvertiert eine Persistence-Entity in ein Domain-Comment-Objekt.
+     * 
+     * @param entity CommentEntity aus der Datenbank
+     * @return Domain-Comment-Objekt
+     */
+    public static Comment toDomain(CommentEntity entity) {
+<span class="fc bfc" id="L38" title="All 2 branches covered.">        if (entity == null) {</span>
+<span class="fc" id="L39">            return null;</span>
+        }
+
+<span class="fc" id="L42">        Comment comment = new Comment();</span>
+<span class="fc" id="L43">        comment.setId(entity.getId());</span>
+<span class="fc" id="L44">        comment.setFeedbackId(entity.getFeedbackId());</span>
+<span class="fc" id="L45">        comment.setAuthorId(entity.getAuthorId());</span>
+<span class="fc" id="L46">        comment.setContent(entity.getContent());</span>
+<span class="fc" id="L47">        comment.setCreatedAt(entity.getCreatedAt());</span>
+<span class="fc" id="L48">        return comment;</span>
+    }
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

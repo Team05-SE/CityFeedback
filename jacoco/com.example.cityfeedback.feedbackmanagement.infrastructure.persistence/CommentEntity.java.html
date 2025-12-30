@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CommentEntity.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">CityFeedback</a> &gt; <a href="index.source.html" class="el_package">com.example.cityfeedback.feedbackmanagement.infrastructure.persistence</a> &gt; <span class="el_source">CommentEntity.java</span></div><h1>CommentEntity.java</h1><pre class="source lang-java linenums">package com.example.cityfeedback.feedbackmanagement.infrastructure.persistence;
+
+import jakarta.persistence.*;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+/**
+ * JPA Entity für Kommentare.
+ * Diese Klasse ist nur für die Persistierung zuständig.
+ * Die Domain-Logik befindet sich in der Comment-Klasse im Domain-Layer.
+ */
+@Entity
+@Table(name = &quot;comments&quot;)
+public class CommentEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = &quot;feedback_id&quot;, nullable = false)
+    private Long feedbackId;
+
+    @Column(name = &quot;author_id&quot;, nullable = false)
+    private UUID authorId;
+
+    @Column(nullable = false, columnDefinition = &quot;TEXT&quot;)
+    private String content;
+
+    @Column(name = &quot;created_at&quot;, nullable = false)
+    private LocalDateTime createdAt;
+
+    // JPA benötigt einen No-Args Konstruktor
+<span class="fc" id="L34">    protected CommentEntity() {</span>
+<span class="fc" id="L35">    }</span>
+
+<span class="fc" id="L37">    public CommentEntity(Long id, Long feedbackId, UUID authorId, String content, LocalDateTime createdAt) {</span>
+<span class="fc" id="L38">        this.id = id;</span>
+<span class="fc" id="L39">        this.feedbackId = feedbackId;</span>
+<span class="fc" id="L40">        this.authorId = authorId;</span>
+<span class="fc" id="L41">        this.content = content;</span>
+<span class="fc" id="L42">        this.createdAt = createdAt;</span>
+<span class="fc" id="L43">    }</span>
+
+    public Long getId() {
+<span class="fc" id="L46">        return id;</span>
+    }
+
+    public void setId(Long id) {
+<span class="fc" id="L50">        this.id = id;</span>
+<span class="fc" id="L51">    }</span>
+
+    public Long getFeedbackId() {
+<span class="fc" id="L54">        return feedbackId;</span>
+    }
+
+    public void setFeedbackId(Long feedbackId) {
+<span class="fc" id="L58">        this.feedbackId = feedbackId;</span>
+<span class="fc" id="L59">    }</span>
+
+    public UUID getAuthorId() {
+<span class="fc" id="L62">        return authorId;</span>
+    }
+
+    public void setAuthorId(UUID authorId) {
+<span class="fc" id="L66">        this.authorId = authorId;</span>
+<span class="fc" id="L67">    }</span>
+
+    public String getContent() {
+<span class="fc" id="L70">        return content;</span>
+    }
+
+    public void setContent(String content) {
+<span class="fc" id="L74">        this.content = content;</span>
+<span class="fc" id="L75">    }</span>
+
+    public LocalDateTime getCreatedAt() {
+<span class="fc" id="L78">        return createdAt;</span>
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+<span class="fc" id="L82">        this.createdAt = createdAt;</span>
+<span class="fc" id="L83">    }</span>
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

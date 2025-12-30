@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DemoDataInitializer.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">CityFeedback</a> &gt; <a href="index.source.html" class="el_package">com.example.cityfeedback.usermanagement.infrastructure</a> &gt; <span class="el_source">DemoDataInitializer.java</span></div><h1>DemoDataInitializer.java</h1><pre class="source lang-java linenums">package com.example.cityfeedback.usermanagement.infrastructure;
+
+import com.example.cityfeedback.feedbackmanagement.application.FeedbackService;
+import com.example.cityfeedback.feedbackmanagement.domain.valueobjects.Category;
+import com.example.cityfeedback.feedbackmanagement.domain.valueobjects.Status;
+import com.example.cityfeedback.usermanagement.domain.model.User;
+import com.example.cityfeedback.usermanagement.domain.repositories.UserRepository;
+import com.example.cityfeedback.usermanagement.domain.valueobjects.Email;
+import com.example.cityfeedback.usermanagement.domain.valueobjects.Password;
+import com.example.cityfeedback.usermanagement.domain.valueobjects.UserRole;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+/**
+ * Initialisiert Demo-Daten beim Start der Anwendung.
+ * Erstellt Beispiel-User und Feedbacks für Testzwecke.
+ */
+@Component
+@Order(2) // Nach DefaultAdminInitializer ausführen
+public class DemoDataInitializer implements CommandLineRunner {
+
+<span class="fc" id="L29">    private static final Logger logger = LoggerFactory.getLogger(DemoDataInitializer.class);</span>
+
+    private final UserRepository userRepository;
+    private final FeedbackService feedbackService;
+
+<span class="fc" id="L34">    public DemoDataInitializer(UserRepository userRepository, FeedbackService feedbackService) {</span>
+<span class="fc" id="L35">        this.userRepository = userRepository;</span>
+<span class="fc" id="L36">        this.feedbackService = feedbackService;</span>
+<span class="fc" id="L37">    }</span>
+
+    @Override
+    public void run(String... args) {
+        // Prüfen ob Demo-Daten bereits existieren
+<span class="fc" id="L42">        Email demoUserEmail = new Email(&quot;demo.buerger1@example.com&quot;);</span>
+<span class="pc bpc" id="L43" title="1 of 2 branches missed.">        if (userRepository.existsByEmail(demoUserEmail)) {</span>
+<span class="nc" id="L44">            logger.info(&quot;Demo-Daten existieren bereits. Überspringe Initialisierung.&quot;);</span>
+<span class="nc" id="L45">            return;</span>
+        }
+
+<span class="fc" id="L48">        logger.info(&quot;Erstelle Demo-Daten...&quot;);</span>
+
+        try {
+<span class="fc" id="L51">            List&lt;User&gt; demoUsers = createDemoUsers();</span>
+<span class="fc" id="L52">            createDemoFeedbacks(demoUsers);</span>
+            
+<span class="fc" id="L54">            logger.info(&quot;✅ Demo-Daten erfolgreich erstellt:&quot;);</span>
+<span class="fc" id="L55">            logger.info(&quot;   - {} Demo-User&quot;, demoUsers.size());</span>
+<span class="fc" id="L56">            logger.info(&quot;   - Demo-Feedbacks in verschiedenen Status&quot;);</span>
+<span class="nc" id="L57">        } catch (Exception e) {</span>
+<span class="nc" id="L58">            logger.error(&quot;Fehler beim Erstellen der Demo-Daten: {}&quot;, e.getMessage(), e);</span>
+<span class="fc" id="L59">        }</span>
+<span class="fc" id="L60">    }</span>
+
+    private List&lt;User&gt; createDemoUsers() {
+<span class="fc" id="L63">        List&lt;User&gt; users = new ArrayList&lt;&gt;();</span>
+
+        // Demo-Bürger
+<span class="fc" id="L66">        String[] citizenEmails = {</span>
+            &quot;demo.buerger1@example.com&quot;,
+            &quot;demo.buerger2@example.com&quot;,
+            &quot;demo.buerger3@example.com&quot;,
+            &quot;demo.buerger4@example.com&quot;
+        };
+
+<span class="fc bfc" id="L73" title="All 2 branches covered.">        for (String email : citizenEmails) {</span>
+            try {
+<span class="fc" id="L75">                Email emailVO = new Email(email);</span>
+<span class="fc" id="L76">                Password password = new Password(&quot;Demo123!&quot;);</span>
+<span class="fc" id="L77">                User user = new User(emailVO, password, UserRole.CITIZEN);</span>
+<span class="fc" id="L78">                User saved = userRepository.save(user);</span>
+<span class="fc" id="L79">                users.add(saved);</span>
+<span class="fc" id="L80">                logger.debug(&quot;Demo-Bürger erstellt: {}&quot;, email);</span>
+<span class="nc" id="L81">            } catch (Exception e) {</span>
+<span class="nc" id="L82">                logger.warn(&quot;Konnte Demo-Bürger {} nicht erstellen: {}&quot;, email, e.getMessage());</span>
+<span class="fc" id="L83">            }</span>
+        }
+
+        // Demo-Mitarbeiter
+<span class="fc" id="L87">        String[] staffEmails = {</span>
+            &quot;demo.mitarbeiter1@stadt.de&quot;,
+            &quot;demo.mitarbeiter2@stadt.de&quot;
+        };
+
+<span class="fc bfc" id="L92" title="All 2 branches covered.">        for (String email : staffEmails) {</span>
+            try {
+<span class="fc" id="L94">                Email emailVO = new Email(email);</span>
+<span class="fc" id="L95">                Password password = new Password(&quot;Demo123!&quot;);</span>
+<span class="fc" id="L96">                User user = new User(emailVO, password, UserRole.STAFF);</span>
+<span class="fc" id="L97">                User saved = userRepository.save(user);</span>
+<span class="fc" id="L98">                users.add(saved);</span>
+<span class="fc" id="L99">                logger.debug(&quot;Demo-Mitarbeiter erstellt: {}&quot;, email);</span>
+<span class="nc" id="L100">            } catch (Exception e) {</span>
+<span class="nc" id="L101">                logger.warn(&quot;Konnte Demo-Mitarbeiter {} nicht erstellen: {}&quot;, email, e.getMessage());</span>
+<span class="fc" id="L102">            }</span>
+        }
+
+<span class="fc" id="L105">        return users;</span>
+    }
+
+    private void createDemoFeedbacks(List&lt;User&gt; users) {
+<span class="pc bpc" id="L109" title="1 of 2 branches missed.">        if (users.isEmpty()) {</span>
+<span class="nc" id="L110">            logger.warn(&quot;Keine Demo-User vorhanden, kann keine Feedbacks erstellen.&quot;);</span>
+<span class="nc" id="L111">            return;</span>
+        }
+
+        // Bürger-User (erste 4)
+<span class="fc" id="L115">        List&lt;User&gt; citizens = users.stream()</span>
+<span class="pc bpc" id="L116" title="1 of 2 branches missed.">                .filter(u -&gt; u.getRole() == UserRole.CITIZEN)</span>
+<span class="fc" id="L117">                .limit(4)</span>
+<span class="fc" id="L118">                .toList();</span>
+
+<span class="pc bpc" id="L120" title="1 of 2 branches missed.">        if (citizens.isEmpty()) {</span>
+<span class="nc" id="L121">            citizens = users;</span>
+        }
+
+        // OPEN Feedbacks (werden direkt mit Status OPEN erstellt)
+<span class="fc" id="L125">        createFeedback(citizens.get(0).getId(), &quot;Müllcontainer überfüllt&quot;, Category.UMWELT,</span>
+            &quot;Der Müllcontainer an der Ecke Hauptstraße/Neue Straße ist seit Tagen überfüllt. Der Müll quillt über und verursacht Gerüche.&quot;);
+<span class="fc" id="L127">        createFeedback(citizens.get(1).getId(), &quot;Straßenlaterne defekt&quot;, Category.BELEUCHTUNG,</span>
+            &quot;Die Straßenlaterne vor Hausnummer 42 in der Musterstraße funktioniert nicht mehr. Es ist dort nachts sehr dunkel.&quot;);
+<span class="fc" id="L129">        createFeedback(citizens.get(2).getId(), &quot;Schlagloch in der Fahrbahn&quot;, Category.VERKEHR,</span>
+            &quot;In der Bahnhofstraße, Höhe Hausnummer 15, befindet sich ein großes Schlagloch. Es ist gefährlich für Autofahrer und Radfahrer.&quot;);
+<span class="fc" id="L131">        createFeedback(citizens.get(0).getId(), &quot;Grafitti an der Bushaltestelle&quot;, Category.VANDALISMUS,</span>
+            &quot;Die Bushaltestelle am Marktplatz wurde mit Graffiti besprüht. Die Wände sind vollständig beschmiert.&quot;);
+
+        // OPEN Feedbacks (bereits mit Status OPEN)
+<span class="fc" id="L135">        var openFeedback1 = createFeedback(citizens.get(1).getId(), &quot;Baum beschädigt nach Sturm&quot;, Category.UMWELT,</span>
+            &quot;Nach dem letzten Sturm ist ein großer Ast von der Eiche im Stadtpark abgebrochen. Der Ast liegt auf dem Gehweg.&quot;);
+
+<span class="fc" id="L138">        var openFeedback2 = createFeedback(citizens.get(2).getId(), &quot;Ampel zeigt dauerhaft rot&quot;, Category.VERKEHR,</span>
+            &quot;Die Ampel an der Kreuzung Hauptstraße/Bahnhofstraße zeigt seit gestern dauerhaft rot. Der Verkehr staut sich erheblich.&quot;);
+
+        // INPROGRESS Feedbacks
+<span class="fc" id="L142">        var inProgressFeedback1 = createFeedback(citizens.get(3).getId(), &quot;Spielplatzgerät defekt&quot;, Category.VERWALTUNG,</span>
+            &quot;Die Schaukel auf dem Spielplatz am Park ist kaputt. Ein Seil ist gerissen.&quot;);
+<span class="pc bpc" id="L144" title="1 of 2 branches missed.">        if (inProgressFeedback1 != null) {</span>
+            try {
+<span class="fc" id="L146">                feedbackService.updateFeedbackStatus(inProgressFeedback1.getId(), Status.INPROGRESS);</span>
+<span class="fc" id="L147">                feedbackService.publishFeedback(inProgressFeedback1.getId());</span>
+<span class="nc" id="L148">            } catch (Exception e) {</span>
+<span class="nc" id="L149">                logger.warn(&quot;Konnte Feedback nicht auf INPROGRESS setzen: {}&quot;, e.getMessage());</span>
+<span class="fc" id="L150">            }</span>
+        }
+
+<span class="fc" id="L153">        var inProgressFeedback2 = createFeedback(citizens.get(0).getId(), &quot;Weg überschwemmt&quot;, Category.VERKEHR,</span>
+            &quot;Nach dem Regen ist der Fußweg am Bach überschwemmt. Man kann nicht mehr trockenen Fußes passieren.&quot;);
+<span class="pc bpc" id="L155" title="1 of 2 branches missed.">        if (inProgressFeedback2 != null) {</span>
+            try {
+<span class="fc" id="L157">                feedbackService.updateFeedbackStatus(inProgressFeedback2.getId(), Status.INPROGRESS);</span>
+<span class="fc" id="L158">                feedbackService.publishFeedback(inProgressFeedback2.getId());</span>
+<span class="nc" id="L159">            } catch (Exception e) {</span>
+<span class="nc" id="L160">                logger.warn(&quot;Konnte Feedback nicht auf INPROGRESS setzen: {}&quot;, e.getMessage());</span>
+<span class="fc" id="L161">            }</span>
+        }
+
+        // DONE Feedbacks
+<span class="fc" id="L165">        var doneFeedback = createFeedback(citizens.get(1).getId(), &quot;Straßenschild fehlt&quot;, Category.VERKEHR,</span>
+            &quot;Das Straßenschild für die Neue Straße fehlt. Es wurde vermutlich bei einem Unfall beschädigt.&quot;);
+<span class="pc bpc" id="L167" title="1 of 2 branches missed.">        if (doneFeedback != null) {</span>
+            try {
+<span class="fc" id="L169">                feedbackService.updateFeedbackStatus(doneFeedback.getId(), Status.DONE);</span>
+<span class="fc" id="L170">                feedbackService.publishFeedback(doneFeedback.getId());</span>
+<span class="nc" id="L171">            } catch (Exception e) {</span>
+<span class="nc" id="L172">                logger.warn(&quot;Konnte Feedback nicht auf DONE setzen: {}&quot;, e.getMessage());</span>
+<span class="fc" id="L173">            }</span>
+        }
+<span class="fc" id="L175">    }</span>
+
+    private com.example.cityfeedback.feedbackmanagement.domain.model.Feedback createFeedback(
+            UUID userId, String title, Category category, String content) {
+        try {
+<span class="fc" id="L180">            var dto = new com.example.cityfeedback.feedbackmanagement.application.FeedbackDTO();</span>
+<span class="fc" id="L181">            dto.userId = userId;</span>
+<span class="fc" id="L182">            dto.title = title;</span>
+<span class="fc" id="L183">            dto.category = category;</span>
+<span class="fc" id="L184">            dto.content = content;</span>
+<span class="fc" id="L185">            return feedbackService.createFeedback(dto);</span>
+<span class="nc" id="L186">        } catch (Exception e) {</span>
+<span class="nc" id="L187">            logger.warn(&quot;Konnte Feedback '{}' nicht erstellen: {}&quot;, title, e.getMessage());</span>
+<span class="nc" id="L188">            return null;</span>
+        }
+    }
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

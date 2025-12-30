@@ -7,7 +7,9 @@ import com.example.cityfeedback.usermanagement.domain.valueobjects.Email;
 import com.example.cityfeedback.usermanagement.domain.valueobjects.Password;
 import com.example.cityfeedback.usermanagement.domain.valueobjects.UserRole;
 import com.example.cityfeedback.usermanagement.domain.events.UserRegisteredEvent;
+import com.example.cityfeedback.feedbackmanagement.application.FeedbackService;
 import com.example.cityfeedback.usermanagement.domain.exceptions.InvalidCredentialsException;
+import com.example.cityfeedback.usermanagement.domain.exceptions.UnauthorizedException;
 import com.example.cityfeedback.usermanagement.domain.exceptions.UserNotFoundException;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -22,24 +24,27 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserRegistrationService registrationService;
     private final ApplicationEventPublisher eventPublisher;
+    private final FeedbackService feedbackService;
 
     public UserService(UserRepository userRepository, 
                       UserRegistrationService registrationService,
-<span class="fc" id="L28">                      ApplicationEventPublisher eventPublisher) {</span>
-<span class="fc" id="L29">        this.userRepository = userRepository;</span>
-<span class="fc" id="L30">        this.registrationService = registrationService;</span>
-<span class="fc" id="L31">        this.eventPublisher = eventPublisher;</span>
-<span class="fc" id="L32">    }</span>
+                      ApplicationEventPublisher eventPublisher,
+<span class="fc" id="L32">                      FeedbackService feedbackService) {</span>
+<span class="fc" id="L33">        this.userRepository = userRepository;</span>
+<span class="fc" id="L34">        this.registrationService = registrationService;</span>
+<span class="fc" id="L35">        this.eventPublisher = eventPublisher;</span>
+<span class="fc" id="L36">        this.feedbackService = feedbackService;</span>
+<span class="fc" id="L37">    }</span>
 
     // GET ALL USERS
     public List&lt;User&gt; getAllUsers() {
-<span class="nc" id="L36">        return this.userRepository.findAll();</span>
+<span class="nc" id="L41">        return this.userRepository.findAll();</span>
     }
 
     // GET USER BY ID
     public User getUserById(UUID id) {
-<span class="fc" id="L41">        return this.userRepository.findById(id)</span>
-<span class="fc" id="L42">                .orElseThrow(() -&gt; new UserNotFoundException(id));</span>
+<span class="fc" id="L46">        return this.userRepository.findById(id)</span>
+<span class="fc" id="L47">                .orElseThrow(() -&gt; new UserNotFoundException(id));</span>
     }
 
     // SIGNUP
@@ -47,40 +52,128 @@ public class UserService {
     public User createUser(Email email, Password password, UserRole role) {
         User user;
         
-<span class="pc bpc" id="L50" title="1 of 2 branches missed.">        if (role == UserRole.CITIZEN) {</span>
+<span class="pc bpc" id="L55" title="1 of 2 branches missed.">        if (role == UserRole.CITIZEN) {</span>
             // Domain Service für Registrierung verwenden (prüft E-Mail-Eindeutigkeit)
-<span class="fc" id="L52">            user = registrationService.registerUser(email, password);</span>
+<span class="fc" id="L57">            user = registrationService.registerUser(email, password);</span>
         } else {
             // Für andere Rollen (STAFF, ADMIN) direkt erstellen
             // E-Mail-Eindeutigkeit prüfen
-<span class="nc bnc" id="L56" title="All 2 branches missed.">            if (userRepository.existsByEmail(email)) {</span>
-<span class="nc" id="L57">                throw new com.example.cityfeedback.usermanagement.domain.exceptions.EmailAlreadyExistsException(email.getValue());</span>
+<span class="nc bnc" id="L61" title="All 2 branches missed.">            if (userRepository.existsByEmail(email)) {</span>
+<span class="nc" id="L62">                throw new com.example.cityfeedback.usermanagement.domain.exceptions.EmailAlreadyExistsException(email.getValue());</span>
             }
-<span class="nc" id="L59">            user = new User(email, password, role);</span>
-<span class="nc" id="L60">            user = userRepository.save(user);</span>
+<span class="nc" id="L64">            user = new User(email, password, role);</span>
+<span class="nc" id="L65">            user = userRepository.save(user);</span>
         }
 
         // Domain Events aus dem Aggregat holen und publishen (funktional mit Stream API)
-<span class="fc" id="L64">        user.getDomainEvents().stream()</span>
-<span class="fc" id="L65">                .filter(UserRegisteredEvent.class::isInstance)</span>
-<span class="fc" id="L66">                .forEach(eventPublisher::publishEvent);</span>
-<span class="fc" id="L67">        user.clearDomainEvents();</span>
+<span class="fc" id="L69">        user.getDomainEvents().stream()</span>
+<span class="fc" id="L70">                .filter(UserRegisteredEvent.class::isInstance)</span>
+<span class="fc" id="L71">                .forEach(eventPublisher::publishEvent);</span>
+<span class="fc" id="L72">        user.clearDomainEvents();</span>
 
-<span class="fc" id="L69">        return user;</span>
+<span class="fc" id="L74">        return user;</span>
     }
 
     // LOGIN (EMAIL + PASSWORD)
     public User login(String email, String rawPassword) {
-<span class="nc" id="L74">        Email emailVO = new Email(email);</span>
+<span class="nc" id="L79">        Email emailVO = new Email(email);</span>
 
-<span class="nc" id="L76">        User user = userRepository.findByEmail(emailVO)</span>
-<span class="nc" id="L77">                .orElseThrow(() -&gt; new InvalidCredentialsException(&quot;Benutzer nicht gefunden oder Passwort ungültig.&quot;));</span>
+<span class="nc" id="L81">        User user = userRepository.findByEmail(emailVO)</span>
+<span class="nc" id="L82">                .orElseThrow(() -&gt; new InvalidCredentialsException(&quot;Benutzer nicht gefunden oder Passwort ungültig.&quot;));</span>
 
-<span class="nc bnc" id="L79" title="All 2 branches missed.">        if (!user.getPassword().matches(rawPassword)) {</span>
-<span class="nc" id="L80">            throw new InvalidCredentialsException(&quot;Benutzer nicht gefunden oder Passwort ungültig.&quot;);</span>
+<span class="nc bnc" id="L84" title="All 2 branches missed.">        if (!user.getPassword().matches(rawPassword)) {</span>
+<span class="nc" id="L85">            throw new InvalidCredentialsException(&quot;Benutzer nicht gefunden oder Passwort ungültig.&quot;);</span>
         }
 
-<span class="nc" id="L83">        return user;</span>
+<span class="nc" id="L88">        return user;</span>
     }
+
+    /**
+     * Erstellt einen neuen User durch einen Admin.
+     * 
+     * @param adminId Die ID des ausführenden Admins
+     * @param email E-Mail des neuen Users
+     * @param password Passwort des neuen Users
+     * @param role Rolle des neuen Users
+     * @return Der erstellte User
+     * @throws UnauthorizedException wenn der ausführende User kein Admin ist
+     */
+    @Transactional
+    public User createUserByAdmin(UUID adminId, Email email, Password password, UserRole role) {
+<span class="fc" id="L103">        User admin = getUserById(adminId);</span>
+        
+<span class="fc bfc" id="L105" title="All 2 branches covered.">        if (admin.getRole() != UserRole.ADMIN) {</span>
+<span class="fc" id="L106">            throw new UnauthorizedException(&quot;Nur Administratoren können neue Benutzer erstellen.&quot;);</span>
+        }
+
+<span class="fc" id="L109">        return createUser(email, password, role);</span>
+    }
+
+    /**
+     * Ändert das Passwort eines Users.
+     * 
+     * @param userId Die ID des Users, dessen Passwort geändert werden soll
+     * @param newPassword Das neue Passwort
+     * @return Der aktualisierte User
+     * @throws UserNotFoundException wenn der User nicht gefunden wird
+     */
+    @Transactional
+    public User updatePassword(UUID userId, Password newPassword) {
+<span class="fc" id="L122">        User user = getUserById(userId);</span>
+<span class="fc" id="L123">        user.changePassword(newPassword);</span>
+<span class="fc" id="L124">        return userRepository.save(user);</span>
+    }
+
+    /**
+     * Ändert die Rolle eines Users (nur durch Admin).
+     * 
+     * @param adminId Die ID des ausführenden Admins
+     * @param userId Die ID des Users, dessen Rolle geändert werden soll
+     * @param newRole Die neue Rolle
+     * @return Der aktualisierte User
+     * @throws UnauthorizedException wenn der ausführende User kein Admin ist
+     * @throws UserNotFoundException wenn der User nicht gefunden wird
+     */
+    @Transactional
+    public User updateRole(UUID adminId, UUID userId, UserRole newRole) {
+<span class="fc" id="L139">        User admin = getUserById(adminId);</span>
+        
+<span class="fc bfc" id="L141" title="All 2 branches covered.">        if (admin.getRole() != UserRole.ADMIN) {</span>
+<span class="fc" id="L142">            throw new UnauthorizedException(&quot;Nur Administratoren können Rollen ändern.&quot;);</span>
+        }
+
+<span class="fc" id="L145">        User user = getUserById(userId);</span>
+<span class="fc" id="L146">        user.changeRole(newRole);</span>
+<span class="fc" id="L147">        return userRepository.save(user);</span>
+    }
+
+    /**
+     * Löscht einen User und alle zugehörigen Feedbacks (nur durch Admin).
+     * 
+     * @param adminId Die ID des ausführenden Admins
+     * @param userId Die ID des zu löschenden Users
+     * @throws UnauthorizedException wenn der ausführende User kein Admin ist
+     * @throws UserNotFoundException wenn der User nicht gefunden wird
+     */
+    @Transactional
+    public void deleteUser(UUID adminId, UUID userId) {
+<span class="fc" id="L160">        User admin = getUserById(adminId);</span>
+        
+<span class="fc bfc" id="L162" title="All 2 branches covered.">        if (admin.getRole() != UserRole.ADMIN) {</span>
+<span class="fc" id="L163">            throw new UnauthorizedException(&quot;Nur Administratoren können Benutzer löschen.&quot;);</span>
+        }
+
+<span class="fc bfc" id="L166" title="All 2 branches covered.">        if (adminId.equals(userId)) {</span>
+<span class="fc" id="L167">            throw new IllegalArgumentException(&quot;Ein Administrator kann sich nicht selbst löschen.&quot;);</span>
+        }
+
+<span class="fc" id="L170">        User user = getUserById(userId);</span>
+        
+        // Alle Feedbacks des Users löschen
+<span class="fc" id="L173">        feedbackService.deleteFeedbacksByUserId(userId);</span>
+        
+        // User löschen
+<span class="fc" id="L176">        userRepository.delete(user);</span>
+<span class="fc" id="L177">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

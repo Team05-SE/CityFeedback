@@ -73,5 +73,87 @@ public class FeedbackController {
     public FeedbackService.FeedbackStatisticsDTO getFeedbackStatistics() {
 <span class="fc" id="L74">        return feedbackService.getFeedbackStatistics();</span>
     }
+
+    // ===================================================================
+    // Mitarbeiter/Admin Endpunkte
+    // ===================================================================
+
+
+    /**
+     * Aktualisiert den Status eines Feedbacks.
+     * PUT /feedback/{id}/status
+     */
+    @PutMapping(&quot;/{id}/status&quot;)
+    public Feedback updateStatus(@PathVariable Long id, @Valid @RequestBody UpdateStatusDTO dto) {
+<span class="nc" id="L88">        return feedbackService.updateFeedbackStatus(id, dto.status);</span>
+    }
+
+    /**
+     * Veröffentlicht ein Feedback.
+     * PUT /feedback/{id}/publish
+     */
+    @PutMapping(&quot;/{id}/publish&quot;)
+    public Feedback publishFeedback(@PathVariable Long id) {
+<span class="nc" id="L97">        return feedbackService.publishFeedback(id);</span>
+    }
+
+    /**
+     * Nimmt ein Feedback aus der Veröffentlichung.
+     * PUT /feedback/{id}/unpublish
+     */
+    @PutMapping(&quot;/{id}/unpublish&quot;)
+    public Feedback unpublishFeedback(@PathVariable Long id) {
+<span class="nc" id="L106">        return feedbackService.unpublishFeedback(id);</span>
+    }
+
+    /**
+     * Löscht ein Feedback komplett (nur für Admins).
+     * DELETE /feedback/{id}
+     */
+    @DeleteMapping(&quot;/{id}&quot;)
+    @org.springframework.web.bind.annotation.ResponseStatus(org.springframework.http.HttpStatus.NO_CONTENT)
+    public void deleteFeedback(
+            @RequestHeader(value = &quot;X-Admin-Id&quot;, required = true) java.util.UUID adminId,
+            @PathVariable Long id) {
+<span class="fc" id="L118">        feedbackService.deleteFeedback(adminId, id);</span>
+<span class="fc" id="L119">    }</span>
+
+    // ===================================================================
+    // Kommentar-Endpunkte
+    // ===================================================================
+
+    /**
+     * Fügt einen Kommentar zu einem Feedback hinzu.
+     * POST /feedback/{id}/comments
+     */
+    @PostMapping(&quot;/{id}/comments&quot;)
+    public com.example.cityfeedback.feedbackmanagement.domain.model.Comment addComment(
+            @PathVariable Long id,
+            @Valid @RequestBody com.example.cityfeedback.feedbackmanagement.application.CommentDTO dto) {
+<span class="fc" id="L133">        return feedbackService.addComment(id, dto.authorId, dto.content);</span>
+    }
+
+    /**
+     * Gibt alle Kommentare zu einem Feedback zurück.
+     * GET /feedback/{id}/comments
+     */
+    @GetMapping(&quot;/{id}/comments&quot;)
+    public List&lt;com.example.cityfeedback.feedbackmanagement.domain.model.Comment&gt; getComments(
+            @PathVariable Long id) {
+<span class="fc" id="L143">        return feedbackService.getCommentsByFeedbackId(id);</span>
+    }
+
+    // ===================================================================
+    // Öffentliche Endpunkte (ohne Login)
+    // ===================================================================
+
+    /**
+     * Gibt alle veröffentlichten Feedbacks zurück.
+     * GET /feedback/public
+     */
+    @GetMapping(&quot;/public&quot;)
+    public List&lt;Feedback&gt; getPublishedFeedbacks() {
+<span class="nc" id="L156">        return feedbackService.getPublishedFeedbacks();</span>
+    }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

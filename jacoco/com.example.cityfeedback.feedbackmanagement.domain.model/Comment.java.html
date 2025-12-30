@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Comment.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">CityFeedback</a> &gt; <a href="index.source.html" class="el_package">com.example.cityfeedback.feedbackmanagement.domain.model</a> &gt; <span class="el_source">Comment.java</span></div><h1>Comment.java</h1><pre class="source lang-java linenums">package com.example.cityfeedback.feedbackmanagement.domain.model;
+
+import java.time.LocalDateTime;
+import java.util.Objects;
+import java.util.UUID;
+
+/**
+ * Domain-Modell für einen Kommentar zu einem Feedback.
+ * 
+ * Diese Klasse ist framework-unabhängig und enthält keine JPA-Annotationen.
+ * Die Persistierung wird über CommentEntity und CommentMapper in der Infrastructure-Schicht gehandhabt.
+ */
+public class Comment {
+
+    private Long id;
+    private Long feedbackId;
+    private UUID authorId; // ID des Mitarbeiters/Admins, der den Kommentar geschrieben hat
+    private String content;
+    private LocalDateTime createdAt;
+
+    /**
+     * No-Args Konstruktor für Mapper in Infrastructure.
+     */
+<span class="fc" id="L24">    public Comment() {</span>
+<span class="fc" id="L25">    }</span>
+
+    /**
+     * Konstruktor für die Erstellung eines neuen Kommentars.
+     * 
+     * @param feedbackId Die ID des Feedbacks, zu dem der Kommentar gehört
+     * @param authorId Die ID des Autors (Mitarbeiter/Admin)
+     * @param content Der Kommentar-Text
+     */
+<span class="fc" id="L34">    public Comment(Long feedbackId, UUID authorId, String content) {</span>
+<span class="fc" id="L35">        this.feedbackId = Objects.requireNonNull(feedbackId, &quot;Feedback-ID darf nicht null sein&quot;);</span>
+<span class="fc" id="L36">        this.authorId = Objects.requireNonNull(authorId, &quot;Autor-ID darf nicht null sein&quot;);</span>
+<span class="fc" id="L37">        validateContent(content);</span>
+<span class="fc" id="L38">        this.content = content;</span>
+<span class="fc" id="L39">        this.createdAt = LocalDateTime.now();</span>
+<span class="fc" id="L40">    }</span>
+
+    private void validateContent(String content) {
+<span class="fc bfc" id="L43" title="All 4 branches covered.">        if (content == null || content.isBlank()) {</span>
+<span class="fc" id="L44">            throw new IllegalArgumentException(&quot;Kommentar-Text darf nicht null oder leer sein.&quot;);</span>
+        }
+<span class="fc bfc" id="L46" title="All 2 branches covered.">        if (content.length() &gt; 2000) {</span>
+<span class="fc" id="L47">            throw new IllegalArgumentException(&quot;Kommentar-Text darf maximal 2000 Zeichen lang sein.&quot;);</span>
+        }
+<span class="fc" id="L49">    }</span>
+
+    // Getter
+    public Long getId() {
+<span class="fc" id="L53">        return id;</span>
+    }
+
+    public Long getFeedbackId() {
+<span class="fc" id="L57">        return feedbackId;</span>
+    }
+
+    public UUID getAuthorId() {
+<span class="fc" id="L61">        return authorId;</span>
+    }
+
+    public String getContent() {
+<span class="fc" id="L65">        return content;</span>
+    }
+
+    public LocalDateTime getCreatedAt() {
+<span class="fc" id="L69">        return createdAt;</span>
+    }
+
+    // Setter für Mapper in Infrastructure
+    public void setId(Long id) {
+<span class="fc" id="L74">        this.id = id;</span>
+<span class="fc" id="L75">    }</span>
+
+    public void setFeedbackId(Long feedbackId) {
+<span class="fc" id="L78">        this.feedbackId = feedbackId;</span>
+<span class="fc" id="L79">    }</span>
+
+    public void setAuthorId(UUID authorId) {
+<span class="fc" id="L82">        this.authorId = authorId;</span>
+<span class="fc" id="L83">    }</span>
+
+    public void setContent(String content) {
+<span class="fc" id="L86">        this.content = content;</span>
+<span class="fc" id="L87">    }</span>
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+<span class="fc" id="L90">        this.createdAt = createdAt;</span>
+<span class="fc" id="L91">    }</span>
+
+    @Override
+    public boolean equals(Object o) {
+<span class="pc bpc" id="L95" title="1 of 2 branches missed.">        if (this == o) return true;</span>
+<span class="pc bpc" id="L96" title="2 of 4 branches missed.">        if (o == null || getClass() != o.getClass()) return false;</span>
+<span class="fc" id="L97">        Comment comment = (Comment) o;</span>
+<span class="fc" id="L98">        return Objects.equals(id, comment.id);</span>
+    }
+
+    @Override
+    public int hashCode() {
+<span class="fc" id="L103">        return Objects.hash(id);</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="fc" id="L108">        return &quot;Comment{&quot; +</span>
+                &quot;id=&quot; + id +
+                &quot;, feedbackId=&quot; + feedbackId +
+                &quot;, authorId=&quot; + authorId +
+                &quot;, content='&quot; + content + '\'' +
+                &quot;, createdAt=&quot; + createdAt +
+                '}';
+    }
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

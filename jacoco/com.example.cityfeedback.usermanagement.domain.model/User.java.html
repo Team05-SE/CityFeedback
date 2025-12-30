@@ -82,5 +82,25 @@ public class User {
     public void setId(UUID id) {
 <span class="fc" id="L83">        this.id = id;</span>
 <span class="fc" id="L84">    }</span>
+
+    /**
+     * Ändert das Passwort des Users.
+     * 
+     * @param newPassword Das neue Passwort
+     * @throws IllegalArgumentException wenn das neue Passwort null ist
+     */
+    public void changePassword(Password newPassword) {
+<span class="fc" id="L93">        this.password = Objects.requireNonNull(newPassword, &quot;Passwort darf nicht null sein&quot;);</span>
+<span class="fc" id="L94">    }</span>
+
+    /**
+     * Ändert die Rolle des Users.
+     * 
+     * @param newRole Die neue Rolle
+     * @throws IllegalArgumentException wenn die neue Rolle null ist
+     */
+    public void changeRole(UserRole newRole) {
+<span class="fc" id="L103">        this.role = Objects.requireNonNull(newRole, &quot;Rolle darf nicht null sein&quot;);</span>
+<span class="fc" id="L104">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

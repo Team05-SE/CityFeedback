@@ -44,5 +44,41 @@ public class UserController {
     public User login(@Valid @RequestBody LoginRequestDTO dto) {
 <span class="nc" id="L45">        return userService.login(dto.email, dto.password);</span>
     }
+
+    // ADMIN: Passwort ändern
+    @PutMapping(&quot;/{id}/password&quot;)
+    public User changePassword(@PathVariable UUID id, @Valid @RequestBody ChangePasswordDTO dto) {
+<span class="fc" id="L51">        Password newPassword = new Password(dto.password);</span>
+<span class="fc" id="L52">        return userService.updatePassword(id, newPassword);</span>
+    }
+
+    // ADMIN: Rolle ändern
+    @PutMapping(&quot;/{id}/role&quot;)
+    public User changeRole(
+            @RequestHeader(value = &quot;X-Admin-Id&quot;, required = true) UUID adminId,
+            @PathVariable UUID id,
+            @Valid @RequestBody ChangeRoleDTO dto) {
+<span class="fc" id="L61">        return userService.updateRole(adminId, id, dto.role);</span>
+    }
+
+    // ADMIN: User erstellen
+    @PostMapping(&quot;/admin/create&quot;)
+    public User createUserByAdmin(
+            @RequestHeader(value = &quot;X-Admin-Id&quot;, required = true) UUID adminId,
+            @Valid @RequestBody CreateUserByAdminDTO dto) {
+<span class="fc" id="L69">        Email email = new Email(dto.email);</span>
+<span class="fc" id="L70">        Password password = new Password(dto.password);</span>
+<span class="fc" id="L71">        return userService.createUserByAdmin(adminId, email, password, dto.role);</span>
+    }
+
+    // ADMIN: User löschen
+    @DeleteMapping(&quot;/{id}&quot;)
+    @org.springframework.web.bind.annotation.ResponseStatus(org.springframework.http.HttpStatus.NO_CONTENT)
+    public void deleteUser(
+            @RequestHeader(value = &quot;X-Admin-Id&quot;, required = true) UUID adminId,
+            @PathVariable UUID id) {
+<span class="fc" id="L80">        userService.deleteUser(adminId, id);</span>
+<span class="fc" id="L81">    }</span>
 }
+
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

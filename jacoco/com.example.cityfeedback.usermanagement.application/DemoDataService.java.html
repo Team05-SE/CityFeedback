@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DemoDataService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">CityFeedback</a> &gt; <a href="index.source.html" class="el_package">com.example.cityfeedback.usermanagement.application</a> &gt; <span class="el_source">DemoDataService.java</span></div><h1>DemoDataService.java</h1><pre class="source lang-java linenums">package com.example.cityfeedback.usermanagement.application;
+
+import com.example.cityfeedback.feedbackmanagement.application.FeedbackService;
+import com.example.cityfeedback.usermanagement.domain.model.User;
+import com.example.cityfeedback.usermanagement.domain.repositories.UserRepository;
+import com.example.cityfeedback.usermanagement.domain.valueobjects.UserRole;
+import com.example.cityfeedback.usermanagement.domain.exceptions.UnauthorizedException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+/**
+ * Service zum Verwalten von Demo-Daten.
+ * Nur für Administratoren.
+ */
+@Service
+public class DemoDataService {
+
+    private final UserRepository userRepository;
+    private final FeedbackService feedbackService;
+
+<span class="fc" id="L25">    public DemoDataService(UserRepository userRepository, FeedbackService feedbackService) {</span>
+<span class="fc" id="L26">        this.userRepository = userRepository;</span>
+<span class="fc" id="L27">        this.feedbackService = feedbackService;</span>
+<span class="fc" id="L28">    }</span>
+
+    /**
+     * Löscht alle Demo-Daten (Demo-User und deren Feedbacks).
+     * 
+     * @param adminId Die ID des ausführenden Admins
+     * @return Anzahl der gelöschten User
+     * @throws UnauthorizedException wenn der ausführende User kein Admin ist
+     */
+    @Transactional
+    public int deleteAllDemoData(UUID adminId) {
+<span class="fc" id="L39">        User admin = userRepository.findById(adminId)</span>
+<span class="pc" id="L40">                .orElseThrow(() -&gt; new com.example.cityfeedback.usermanagement.domain.exceptions.UserNotFoundException(adminId));</span>
+        
+<span class="fc bfc" id="L42" title="All 2 branches covered.">        if (admin.getRole() != UserRole.ADMIN) {</span>
+<span class="fc" id="L43">            throw new UnauthorizedException(&quot;Nur Administratoren können Demo-Daten löschen.&quot;);</span>
+        }
+
+        // Finde alle Demo-User (erkennbar an E-Mail-Domain)
+<span class="fc" id="L47">        List&lt;User&gt; allUsers = userRepository.findAll();</span>
+<span class="fc" id="L48">        List&lt;User&gt; demoUsers = allUsers.stream()</span>
+<span class="fc" id="L49">                .filter(user -&gt; {</span>
+<span class="fc" id="L50">                    String email = user.getEmail().getValue();</span>
+<span class="pc bpc" id="L51" title="1 of 4 branches missed.">                    return email.startsWith(&quot;demo.&quot;) || email.contains(&quot;@example.com&quot;);</span>
+                })
+<span class="fc bfc" id="L53" title="All 2 branches covered.">                .filter(user -&gt; user.getRole() != UserRole.ADMIN) // Admin nicht löschen</span>
+<span class="fc" id="L54">                .collect(Collectors.toList());</span>
+
+        // Lösche Feedbacks der Demo-User
+<span class="fc bfc" id="L57" title="All 2 branches covered.">        for (User demoUser : demoUsers) {</span>
+<span class="fc" id="L58">            feedbackService.deleteFeedbacksByUserId(demoUser.getId());</span>
+<span class="fc" id="L59">        }</span>
+
+        // Lösche Demo-User
+<span class="fc" id="L62">        int deletedCount = 0;</span>
+<span class="fc bfc" id="L63" title="All 2 branches covered.">        for (User demoUser : demoUsers) {</span>
+<span class="fc" id="L64">            userRepository.delete(demoUser);</span>
+<span class="fc" id="L65">            deletedCount++;</span>
+<span class="fc" id="L66">        }</span>
+
+<span class="fc" id="L68">        return deletedCount;</span>
+    }
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

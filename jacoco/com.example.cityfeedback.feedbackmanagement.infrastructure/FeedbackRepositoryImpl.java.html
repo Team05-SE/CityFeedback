@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -20,35 +21,47 @@ public class FeedbackRepositoryImpl implements FeedbackRepository {
 
     private final FeedbackJpaRepository jpaRepository;
 
-<span class="fc" id="L23">    public FeedbackRepositoryImpl(FeedbackJpaRepository jpaRepository) {</span>
-<span class="fc" id="L24">        this.jpaRepository = jpaRepository;</span>
-<span class="fc" id="L25">    }</span>
+<span class="fc" id="L24">    public FeedbackRepositoryImpl(FeedbackJpaRepository jpaRepository) {</span>
+<span class="fc" id="L25">        this.jpaRepository = jpaRepository;</span>
+<span class="fc" id="L26">    }</span>
 
     @Override
     public Feedback save(Feedback feedback) {
-<span class="fc" id="L29">        FeedbackEntity entity = FeedbackMapper.toEntity(feedback);</span>
-<span class="fc" id="L30">        FeedbackEntity savedEntity = jpaRepository.save(entity);</span>
-<span class="fc" id="L31">        return FeedbackMapper.toDomain(savedEntity);</span>
+<span class="fc" id="L30">        FeedbackEntity entity = FeedbackMapper.toEntity(feedback);</span>
+<span class="fc" id="L31">        FeedbackEntity savedEntity = jpaRepository.save(entity);</span>
+<span class="fc" id="L32">        return FeedbackMapper.toDomain(savedEntity);</span>
     }
 
     @Override
     public Optional&lt;Feedback&gt; findById(Long id) {
-<span class="nc" id="L36">        return jpaRepository.findById(id)</span>
-<span class="nc" id="L37">                .map(FeedbackMapper::toDomain);</span>
+<span class="fc" id="L37">        return jpaRepository.findById(id)</span>
+<span class="fc" id="L38">                .map(FeedbackMapper::toDomain);</span>
     }
 
     @Override
     public List&lt;Feedback&gt; findAll() {
-<span class="fc" id="L42">        return jpaRepository.findAll().stream()</span>
-<span class="fc" id="L43">                .map(FeedbackMapper::toDomain)</span>
-<span class="fc" id="L44">                .collect(Collectors.toList());</span>
+<span class="fc" id="L43">        return jpaRepository.findAll().stream()</span>
+<span class="fc" id="L44">                .map(FeedbackMapper::toDomain)</span>
+<span class="fc" id="L45">                .collect(Collectors.toList());</span>
     }
 
     @Override
     public void delete(Feedback feedback) {
-<span class="nc" id="L49">        FeedbackEntity entity = FeedbackMapper.toEntity(feedback);</span>
-<span class="nc" id="L50">        jpaRepository.delete(entity);</span>
-<span class="nc" id="L51">    }</span>
+<span class="fc" id="L50">        FeedbackEntity entity = FeedbackMapper.toEntity(feedback);</span>
+<span class="fc" id="L51">        jpaRepository.delete(entity);</span>
+<span class="fc" id="L52">    }</span>
+
+    @Override
+    public List&lt;Feedback&gt; findByUserId(UUID userId) {
+<span class="fc" id="L56">        return jpaRepository.findByUserId(userId).stream()</span>
+<span class="fc" id="L57">                .map(FeedbackMapper::toDomain)</span>
+<span class="fc" id="L58">                .collect(Collectors.toList());</span>
+    }
+
+    @Override
+    public void deleteByUserId(UUID userId) {
+<span class="fc" id="L63">        jpaRepository.deleteByUserId(userId);</span>
+<span class="fc" id="L64">    }</span>
 }
 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

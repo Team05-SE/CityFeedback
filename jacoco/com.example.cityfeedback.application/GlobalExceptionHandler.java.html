@@ -3,6 +3,7 @@
 import com.example.cityfeedback.feedbackmanagement.domain.exceptions.FeedbackNotFoundException;
 import com.example.cityfeedback.usermanagement.domain.exceptions.EmailAlreadyExistsException;
 import com.example.cityfeedback.usermanagement.domain.exceptions.InvalidCredentialsException;
+import com.example.cityfeedback.usermanagement.domain.exceptions.UnauthorizedException;
 import com.example.cityfeedback.usermanagement.domain.exceptions.UserNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,85 +22,107 @@ import java.util.Map;
  * Behandelt alle Exceptions und gibt strukturierte Fehlerantworten zurück.
  */
 @RestControllerAdvice
-<span class="fc" id="L24">public class GlobalExceptionHandler {</span>
+<span class="fc" id="L25">public class GlobalExceptionHandler {</span>
 
-<span class="fc" id="L26">    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);</span>
+<span class="fc" id="L27">    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);</span>
 
     @ExceptionHandler(FeedbackNotFoundException.class)
     public ResponseEntity&lt;ErrorResponse&gt; handleFeedbackNotFound(FeedbackNotFoundException ex) {
-<span class="nc" id="L30">        logger.warn(&quot;Feedback nicht gefunden: {}&quot;, ex.getMessage());</span>
-<span class="nc" id="L31">        ErrorResponse error = new ErrorResponse(</span>
-<span class="nc" id="L32">                HttpStatus.NOT_FOUND.value(),</span>
-<span class="nc" id="L33">                ex.getMessage(),</span>
-<span class="nc" id="L34">                LocalDateTime.now()</span>
+<span class="nc" id="L31">        logger.warn(&quot;Feedback nicht gefunden: {}&quot;, ex.getMessage());</span>
+<span class="nc" id="L32">        ErrorResponse error = new ErrorResponse(</span>
+<span class="nc" id="L33">                HttpStatus.NOT_FOUND.value(),</span>
+<span class="nc" id="L34">                ex.getMessage(),</span>
+<span class="nc" id="L35">                LocalDateTime.now()</span>
         );
-<span class="nc" id="L36">        return new ResponseEntity&lt;&gt;(error, HttpStatus.NOT_FOUND);</span>
+<span class="nc" id="L37">        return new ResponseEntity&lt;&gt;(error, HttpStatus.NOT_FOUND);</span>
     }
 
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity&lt;ErrorResponse&gt; handleUserNotFound(UserNotFoundException ex) {
-<span class="nc" id="L41">        logger.warn(&quot;Benutzer nicht gefunden: {}&quot;, ex.getMessage());</span>
-<span class="nc" id="L42">        ErrorResponse error = new ErrorResponse(</span>
-<span class="nc" id="L43">                HttpStatus.NOT_FOUND.value(),</span>
-<span class="nc" id="L44">                ex.getMessage(),</span>
-<span class="nc" id="L45">                LocalDateTime.now()</span>
+<span class="nc" id="L42">        logger.warn(&quot;Benutzer nicht gefunden: {}&quot;, ex.getMessage());</span>
+<span class="nc" id="L43">        ErrorResponse error = new ErrorResponse(</span>
+<span class="nc" id="L44">                HttpStatus.NOT_FOUND.value(),</span>
+<span class="nc" id="L45">                ex.getMessage(),</span>
+<span class="nc" id="L46">                LocalDateTime.now()</span>
         );
-<span class="nc" id="L47">        return new ResponseEntity&lt;&gt;(error, HttpStatus.NOT_FOUND);</span>
+<span class="nc" id="L48">        return new ResponseEntity&lt;&gt;(error, HttpStatus.NOT_FOUND);</span>
     }
 
     @ExceptionHandler(InvalidCredentialsException.class)
     public ResponseEntity&lt;ErrorResponse&gt; handleInvalidCredentials(InvalidCredentialsException ex) {
-<span class="nc" id="L52">        logger.warn(&quot;Ungültige Anmeldedaten: {}&quot;, ex.getMessage());</span>
-<span class="nc" id="L53">        ErrorResponse error = new ErrorResponse(</span>
-<span class="nc" id="L54">                HttpStatus.UNAUTHORIZED.value(),</span>
-<span class="nc" id="L55">                ex.getMessage(),</span>
-<span class="nc" id="L56">                LocalDateTime.now()</span>
+<span class="nc" id="L53">        logger.warn(&quot;Ungültige Anmeldedaten: {}&quot;, ex.getMessage());</span>
+<span class="nc" id="L54">        ErrorResponse error = new ErrorResponse(</span>
+<span class="nc" id="L55">                HttpStatus.UNAUTHORIZED.value(),</span>
+<span class="nc" id="L56">                ex.getMessage(),</span>
+<span class="nc" id="L57">                LocalDateTime.now()</span>
         );
-<span class="nc" id="L58">        return new ResponseEntity&lt;&gt;(error, HttpStatus.UNAUTHORIZED);</span>
+<span class="nc" id="L59">        return new ResponseEntity&lt;&gt;(error, HttpStatus.UNAUTHORIZED);</span>
     }
 
     @ExceptionHandler(EmailAlreadyExistsException.class)
     public ResponseEntity&lt;ErrorResponse&gt; handleEmailAlreadyExists(EmailAlreadyExistsException ex) {
-<span class="nc" id="L63">        logger.warn(&quot;E-Mail bereits vorhanden: {}&quot;, ex.getMessage());</span>
-<span class="nc" id="L64">        ErrorResponse error = new ErrorResponse(</span>
-<span class="nc" id="L65">                HttpStatus.CONFLICT.value(),</span>
-<span class="nc" id="L66">                ex.getMessage(),</span>
-<span class="nc" id="L67">                LocalDateTime.now()</span>
+<span class="nc" id="L64">        logger.warn(&quot;E-Mail bereits vorhanden: {}&quot;, ex.getMessage());</span>
+<span class="nc" id="L65">        ErrorResponse error = new ErrorResponse(</span>
+<span class="nc" id="L66">                HttpStatus.CONFLICT.value(),</span>
+<span class="nc" id="L67">                ex.getMessage(),</span>
+<span class="nc" id="L68">                LocalDateTime.now()</span>
         );
-<span class="nc" id="L69">        return new ResponseEntity&lt;&gt;(error, HttpStatus.CONFLICT);</span>
+<span class="nc" id="L70">        return new ResponseEntity&lt;&gt;(error, HttpStatus.CONFLICT);</span>
+    }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity&lt;ErrorResponse&gt; handleUnauthorized(UnauthorizedException ex) {
+<span class="nc" id="L75">        logger.warn(&quot;Nicht autorisiert: {}&quot;, ex.getMessage());</span>
+<span class="nc" id="L76">        ErrorResponse error = new ErrorResponse(</span>
+<span class="nc" id="L77">                HttpStatus.FORBIDDEN.value(),</span>
+<span class="nc" id="L78">                ex.getMessage(),</span>
+<span class="nc" id="L79">                LocalDateTime.now()</span>
+        );
+<span class="nc" id="L81">        return new ResponseEntity&lt;&gt;(error, HttpStatus.FORBIDDEN);</span>
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity&lt;Map&lt;String, Object&gt;&gt; handleValidationExceptions(
             MethodArgumentNotValidException ex) {
-<span class="nc" id="L75">        logger.warn(&quot;Validierungsfehler: {}&quot;, ex.getMessage());</span>
-<span class="nc" id="L76">        Map&lt;String, Object&gt; errors = new HashMap&lt;&gt;();</span>
-<span class="nc" id="L77">        ex.getBindingResult().getFieldErrors().forEach(error -&gt; {</span>
-<span class="nc" id="L78">            errors.put(error.getField(), error.getDefaultMessage());</span>
-<span class="nc" id="L79">        });</span>
-<span class="nc" id="L80">        return new ResponseEntity&lt;&gt;(errors, HttpStatus.BAD_REQUEST);</span>
+<span class="nc" id="L87">        logger.warn(&quot;Validierungsfehler: {}&quot;, ex.getMessage());</span>
+<span class="nc" id="L88">        Map&lt;String, Object&gt; errors = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L89">        ex.getBindingResult().getFieldErrors().forEach(error -&gt; {</span>
+<span class="nc" id="L90">            errors.put(error.getField(), error.getDefaultMessage());</span>
+<span class="nc" id="L91">        });</span>
+<span class="nc" id="L92">        return new ResponseEntity&lt;&gt;(errors, HttpStatus.BAD_REQUEST);</span>
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity&lt;ErrorResponse&gt; handleIllegalArgument(IllegalArgumentException ex) {
-<span class="nc" id="L85">        logger.warn(&quot;Ungültiges Argument: {}&quot;, ex.getMessage());</span>
-<span class="nc" id="L86">        ErrorResponse error = new ErrorResponse(</span>
-<span class="nc" id="L87">                HttpStatus.BAD_REQUEST.value(),</span>
-<span class="nc" id="L88">                ex.getMessage(),</span>
-<span class="nc" id="L89">                LocalDateTime.now()</span>
+<span class="nc" id="L97">        logger.warn(&quot;Ungültiges Argument: {}&quot;, ex.getMessage());</span>
+<span class="nc" id="L98">        ErrorResponse error = new ErrorResponse(</span>
+<span class="nc" id="L99">                HttpStatus.BAD_REQUEST.value(),</span>
+<span class="nc" id="L100">                ex.getMessage(),</span>
+<span class="nc" id="L101">                LocalDateTime.now()</span>
         );
-<span class="nc" id="L91">        return new ResponseEntity&lt;&gt;(error, HttpStatus.BAD_REQUEST);</span>
+<span class="nc" id="L103">        return new ResponseEntity&lt;&gt;(error, HttpStatus.BAD_REQUEST);</span>
+    }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity&lt;ErrorResponse&gt; handleIllegalState(IllegalStateException ex) {
+<span class="nc" id="L108">        logger.warn(&quot;Ungültiger Zustand: {}&quot;, ex.getMessage());</span>
+<span class="nc" id="L109">        ErrorResponse error = new ErrorResponse(</span>
+<span class="nc" id="L110">                HttpStatus.BAD_REQUEST.value(),</span>
+<span class="nc" id="L111">                ex.getMessage(),</span>
+<span class="nc" id="L112">                LocalDateTime.now()</span>
+        );
+<span class="nc" id="L114">        return new ResponseEntity&lt;&gt;(error, HttpStatus.BAD_REQUEST);</span>
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity&lt;ErrorResponse&gt; handleGenericException(Exception ex) {
-<span class="nc" id="L96">        logger.error(&quot;Unerwarteter Fehler aufgetreten&quot;, ex);</span>
-<span class="nc" id="L97">        ErrorResponse error = new ErrorResponse(</span>
-<span class="nc" id="L98">                HttpStatus.INTERNAL_SERVER_ERROR.value(),</span>
+<span class="nc" id="L119">        logger.error(&quot;Unerwarteter Fehler aufgetreten&quot;, ex);</span>
+<span class="nc" id="L120">        ErrorResponse error = new ErrorResponse(</span>
+<span class="nc" id="L121">                HttpStatus.INTERNAL_SERVER_ERROR.value(),</span>
                 &quot;Ein unerwarteter Fehler ist aufgetreten.&quot;,
-<span class="nc" id="L100">                LocalDateTime.now()</span>
+<span class="nc" id="L123">                LocalDateTime.now()</span>
         );
-<span class="nc" id="L102">        return new ResponseEntity&lt;&gt;(error, HttpStatus.INTERNAL_SERVER_ERROR);</span>
+<span class="nc" id="L125">        return new ResponseEntity&lt;&gt;(error, HttpStatus.INTERNAL_SERVER_ERROR);</span>
     }
 
     /**
@@ -110,22 +133,22 @@ import java.util.Map;
         private final String message;
         private final LocalDateTime timestamp;
 
-<span class="nc" id="L113">        public ErrorResponse(int status, String message, LocalDateTime timestamp) {</span>
-<span class="nc" id="L114">            this.status = status;</span>
-<span class="nc" id="L115">            this.message = message;</span>
-<span class="nc" id="L116">            this.timestamp = timestamp;</span>
-<span class="nc" id="L117">        }</span>
+<span class="nc" id="L136">        public ErrorResponse(int status, String message, LocalDateTime timestamp) {</span>
+<span class="nc" id="L137">            this.status = status;</span>
+<span class="nc" id="L138">            this.message = message;</span>
+<span class="nc" id="L139">            this.timestamp = timestamp;</span>
+<span class="nc" id="L140">        }</span>
 
         public int getStatus() {
-<span class="nc" id="L120">            return status;</span>
+<span class="nc" id="L143">            return status;</span>
         }
 
         public String getMessage() {
-<span class="nc" id="L124">            return message;</span>
+<span class="nc" id="L147">            return message;</span>
         }
 
         public LocalDateTime getTimestamp() {
-<span class="nc" id="L128">            return timestamp;</span>
+<span class="nc" id="L151">            return timestamp;</span>
         }
     }
 }
