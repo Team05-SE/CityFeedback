@@ -7,7 +7,7 @@ public class CityFeedbackApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(CityFeedbackApplication.class, args);
-        System.out.println("Hallo GitHub CI!");
+        System.out.println("City Feedback gestartet");
     }
 }
 

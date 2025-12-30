@@ -70,7 +70,7 @@ public class Feedback {
             category,
             LocalDate.now(),
             content,
-            Status.OPEN,
+            Status.OPEN, // Neues Feedback ist zunächst OPEN
             false, // Neues Feedback ist zunächst nicht veröffentlicht
             userId
         );
@@ -89,6 +89,18 @@ public class Feedback {
             throw new IllegalStateException("Geschlossenes Feedback kann nicht veröffentlicht werden.");
         }
         this.isPublished = true;
+    }
+
+    /**
+     * Nimmt das Feedback aus der Veröffentlichung.
+     * 
+     * @throws IllegalStateException wenn das Feedback nicht veröffentlicht ist
+     */
+    public void unpublish() {
+        if (!isPublished) {
+            throw new IllegalStateException("Feedback ist nicht veröffentlicht.");
+        }
+        this.isPublished = false;
     }
 
     /**
