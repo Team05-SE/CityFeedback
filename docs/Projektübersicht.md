@@ -16,3 +16,4 @@ Bürgerbeteiligungs- und Beschwerdesystem: Eine Plattform, auf der Bürger Anlie
 3. Janne Surborg (ja.surborg@ostfalia.de)
 4. Constantin Moye (wgtz1919@bht-berlin.de)
 5. Cornelia Demes (cornelia.demes@stud.hs-emden-leer.de)
+
